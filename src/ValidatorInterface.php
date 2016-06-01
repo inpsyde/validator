@@ -12,7 +12,7 @@ interface ValidatorInterface {
 	 * Returns true if and only if $value meets the validation requirements
 	 *
 	 * If $value fails validation, then this method returns false, and
-	 * getMessages() will return an array of messages that explain why the
+	 * get_error_messages() will return an array of messages that explain why the
 	 * validation failed.
 	 *
 	 * @param   mixed $value

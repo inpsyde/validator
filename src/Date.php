@@ -43,7 +43,7 @@ class Date extends AbstractValidator {
 	}
 
 	/**
-	 * Attempts to convert an int, string, or array to a DateTime object
+	 * Attempts to convert an int, string, or array to a DateTime object.
 	 *
 	 * @param  string|int|array $value
 	 *
@@ -68,7 +68,7 @@ class Date extends AbstractValidator {
 	}
 
 	/**
-	 * Attempts to convert an integer into a DateTime object
+	 * Attempts to convert an integer into a DateTime object.
 	 *
 	 * @param  integer $value
 	 *
@@ -80,7 +80,7 @@ class Date extends AbstractValidator {
 	}
 
 	/**
-	 * Attempts to convert an double into a DateTime object
+	 * Attempts to convert an double into a DateTime object.
 	 *
 	 * @param  double $value
 	 *
@@ -92,7 +92,7 @@ class Date extends AbstractValidator {
 	}
 
 	/**
-	 * Attempts to convert a string into a DateTime object
+	 * Attempts to convert a string into a DateTime object.
 	 *
 	 * @param  string $value
 	 *
@@ -115,7 +115,7 @@ class Date extends AbstractValidator {
 	}
 
 	/**
-	 * Implodes the array into a string and proxies to {@link convertString()}.
+	 * Implodes the array into a string and proxies to convert_string().
 	 *
 	 * @param  array $value
 	 *

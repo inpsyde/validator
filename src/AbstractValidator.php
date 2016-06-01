@@ -9,21 +9,21 @@ namespace Inpsyde\Validator;
 abstract class AbstractValidator implements ValidatorInterface {
 
 	/**
-	 * The Message-Templates for Error-Description
+	 * The Message-Templates for Error-Description.
 	 *
 	 * @var     array
 	 */
 	protected $message_templates = [ ];
 
 	/**
-	 * Contains all error-Messages after Validation
+	 * Contains all error-Messages after Validation.
 	 *
 	 * @var     array
 	 */
 	protected $error_messages = [ ];
 
 	/**
-	 * Contains the Validation-Options
+	 * Contains the Validation-Options.
 	 *
 	 * @var     array
 	 */
@@ -66,7 +66,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 	}
 
 	/**
-	 * Returns the error message template or empty string by a given name
+	 * Returns the error message template or empty string by a given name.
 	 *
 	 * @param    String $name
 	 *
@@ -106,7 +106,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 	}
 
 	/**
-	 * Creating an Error-Message for the given messageName from an messageTemplate
+	 * Creating an Error-Message for the given messageName from an messageTemplate.
 	 *
 	 * @param   String $message_name
 	 * @param   String $value
