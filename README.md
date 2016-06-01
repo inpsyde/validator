@@ -2,6 +2,28 @@
 
 This package provides a collection of validators. 
 
+## Contents
+
+* [Installation](#installation)
+* [Usage](#usage)
+   * [ArrayValue](#arrayvalue)
+   * [Between](#between)
+   * [Date](#Date)
+   * [GreaterThan](#greaterthan)
+   * [InArray](#inarray)
+   * [LessThan](#lessthan)
+   * [NotEmpty](#notempty)
+   * [RegEx](#regex)
+   * [Url](#url)
+* [Messages and message templates](#messages-and-message-templates)
+* [Options](#options-7)
+* [Create your own Validator](#create-your-own-validator)
+* [Other Notes](#other-notes)
+    * [Bugs, technical hints or contribute](#bugs-technical-hints-or-contribute)
+    * [License](#license)
+    * [Changelog](#changelog)
+
+
 ## Installation
 
 ```cli
@@ -222,3 +244,17 @@ class YourValidator extends AbstractValidator {
 $validator = new My\Own\Validator\YourValidator();
 $valid = $this->is_valid( 'my value' );
 ```
+
+## Other Notes
+
+### Bugs, technical hints or contribute
+
+Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/inpsyde/Inpsyde-Validator).
+
+### License
+
+Good news, this plugin is free for everyone! Since it's released under the [MIT](https://github.com/inpsyde/Inpsyde-Validator/blob/master/LICENSE), you can use it free of charge on your personal or commercial blog.
+
+### Changelog
+
+See [commits](https://github.com/inpsyde/Inpsyde-Validator/commits/master) or read [short version](https://github.com/inpsyde/Inpsyde-Validator/blob/master/CHANGELOG.md).
