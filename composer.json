@@ -1,0 +1,40 @@
+{
+  "name": "inpsyde/validator",
+  "description": "Inpsyde Validator library.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Christian Brückner",
+      "email": "chris@chrico.info",
+      "homepage": "https://www.chrico.info",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "source": "https://www.github.com/inpsyde/inpsyde-validator",
+    "issues": "https://www.github.com/inpsyde/inpsyde-validator/issues"
+  },
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "php": ">=5.4.0",
+    "phpunit/phpunit": "~4.8|~5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Inpsyde\\Validator\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Inpsyde\\Validator\\Tests\\": "tests/phpunit/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "5.4.0"
+    }
+  }
+}
