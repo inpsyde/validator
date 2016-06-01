@@ -1,6 +1,6 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator;
 use DateTime;
@@ -8,6 +8,11 @@ use DateTimeZone;
 use DateTimeImmutable;
 use stdClass;
 
+/**
+ * Class DateTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class DateTest extends \PHPUnit_Framework_TestCase {
 
 	public function setUp() {

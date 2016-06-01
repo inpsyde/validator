@@ -1,9 +1,14 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\Between;
 
+/**
+ * Class BetweenTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class BetweenTest extends \PHPUnit_Framework_TestCase {
 
 	/**

@@ -1,9 +1,14 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\InArray;
 
+/**
+ * Class InArrayTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class InArrayTest extends \PHPUnit_Framework_TestCase {
 
 	/**

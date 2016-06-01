@@ -1,9 +1,14 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\GreaterThan;
 
+/**
+ * Class GreaterThanTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class GreaterThanTest extends \PHPUnit_Framework_TestCase {
 
 	/**

@@ -1,9 +1,14 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\RegEx;
 
+/**
+ * Class RegExTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class RegExTest extends \PHPUnit_Framework_TestCase {
 
 	/**

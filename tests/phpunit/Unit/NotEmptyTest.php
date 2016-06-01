@@ -1,5 +1,6 @@
 <?php
-namespace Inpsyde\Tests\Unit\Validator;
+
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\NotEmpty;
 

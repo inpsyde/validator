@@ -1,9 +1,14 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\ArrayValue;
 
+/**
+ * Class ArrayValueTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 
 	public function test_basic() {

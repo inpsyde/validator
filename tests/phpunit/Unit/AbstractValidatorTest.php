@@ -1,7 +1,12 @@
 <?php
 
-namespace Inpsyde\Tests\Unit\Validator;
+namespace Inpsyde\Validator\Tests\Unit;
 
+/**
+ * Class AbstractValidatorTest
+ *
+ * @package Inpsyde\Validator\Tests\Unit
+ */
 class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 
 	public function test_basic() {
