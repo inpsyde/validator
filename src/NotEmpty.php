@@ -11,7 +11,7 @@ class NotEmpty extends AbstractValidator {
 	const IS_EMPTY = 'isEmpty';
 
 	/**
-	 * {@inhertidoc}
+	 * {@inheritdoc}
 	 */
 	protected $message_templates = [
 		self::IS_EMPTY => "This value should not be empty.",
