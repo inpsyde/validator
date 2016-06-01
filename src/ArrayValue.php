@@ -20,19 +20,15 @@ class ArrayValue extends AbstractValidator {
 	 *
 	 * @param string             $key
 	 * @param ValidatorInterface $validator
-	 * @param bool               $break_on_failure
 	 *
 	 * @return void
 	 */
-	public function add_validator( $key, ValidatorInterface $validator, $break_on_failure = FALSE ) {
+	public function add_validator( $key, ValidatorInterface $validator ) {
 
 		if ( ! array_key_exists( $key, $this->validators ) ) {
 			$this->validators[ $key ] = [ ];
 		}
-		$this->validators[ $key ][] = [
-			'instance'         => $validator,
-			'break_on_failure' => (bool) $break_on_failure
-		];
+		$this->validators[ $key ][] = $validator;
 	}
 
 	/**
@@ -84,16 +80,9 @@ class ArrayValue extends AbstractValidator {
 	protected function do_validate( $value, $validators ) {
 
 		$is_valid = TRUE;
-		foreach ( $validators as $element ) {
-
-			/** @var \Inpsyde\Validator\ValidatorInterface $validator */
-			$validator = $element[ 'instance' ];
-			if ( $validator->is_valid( $value ) ) {
-				continue;
-			}
-
-			$is_valid = FALSE;
-			if ( $element[ 'break_on_failure' ] ) {
+		foreach ( $validators as $validator ) {
+			if ( ! $validator->is_valid( $value ) ) {
+				$is_valid = FALSE;
 				break;
 			}
 		}
@@ -107,15 +96,11 @@ class ArrayValue extends AbstractValidator {
 	public function get_error_messages() {
 
 		$errors = [ ];
-		foreach ( $this->validators as $key => $elements ) {
-			foreach ( $elements as $element ) {
-
-				/** @var \Inpsyde\Validator\ValidatorInterface $validator */
-				$validator = $element[ 'instance' ];
+		foreach ( $this->validators as $key => $validators ) {
+			foreach ( $validators as $validator ) {
 				foreach ( $validator->get_error_messages() as $message ) {
 					$errors[ $key ] = $message;
 				}
-
 			}
 		}
 

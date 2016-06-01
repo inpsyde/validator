@@ -1,8 +1,6 @@
 <?php
 namespace Inpsyde\Validator;
 
-use Traversable;
-
 /**
  * Class AbstractValidator
  *
