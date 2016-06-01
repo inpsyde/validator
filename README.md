@@ -28,7 +28,7 @@ $validator->add_validator( 'key1', new Validator\NotEmpty() );
 $validator->add_validator( 'key2', new Validator\NotEmpty() );
 
 $validator->is_valid( $testee ); // FALSE
-$messages = $validator->get_error_messages(); // [ "key2" => This value should not be empty." ]
+$messages = $validator->get_error_messages(); // [ "key2" => "This value should not be empty." ]
 ```
 
 ### Between
