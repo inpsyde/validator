@@ -11,9 +11,9 @@ $ composer require --dev [--prefer-dist] inpsyde/validator
 ## Usage
 Each Validator validates a value against a given configuration. Following Validators are available:
 
-### ArrayValueValidator
+### ArrayValue
 
-`Inpsyde\Validator\ArrayValueValidator` allows you to map Validators to an array-key to validate the array-value.
+`Inpsyde\Validator\ArrayValue` allows you to map Validators to an array-key to validate the array-value.
 
 ```php
 use Inpsyde\Validator as Validator;
@@ -23,12 +23,12 @@ $testee = [
     'key2' => ''
 ];
 
-$validator = new Validator\ArrayValueValidator();
+$validator = new Validator\ArrayValue();
 $validator->add_validator( 'key1', new Validator\NotEmpty() );
 $validator->add_validator( 'key2', new Validator\NotEmpty() );
 
 $validator->is_valid( $testee ); // FALSE
-$messages = $validator->get_error_messages(); // [ "This value should not be empty." ]
+$messages = $validator->get_error_messages(); // [ "key2" => This value should not be empty." ]
 ```
 
 ### Between

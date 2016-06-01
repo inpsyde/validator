@@ -6,7 +6,7 @@ namespace Inpsyde\Validator;
  *
  * @package Inpsyde\Validator
  */
-class ArrayValueValidator extends AbstractValidator {
+class ArrayValue extends AbstractValidator {
 
 	/**
 	 * Contains a group of validators.
@@ -107,13 +107,13 @@ class ArrayValueValidator extends AbstractValidator {
 	public function get_error_messages() {
 
 		$errors = [ ];
-		foreach ( $this->validators as $elements ) {
+		foreach ( $this->validators as $key => $elements ) {
 			foreach ( $elements as $element ) {
 
 				/** @var \Inpsyde\Validator\ValidatorInterface $validator */
 				$validator = $element[ 'instance' ];
 				foreach ( $validator->get_error_messages() as $message ) {
-					$errors[] = $message;
+					$errors[ $key ] = $message;
 				}
 
 			}
