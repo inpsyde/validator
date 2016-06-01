@@ -19,6 +19,7 @@ This package provides a collection of validators.
 * [Options](#options-7)
 * [Create your own Validator](#create-your-own-validator)
 * [Other Notes](#other-notes)
+    * [Crafted by Inpsyde](#crafted-by-inpsyde)
     * [Bugs, technical hints or contribute](#bugs-technical-hints-or-contribute)
     * [License](#license)
     * [Changelog](#changelog)
@@ -246,6 +247,10 @@ $valid = $this->is_valid( 'my value' );
 ```
 
 ## Other Notes
+
+### Crafted by Inpsyde
+    
+The team at [Inpsyde](http://www.inpsyde.com) is engineering the Web since 2006.
 
 ### Bugs, technical hints or contribute
 
