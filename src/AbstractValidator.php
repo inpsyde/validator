@@ -38,7 +38,6 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 */
 	public function __construct( array $options = [ ], array $message_templates = [ ] ) {
 
-
 		foreach ( $options as $name => $value ) {
 			$this->options[ $name ] = $value;
 		}
@@ -119,7 +118,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 		$message = $this->get_message_template( $message_name );
 
 		if ( ! is_scalar( $value ) ) {
-			$value = $this->get_type_as_string( $value );
+			$value = $this->get_value_as_string( $value );
 		}
 
 		// replacing the placeholder for the %value%
@@ -127,9 +126,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 
 		// replacing the possible options-placeholder on the message
 		foreach ( $this->options as $search => $replace ) {
-			if ( is_array( $replace ) ) {
-				$replace = var_export( $replace, TRUE );
-			}
+			$replace = $this->get_value_as_string( $replace );
 			$message = str_replace( '%' . $search . '%', $replace, $message );
 		}
 
@@ -143,9 +140,15 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 *
 	 * @return  string $type
 	 */
-	protected function get_type_as_string( $value ) {
+	protected function get_value_as_string( $value ) {
 
-		return ( is_object( $value ) ? get_class( $value ) : gettype( $value ) );
+		if ( is_object( $value ) && ! in_array( '__toString', get_class_methods( $value ) ) ) {
+			$value = get_class( $value ) . ' object';
+		} else if ( is_array( $value ) ) {
+			$value = var_export( $value, TRUE );
+		}
+
+		return (string) $value;
 	}
 
 }
