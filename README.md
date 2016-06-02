@@ -229,6 +229,8 @@ $messages = $validator->get_error_messages(); // [ "4 not between 1 and 3" ]
 
 ## Create your own Validator
 
+### File: `My\Own\Validator\YourValidator.php`
+
 ```php
 namespace My\Own\Validator;
 
@@ -236,25 +238,29 @@ use Inpsyde\Validator\AbstractValidator;
 
 class YourValidator extends AbstractValidator {
 
+    /**
+     * For re-usage when changing the message template outside of the class.
+     *
+     * @var string
+     */
     const INVALID = 'invalid';
 
     /**
      * Optional: create message templates.
      * @var array
      */
-     protected $message_templates = [
-        self::INVALID => 'The given value %value% is invalid'
-     ];
+     protected $message_templates = [ self::INVALID => 'The given value %value% is invalid' ];
 
     /**
      * Optional: create options.
-     
+     *
      * @var array
      */
-    protected $options = [
-        'key' => 'value'
-    ];
+    protected $options = [ 'key' => 'value' ];
 
+    /**
+     * {@inheritdoc}
+     */
     public function is_valid( $value ) {
         // do something
         if ( FALSE ) {
@@ -265,22 +271,29 @@ class YourValidator extends AbstractValidator {
 
         return TRUE;
     }
-
 }
+```
+
+### Usage
+
+```php
+use My\Own\Validator\YourValidator;
+
 
 // Optional: overwrite options
 $options = [ 'key' => 'new_value' ]
 
 // Optional: overwrite message templates
-$message_templates = [
-    YourValidator::INVALID => 'Another invalid message'
-];
+$message_templates = [ YourValidator::INVALID => 'Another invalid message' ];
 
 
 $validator = new YourValidator( $options, $message_templates );
-$valid = $validator->is_valid( 'my value' ); // TRUE | FALSE
 
-$messages = $validator->get_error_messages(); // Returns array of messages if is_valid() === FALSE.
+// TRUE | FALSE
+$valid = $validator->is_valid( 'my value' ); 
+
+// Returns array of messages if is_valid() === FALSE.
+$messages = $validator->get_error_messages(); 
 ```
 
 ## Factory
