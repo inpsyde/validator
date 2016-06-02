@@ -18,6 +18,7 @@ This package provides a collection of validators for WordPress.
 * [Messages and message templates](#messages-and-message-templates)
 * [Options](#options-7)
 * [Create your own Validator](#create-your-own-validator)
+* [Factory](#factory)
 * [Other Notes](#other-notes)
     * [Crafted by Inpsyde](#crafted-by-inpsyde)
     * [Bugs, technical hints or contribute](#bugs-technical-hints-or-contribute)
@@ -245,6 +246,23 @@ class YourValidator extends AbstractValidator {
 $validator = new My\Own\Validator\YourValidator();
 $valid = $validator->is_valid( 'my value' );
 ```
+
+## Factory
+
+The library comes with an `ValidatorFactory` which allows you to create instances of new validators.
+
+```php
+$factory    = new \Inpsyde\Validator\ValidatorFactory();
+$validator  = $factory->create( 'Date' ); // returns instance of \Inpsyde\Validator\Date
+```
+
+The factory is also able to create instances of external classe, if they implement the `\Inpsyde\Validator\ValidatorInterface`:
+
+```php
+$factory    = new \Inpsyde\Validator\ValidatorFactory();
+$validator  = $factory->create( My\Own\Validator\YourValidator::class ); // Creates an instance of your own validator.
+```
+
 
 ## Other Notes
 
