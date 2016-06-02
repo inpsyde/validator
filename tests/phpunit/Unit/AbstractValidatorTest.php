@@ -47,6 +47,46 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Basic test with Stub "AlwaysFalseValidator" which tests the creation of error_messages.
+	 */
+	public function test_error_message_creation() {
+
+		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator();
+		$validator->is_valid( '' );
+
+		$this->assertNotEmpty( $validator->get_error_messages() );
+	}
+
+	/**
+	 * Test if the placeholder %value% and key's in $options are replaced in error message.
+	 */
+	public function test_overwrite_error_message() {
+
+		$message_template = 'replace value "%value%" and option "key" with value: "%key%" ';
+
+		$expected_value        = 'value';
+		$expected_option_value = 'option value';
+
+		$expected_error = str_replace(
+			[ '%value%', '%key%' ],
+			[ $expected_value, $expected_option_value ],
+			$message_template
+		);
+
+		$options          = [
+			'key' => $expected_option_value
+		];
+		$message_template = [
+			Fake\AlwaysFalseWithInvalidMessageValidator::INVALID => $message_template
+		];
+
+		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator( $options, $message_template );
+		$validator->is_valid( $expected_value );
+
+		$this->assertEquals( [ $expected_error ], $validator->get_error_messages() );
+	}
+
+	/**
 	 * Basic test for implementation of "get_message_template()"
 	 */
 	public function test_message_templates() {
