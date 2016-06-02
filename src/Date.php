@@ -9,17 +9,17 @@ namespace Inpsyde\Validator;
  */
 class Date extends AbstractValidator {
 
-	const INVALID = 'dateInvalid';
-	const INVALID_DATE = 'dateInvalidDate';
-	const FALSE_FORMAT = 'dateFalseFormat';
+	const INVALID_TYPE = 'invalidType';
+	const INVALID_DATE = 'invalidDate';
+	const INVALID_FORMAT = 'invalidFormat';
 
 	/**
 	 * @var array
 	 */
 	protected $message_templates = [
-		self::INVALID      => "Invalid type given. String, integer, array or DateTime expected",
-		self::INVALID_DATE => "The input does not appear to be a valid date",
-		self::FALSE_FORMAT => "The input does not fit the date format '%format%'",
+		self::INVALID_TYPE   => "Invalid type given. String, integer, array or DateTime expected",
+		self::INVALID_DATE   => "The input does not appear to be a valid date",
+		self::INVALID_FORMAT => "The input does not fit the date format '%format%'",
 	];
 
 	/**
@@ -58,7 +58,7 @@ class Date extends AbstractValidator {
 
 		$type = gettype( $value );
 		if ( ! in_array( $type, [ 'string', 'integer', 'double', 'array' ] ) ) {
-			$this->set_error_message( self::INVALID, $value );
+			$this->set_error_message( self::INVALID_TYPE, $value );
 
 			return FALSE;
 		}
@@ -107,7 +107,7 @@ class Date extends AbstractValidator {
 		// and still return a DateTime object.
 		$errors = \DateTime::getLastErrors();
 		if ( $errors[ 'warning_count' ] > 0 ) {
-			$this->set_error_message( self::FALSE_FORMAT, $value );
+			$this->set_error_message( self::INVALID_FORMAT, $value );
 
 			return FALSE;
 		}

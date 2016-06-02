@@ -9,7 +9,7 @@ namespace Inpsyde\Validator;
  */
 class Url extends AbstractValidator {
 
-	const INVALID = 'invalid';
+	const NOT_URL = 'notURL';
 	const INVALID_TYPE = 'invalidType';
 	const INVALID_DNS = 'invalidDNS';
 	const NOT_EMPTY = 'notEmpty';
@@ -39,7 +39,7 @@ class Url extends AbstractValidator {
 	 * @var array
 	 */
 	protected $message_templates = [
-		self::INVALID      => "The input <code>%value%</code> is not a valid URL.",
+		self::NOT_URL      => "The input <code>%value%</code> is not a valid URL.",
 		self::INVALID_TYPE => "The input <code>%value%</code> should be a string.",
 		self::INVALID_DNS  => "The host for the given input <code>%value%</code> could not be resolved.",
 		self::NOT_EMPTY    => "The given input shouldn't be empty."
@@ -56,7 +56,7 @@ class Url extends AbstractValidator {
 	public function is_valid( $value ) {
 
 		if ( ! is_scalar( $value ) && ! ( is_object( $value ) && method_exists( $value, '__toString' ) ) ) {
-			$this->set_error_message( self::INVALID, $value );
+			$this->set_error_message( self::INVALID_TYPE, $value );
 
 			return FALSE;
 
@@ -71,7 +71,7 @@ class Url extends AbstractValidator {
 
 		$pattern = sprintf( $this->pattern, implode( '|', $this->options[ 'allowed_protocols' ] ) );
 		if ( ! preg_match( $pattern, $value ) ) {
-			$this->set_error_message( self::INVALID, $value );
+			$this->set_error_message( self::NOT_URL, $value );
 
 			return FALSE;
 		}

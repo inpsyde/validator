@@ -1,6 +1,6 @@
 # Inpsyde Validator
 
-This package provides a collection of validators. 
+This package provides a collection of validators for WordPress. 
 
 ## Contents
 
@@ -79,7 +79,7 @@ $messages = $validator->get_error_messages(); // [ "key2" => "This value should 
 
 #### Messages
 
-* `INVALID`
+* `INVALID_TYPE`
 * `INVALID_DATE`
 * `FALSE_FORMAT`
 
@@ -160,7 +160,7 @@ $messages = $validator->get_error_messages(); // [ "key2" => "This value should 
 
 #### Messages
 
-* `INVALID`
+* `INVALID_TYPE`
 * `NOT_MATCH`
 * `ERROROUS`
 
@@ -178,7 +178,7 @@ $messages = $validator->get_error_messages(); // [ "key2" => "This value should 
 
 #### Messages
 
-* `INVALID`
+* `NOT_URL`
 * `INVALID_TYPE`
 * `INVALID_DNS`
 * `NOT_EMPTY`

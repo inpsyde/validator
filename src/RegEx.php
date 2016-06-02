@@ -9,17 +9,17 @@ namespace Inpsyde\Validator;
  */
 class RegEx extends AbstractValidator {
 
-	const INVALID = 'regexInvalid';
-	const NOT_MATCH = 'regexNotMatch';
-	const ERROROUS = 'regexErrorous';
+	const INVALID_TYPE = 'invalidType';
+	const NOT_MATCH = 'notMatch';
+	const ERROROUS = 'errorous';
 
 	/**
 	 * @var array
 	 */
 	protected $message_templates = [
-		self::INVALID   => "Invalid type given. String, integer or float expected",
-		self::NOT_MATCH => "The input does not match against pattern '%pattern%'",
-		self::ERROROUS  => "There was an internal error while using the pattern '%pattern%'",
+		self::INVALID_TYPE => "Invalid type given. String, integer or float expected",
+		self::NOT_MATCH    => "The input does not match against pattern '%pattern%'",
+		self::ERROROUS     => "There was an internal error while using the pattern '%pattern%'",
 	];
 
 	/**
@@ -37,7 +37,7 @@ class RegEx extends AbstractValidator {
 		$pattern = $this->options[ 'pattern' ];
 
 		if ( ! is_string( $value ) && ! is_int( $value ) && ! is_float( $value ) ) {
-			$this->set_error_message( self::INVALID, $value );
+			$this->set_error_message( self::INVALID_TYPE, $value );
 
 			return FALSE;
 		}
