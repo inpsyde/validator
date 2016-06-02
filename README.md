@@ -236,20 +236,56 @@ use Inpsyde\Validator\AbstractValidator;
 
 class YourValidator extends AbstractValidator {
 
+    const INVALID = 'invalid';
+
+    /**
+     * Optional: create message templates.
+     * @var array
+     */
+     protected $message_templates = [
+        self::INVALID => 'The given value %value% is invalid'
+     ];
+
+    /**
+     * Optional: create options.
+     
+     * @var array
+     */
+    protected $options = [
+        'key' => 'value'
+    ];
+
     public function is_valid( $value ) {
-       // do something
-       return TRUE;
+        // do something
+        if ( FALSE ) {
+            $this->set_error_message( self::INVALID, $value );
+        
+            return FALSE;
+        }
+
+        return TRUE;
     }
 
 }
 
-$validator = new My\Own\Validator\YourValidator();
-$valid = $validator->is_valid( 'my value' );
+// Optional: overwrite options
+$options = [ 'key' => 'new_value' ]
+
+// Optional: overwrite message templates
+$message_templates = [
+    YourValidator::INVALID => 'Another invalid message'
+];
+
+
+$validator = new YourValidator( $options, $message_templates );
+$valid = $validator->is_valid( 'my value' ); // TRUE | FALSE
+
+$messages = $validator->get_error_messages(); // Returns array of messages if is_valid() === FALSE.
 ```
 
 ## Factory
 
-The library comes with an `ValidatorFactory` which allows you to create instances of new validators.
+The library comes with a `ValidatorFactory` which allows you to create instances of new validators.
 
 ```php
 $factory    = new \Inpsyde\Validator\ValidatorFactory();
