@@ -243,7 +243,7 @@ class YourValidator extends AbstractValidator {
 }
 
 $validator = new My\Own\Validator\YourValidator();
-$valid = $this->is_valid( 'my value' );
+$valid = $validator->is_valid( 'my value' );
 ```
 
 ## Other Notes
