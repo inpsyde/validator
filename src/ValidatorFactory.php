@@ -30,7 +30,7 @@ class ValidatorFactory {
 	 * @param       $type
 	 * @param array $properties
 	 *
-	 * @throws \InvalidArgumentException if validator of given $type is not found.
+	 * @throws Exception\InvalidArgumentException if validator of given $type is not found.
 	 *
 	 * @return ValidatorInterface
 	 */
@@ -50,7 +50,7 @@ class ValidatorFactory {
 			}
 		}
 
-		throw new \InvalidArgumentException(
+		throw new Exception\InvalidArgumentException(
 			sprintf(
 				'The given class <code>%s</code> does not exists.',
 				$type

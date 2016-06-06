@@ -17,19 +17,51 @@ class ArrayValue extends AbstractValidator {
 	private $validators = [ ];
 
 	/**
-	 * Adding validators mapped to an array key.
+	 * Contains validators grouped by an array key.
 	 *
-	 * @param string             $key
+	 * @var ValidatorInterface[]
+	 */
+	private $validators_by_key = [ ];
+
+	/**
+	 * Adding validators mapped for all array values.
+	 *
 	 * @param ValidatorInterface $validator
 	 *
-	 * @return void
+	 * @return ArrayValue
 	 */
-	public function add_validator( $key, ValidatorInterface $validator ) {
+	public function add_validator( ValidatorInterface $validator ) {
 
-		if ( ! array_key_exists( $key, $this->validators ) ) {
-			$this->validators[ $key ] = [ ];
+		$this->validators[] = $validator;
+
+		return $this;
+	}
+
+	/**
+	 * Adding a validator grouped by array key.
+	 *
+	 * @throws Exception\InvalidArgumentException if type of $key is not scalar.
+	 *
+	 * @param ValidatorInterface $validator
+	 * @param                    $key
+	 *
+	 * @return ArrayValue
+	 */
+	public function add_validator_by_key( ValidatorInterface $validator, $key ) {
+
+		if ( ! is_scalar( $key ) ) {
+			throw new Exception\InvalidArgumentException( 'key should be a scalar value.' );
 		}
-		$this->validators[ $key ][] = $validator;
+
+		$key = (string) $key;
+
+		if ( ! isset ( $this->validators_by_key[ $key ] ) ) {
+			$this->validators_by_key[ $key ] = [ ];
+		}
+
+		$this->validators_by_key[ $key ][] = $validator;
+
+		return $this;
 	}
 
 	/**
@@ -37,53 +69,42 @@ class ArrayValue extends AbstractValidator {
 	 */
 	public function is_valid( $value ) {
 
-		$is_valid = TRUE;
-		foreach ( $value as $key => $v ) {
-			if ( ! $this->validate( $key, $v ) ) {
-				$is_valid = FALSE;
-			}
+		if ( ! $this->validate( $value ) ) {
+			return FALSE;
 		}
 
-		return $is_valid;
+		if ( ! $this->validate_by_key( $value ) ) {
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 	/**
-	 * Validating the given key and value of array.
+	 * Validates all values.
 	 *
-	 * @param   string $key
-	 * @param   mixed  $value
+	 * @param $values
 	 *
-	 * @return  bool $is_valid
+	 * @return bool TRUE|FALSE
 	 */
-	protected function validate( $key, $value ) {
+	private function validate( $values ) {
 
 		$is_valid = TRUE;
-		if ( is_array( $value ) ) {
-			foreach ( $value as $new_key => $new_value ) {
-				$is_valid = $this->validate( $new_key, $new_value );
+
+		foreach ( $values as $key => $value ) {
+			if ( ! is_scalar( $value ) ) {
+				continue;
 			}
-		}
-		if ( array_key_exists( $key, $this->validators ) ) {
-			/** @var ValidatorInterface[] $validators */
-			$validators = $this->validators[ $key ];
-			$is_valid   = $this->do_validate( $value, $validators );
-		}
+			foreach ( $this->validators as $validator ) {
+				$is_valid = $validator->is_valid( $value );
 
-		return $is_valid;
-	}
+				if ( ! $is_valid ) {
+					$this->error_messages[ $key ] = $validator->get_error_messages();
+					break;
+				}
+			}
 
-	/**
-	 * @param   mixed                $value
-	 * @param   ValidatorInterface[] $validators
-	 *
-	 * @return  bool $is_valid
-	 */
-	protected function do_validate( $value, $validators ) {
-
-		$is_valid = TRUE;
-		foreach ( $validators as $validator ) {
-			if ( ! $validator->is_valid( $value ) ) {
-				$is_valid = FALSE;
+			if ( ! $is_valid ) {
 				break;
 			}
 		}
@@ -92,20 +113,45 @@ class ArrayValue extends AbstractValidator {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Validates all values by array-key.
+	 *
+	 * TODO: Add option to validate recursive through an array with RecursiveArrayIterator.
+	 *
+	 * @param   mixed $values
+	 *
+	 * @return  bool TRUE|FALSE
 	 */
-	public function get_error_messages() {
+	protected function validate_by_key( $values ) {
 
-		$errors = [ ];
-		foreach ( $this->validators as $key => $validators ) {
+		$is_valid = TRUE;
+
+		if ( count( $this->validators_by_key ) < 1 ) {
+
+			return $is_valid;
+		}
+
+		foreach ( $values as $key => $value ) {
+			if ( ! is_scalar( $value ) || ! isset( $this->validators_by_key[ $key ] ) ) {
+				continue;
+			}
+
+			/** @var ValidatorInterface[] */
+			$validators = $this->validators_by_key[ $key ];
 			foreach ( $validators as $validator ) {
-				foreach ( $validator->get_error_messages() as $message ) {
-					$errors[ $key ] = $message;
+				$is_valid = $validator->is_valid( $value );
+
+				if ( ! $is_valid ) {
+					$this->error_messages[ $key ] = $validator->get_error_messages();
+					break;
 				}
+			}
+
+			if ( ! $is_valid ) {
+				break;
 			}
 		}
 
-		return $errors;
+		return $is_valid;
 	}
 
 }

@@ -39,6 +39,7 @@ Each Validator validates a value against a given configuration. Following Valida
 
 `Inpsyde\Validator\ArrayValue` allows you to map Validators to an array-key to validate the array-value.
 
+#### Validate By Array-Key
 ```php
 use Inpsyde\Validator as Validator;
 
@@ -48,11 +49,47 @@ $testee = [
 ];
 
 $validator = new Validator\ArrayValue();
-$validator->add_validator( 'key1', new Validator\NotEmpty() );
-$validator->add_validator( 'key2', new Validator\NotEmpty() );
+$validator->add_validator_by_key( new Validator\NotEmpty(), 'key1' );
+$validator->add_validator_by_key( new Validator\NotEmpty(), 'key2 );
 
 $validator->is_valid( $testee ); // FALSE
 $messages = $validator->get_error_messages(); // [ "key2" => "This value should not be empty." ]
+```
+
+#### Validate all Array-Values
+```php
+use Inpsyde\Validator as Validator;
+
+$testee = [
+    'key1' => 'value1',
+    'key2' => ''
+];
+
+$validator = new Validator\ArrayValue();
+$validator->add_validator( new Validator\NotEmpty() );
+
+$validator->is_valid( $testee ); // FALSE
+$messages = $validator->get_error_messages(); // [ "key2" => "This value should not be empty." ]
+```
+
+#### Mixed Validation
+```php
+use Inpsyde\Validator as Validator;
+
+$testee = [
+    'key1' => 'value1',
+    'key2' => 2
+];
+
+$validator = new Validator\ArrayValue();
+
+// validates, if all values are not empty
+$validator->add_validator( new Validator\NotEmpty() );
+
+// validates only the array-value of "key2".
+$validator->add_validator_by_key( new Validator\Between( [ 'min' => 1, 'max' => 3 ], 'key2' );
+
+$validator->is_valid( $testee ); // TRUE
 ```
 
 ### Between
