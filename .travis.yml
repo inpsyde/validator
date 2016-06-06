@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
@@ -20,7 +19,7 @@ before_install:
   - travis_retry composer self-update
 
 install:
-  - travis_retry composer dump-autoload --no-dev
+  - travis_retry composer dump-autoload
 
 before_script:
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-rm xdebug.ini; fi
