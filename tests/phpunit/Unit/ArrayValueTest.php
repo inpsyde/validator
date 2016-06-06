@@ -22,6 +22,35 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests the different input types and expected result.
+	 * 
+	 * @dataProvider provide__value_types
+	 */
+	public function test__invalid_value_type( $input, $expected ) {
+
+		$testee = new ArrayValue();
+		$this->assertEquals( $expected, $testee->is_valid( $input ) );
+	}
+
+	/**
+	 * Returns a dataSet of different input values with excepted result.
+	 *
+	 * @return array
+	 */
+	public function provide__value_types() {
+
+		return [
+			'valid_array'       => [ [ 'key' => 'value' ], TRUE ],
+			'valid_traversable_1' => [ $this->getMock( 'Traversable' ), TRUE ],
+			'valid_traversable_2' => [ $this->getMock( 'Iterator' ), TRUE ],
+			'string'            => [ '', FALSE ],
+			'int'               => [ 1, FALSE ],
+			'boolean'           => [ TRUE, FALSE ]
+		];
+
+	}
+
+	/**
 	 * Basic test with one validator to validate all array-values.
 	 */
 	public function test_basic_add_validator() {

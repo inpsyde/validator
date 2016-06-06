@@ -9,6 +9,15 @@ namespace Inpsyde\Validator;
  */
 class ArrayValue extends AbstractValidator {
 
+	const INVALID_TYPE = 'invalidType';
+
+	/**
+	 * @var array
+	 */
+	protected $message_templates = [
+		self::INVALID_TYPE => 'The given value <code>%value</code> is not an array or implements Traversable.'
+	];
+
 	/**
 	 * Contains a group of validators.
 	 *
@@ -67,13 +76,19 @@ class ArrayValue extends AbstractValidator {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_valid( $value ) {
+	public function is_valid( $values ) {
 
-		if ( ! $this->validate( $value ) ) {
+		if ( ! is_array( $values ) && ! $values instanceof \Traversable ) {
+			$this->set_error_message( self::INVALID_TYPE, $values );
+
 			return FALSE;
 		}
 
-		if ( ! $this->validate_by_key( $value ) ) {
+		if ( ! $this->validate( $values ) ) {
+			return FALSE;
+		}
+
+		if ( ! $this->validate_by_key( $values ) ) {
 			return FALSE;
 		}
 
