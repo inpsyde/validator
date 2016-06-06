@@ -37,7 +37,7 @@ Each Validator validates a value against a given configuration. Following Valida
 
 ### ArrayValue
 
-`Inpsyde\Validator\ArrayValue` allows you to map Validators to an array-key to validate the array-value.
+`Inpsyde\Validator\ArrayValue` allows you to map Validators to an array by key or validate all values of the given array.
 
 #### Validate By Array-Key
 ```php
@@ -50,7 +50,7 @@ $testee = [
 
 $validator = new Validator\ArrayValue();
 $validator->add_validator_by_key( new Validator\NotEmpty(), 'key1' );
-$validator->add_validator_by_key( new Validator\NotEmpty(), 'key2 );
+$validator->add_validator_by_key( new Validator\NotEmpty(), 'key2' );
 
 $validator->is_valid( $testee ); // FALSE
 $messages = $validator->get_error_messages(); // [ "key2" => "This value should not be empty." ]
