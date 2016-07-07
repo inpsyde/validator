@@ -14,53 +14,76 @@ namespace Inpsyde\Validator;
  * Class GreaterThan
  *
  * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class GreaterThan extends AbstractValidator {
+class GreaterThan implements ErrorAwareValidatorInterface {
 
-	const NOT_GREATER = 'notGreaterThan';
-	const NOT_GREATER_INCLUSIVE = 'notGreaterThanInclusive';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const NOT_GREATER = Error\ErrorLoggerInterface::NOT_GREATER;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const NOT_GREATER_INCLUSIVE = Error\ErrorLoggerInterface::NOT_GREATER_INCLUSIVE;
 
 	/**
 	 * @var array
+	 */
+	protected $options = [ ];
+
+	/**
+	 * @var array
+	 * @deprecated
 	 */
 	protected $message_templates = [
-		self::NOT_GREATER           => "The input <code>%value%</code> is not greater than <strong>'%min%'</strong>.",
-		self::NOT_GREATER_INCLUSIVE => "The input <code>%value%</code> is not greater or equal than <strong>'%min%'</strong>."
+		Error\ErrorLoggerInterface::NOT_GREATER           => "The input <code>%value%</code> is not greater than <strong>'%min%'</strong>.",
+		Error\ErrorLoggerInterface::NOT_GREATER_INCLUSIVE => "The input <code>%value%</code> is not greater or equal than <strong>'%min%'</strong>."
 	];
 
 	/**
-	 * @var array
+	 * @param array $options
 	 */
-	protected $options = [
-		'inclusive' => FALSE,
-		'min'       => 0,
-	];
+	public function __construct( array $options = [ ] ) {
+
+		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
+		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
+			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
+			: TRUE;
+
+		$this->options[ 'min' ] = ( isset( $options[ 'min' ] ) && is_numeric( $options[ 'min' ] ) )
+			? $options[ 'min' ]
+			: 0;
+
+		$this->input_data            = $this->options;
+		$this->input_data[ 'value' ] = NULL;
+	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function is_valid( $value ) {
 
-		$inclusive = (bool) $this->options[ 'inclusive' ];
-		$min       = $this->options[ 'min' ];
+		$this->input_data[ 'value' ] = $value;
 
-		if ( $inclusive ) {
-			if ( $min > $value ) {
-				$this->set_error_message( self::NOT_GREATER_INCLUSIVE, $value );
+		if ( ! is_numeric( $value ) ) {
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_NUMERIC;
 
-				return FALSE;
-			}
-		} else {
-			if ( $min >= $value ) {
-				$this->set_error_message( self::NOT_GREATER, $value );
-
-				return FALSE;
-			}
+			return FALSE;
 		}
 
-		return TRUE;
-	}
+		$inc   = $this->options[ 'inclusive' ];
+		$valid = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
+		$valid or $this->error_code = $inc
+			? Error\ErrorLoggerInterface::NOT_GREATER_INCLUSIVE
+			: Error\ErrorLoggerInterface::NOT_GREATER;
 
+		return $valid;
+	}
 }

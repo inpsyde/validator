@@ -14,38 +14,68 @@ namespace Inpsyde\Validator;
  * Class Date
  *
  * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Date extends AbstractValidator {
+class Date implements ErrorAwareValidatorInterface {
 
-	const INVALID_TYPE = 'invalidType';
-	const INVALID_DATE = 'invalidDate';
-	const INVALID_FORMAT = 'invalidFormat';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_TYPE = Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_DATE = Error\ErrorLoggerInterface::INVALID_DATE;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_FORMAT = Error\ErrorLoggerInterface::INVALID_DATE_FORMAT;
 
 	/**
 	 * @var array
+	 */
+	protected $options = [ ];
+
+	/**
+	 * @var array
+	 * @deprecated
 	 */
 	protected $message_templates = [
-		self::INVALID_TYPE   => "Invalid type given. String, integer, array or DateTime expected",
-		self::INVALID_DATE   => "The input does not appear to be a valid date",
-		self::INVALID_FORMAT => "The input does not fit the date format '%format%'",
+		Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE => "Invalid type given. String, integer, array or DateTime expected.",
+		Error\ErrorLoggerInterface::INVALID_DATE          => "The input does not appear to be a valid date",
+		Error\ErrorLoggerInterface::INVALID_DATE_FORMAT   => "The input does not fit the date format '%format%'",
 	];
 
 	/**
-	 * @var array
+	 * @param array $options
 	 */
-	protected $options = [
-		'format' => 'd.m.Y',
-	];
+	public function __construct( array $options = [ ] ) {
+
+		$this->options[ 'format' ] = isset( $options[ 'format' ] ) && is_string( $options[ 'format' ] )
+			? $options[ 'format' ]
+			: 'd.m.Y';
+
+		$this->input_data            = $this->options;
+		$this->input_data[ 'value' ] = NULL;
+
+	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function is_valid( $value ) {
 
-		if ( ! $this->convert_to_date_time( $value ) ) {
-			$this->set_error_message( self::INVALID_DATE, $value );
+		$this->input_data[ 'value' ] = $value;
+
+		if ( $this->convert_to_date_time( $value ) instanceof \DateTime ) {
+			$this->error_code or $this->error_code = Error\ErrorLoggerInterface::INVALID_DATE;
 
 			return FALSE;
 		}
@@ -66,16 +96,20 @@ class Date extends AbstractValidator {
 			return $value;
 		}
 
-		$type = gettype( $value );
-		if ( ! in_array( $type, [ 'string', 'integer', 'double', 'array' ] ) ) {
-			$this->set_error_message( self::INVALID_TYPE, $value );
-
-			return FALSE;
+		switch ( gettype( $value ) ) {
+			case 'string' :
+				return $this->convert_string( $value );
+			case 'integer' :
+				return $this->convert_integer( $value );
+			case 'double' :
+				return $this->convert_double( $value );
+			case 'array' :
+				return $this->convert_array( $value );
 		}
 
-		$convertMethod = 'convert_' . $type;
+		$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE;
 
-		return $this->{$convertMethod}( $value );
+		return FALSE;
 	}
 
 	/**
@@ -113,11 +147,11 @@ class Date extends AbstractValidator {
 
 		$format = $this->options[ 'format' ];
 		$date   = \DateTime::createFromFormat( $format, $value );
-		// Invalid dates can show up as warnings (ie. "2007-02-99")
-		// and still return a DateTime object.
+
+		// Invalid dates can show up as warnings (ie. "2007-02-99") and still return a DateTime object.
 		$errors = \DateTime::getLastErrors();
 		if ( $errors[ 'warning_count' ] > 0 ) {
-			$this->set_error_message( self::INVALID_FORMAT, $value );
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE;
 
 			return FALSE;
 		}
