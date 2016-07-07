@@ -1,11 +1,21 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator;
 
 /**
  * Interface ValidatorInterface
  *
- * @package Inpsyde\Validator
+ * @author  Christian Brückner <chris@chrico.info>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
 interface ValidatorInterface {
 
@@ -27,7 +37,7 @@ interface ValidatorInterface {
 	 * call returned false.
 	 *
 	 * If is_valid() was never called or if the most recent is_valid() call
-	 * returned true, then this method returns an empty string.
+	 * returned true, then this method returns an empty array.
 	 *
 	 * @return  array
 	 */
