@@ -27,11 +27,13 @@ function load_translations( $path = '' ) {
 	$domain = 'inpsyde-validator';
 
 	// Filter the .mo path
-	$path = apply_filters( 'inpsyde-validator.translation_path', '' );
+	$path = apply_filters( $domain . '.translation_path', $path );
 
 	// If user provides a path to a .mo file, just loads it
 	if ( is_file( $path ) && strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) === 'mo' ) {
-		load_textdomain( 'inpsyde-validator', $path );
+		$done[ 0 ] = load_textdomain( $domain, $path );
+
+		return $done[ 0 ];
 	}
 
 	// Build .mo file name
@@ -42,7 +44,7 @@ function load_translations( $path = '' ) {
 		? $path
 		: dirname( __DIR__ ) . '/languages';
 
-	$done[ 0 ] = load_textdomain( 'inpsyde-validator', trailingslashit( $folder ) . $file );
+	$done[ 0 ] = load_textdomain( $domain, trailingslashit( $folder ) . $file );
 
 	return $done[ 0 ];
 }
