@@ -11,11 +11,14 @@
 namespace Inpsyde\Validator;
 
 /**
- * Class AbstractValidator
+ * Class AbstractValidator.
+ *
+ * Deprecated, will be removed in future versions.
  *
  * @author  Christian Brückner <chris@chrico.info>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
+ * @deprecated
  */
 abstract class AbstractValidator implements ValidatorInterface {
 
