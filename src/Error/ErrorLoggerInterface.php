@@ -51,11 +51,17 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	public function log_error( $error_code, $error_message = NULL );
 
 	/**
-	 *  Returns an array of all error messages logged. Empty array if no error was logged.
+	 * Returns an array of logged error messages.
+	 * If no code is provided, must return all messages, otherwise just the messages for the given code.
+	 * Return empty array if no error was logged at all, or if no error was logged for given code.
 	 *
-	 * @return string[]
+	 * @param string|null $error_code
+	 *
+	 * @return \string[]
+	 *
+	 * @throws \InvalidArgumentException If given error code is provided and invalid.
 	 */
-	public function get_error_messages();
+	public function get_error_messages( $error_code = NULL );
 
 	/**
 	 *  Returns an array of all message codes logged. Empty array if no error was logged.

@@ -52,10 +52,16 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function get_error_messages() {
+	public function get_error_messages( $error_code = NULL ) {
 
 		if ( empty( $this->errors ) ) {
 			return [ ];
+		}
+
+		if ( ! is_null( $error_code ) ) {
+			$this->check_error_code( $error_code );
+			
+			return isset( $this->errors[ $error_code ] ) ? $this->errors[ $error_code ] : [ ];
 		}
 
 		return array_reduce(
