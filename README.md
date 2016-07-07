@@ -260,7 +260,7 @@ $options = [
 ];
 $validator = new Between( $options, $message_templates );
 $validator->is_valid( 4 ); // FALSE
-$messages = $validator->get_error_messages(); // [ "4 not between 1 and 3" ]
+$messages = $validator->get_error_messages(); // [ "4 is not between 1 and 3" ]
 ```
 
 
