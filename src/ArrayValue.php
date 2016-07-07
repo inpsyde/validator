@@ -14,19 +14,34 @@ namespace Inpsyde\Validator;
  * Class ArrayValue
  *
  * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
+ * @deprecated Use DataValidator instead
  */
-class ArrayValue extends AbstractValidator {
+class ArrayValue implements ErrorAwareValidatorInterface {
 
-	const INVALID_TYPE = 'invalidType';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_TYPE = Error\ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE;
 
 	/**
 	 * @var array
+	 * @deprecated
 	 */
 	protected $message_templates = [
-		self::INVALID_TYPE => 'The given value <code>%value</code> is not an array or implements Traversable.'
+		Error\ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE => 'The given value <code>%value</code> is not an array or implements Traversable.'
 	];
+
+	/**
+	 * @var array
+	 * @deprecated
+	 */
+	protected $error_messages = [];
 
 	/**
 	 * Contains a group of validators.
@@ -48,6 +63,8 @@ class ArrayValue extends AbstractValidator {
 	 * @param ValidatorInterface $validator
 	 *
 	 * @return ArrayValue
+	 *
+	 * @deprecated Please use DataValidator::add_validator_by_key() instead
 	 */
 	public function add_validator( ValidatorInterface $validator ) {
 
@@ -65,6 +82,8 @@ class ArrayValue extends AbstractValidator {
 	 * @param                    $key
 	 *
 	 * @return ArrayValue
+	 *
+	 * @deprecated Please use DataValidator::add_validator_by_key() instead
 	 */
 	public function add_validator_by_key( ValidatorInterface $validator, $key ) {
 
@@ -84,12 +103,18 @@ class ArrayValue extends AbstractValidator {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @deprecated Please use DataValidator::is_valid() instead
+	 *
+	 * @param array|\Traversable $values
+	 *
+	 * @return bool
 	 */
 	public function is_valid( $values ) {
 
+		$this->input_data = [ 'value' => $values ];
+
 		if ( ! is_array( $values ) && ! $values instanceof \Traversable ) {
-			$this->set_error_message( self::INVALID_TYPE, $values );
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE;
 
 			return FALSE;
 		}
@@ -117,9 +142,11 @@ class ArrayValue extends AbstractValidator {
 		$is_valid = TRUE;
 
 		foreach ( $values as $key => $value ) {
+
 			if ( ! is_scalar( $value ) ) {
 				continue;
 			}
+
 			foreach ( $this->validators as $validator ) {
 				$is_valid = $validator->is_valid( $value );
 
@@ -160,7 +187,7 @@ class ArrayValue extends AbstractValidator {
 				continue;
 			}
 
-			/** @var ValidatorInterface[] */
+			/** @var $validators ValidatorInterface[] */
 			$validators = $this->validators_by_key[ $key ];
 			foreach ( $validators as $validator ) {
 				$is_valid = $validator->is_valid( $value );
