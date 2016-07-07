@@ -13,9 +13,9 @@ namespace Inpsyde\Validator;
 /**
  * Interface ValidatorInterface
  *
- * The unique method of this interface should go in the `ValidatorInterface`, however, for backward compatibility
- * we can't just add a method to existing interface, or any custom validator out there will immediately break.
- * In next major release, we can deprecate this interface and move `get_error_code()` to `ValidatorInterface`.
+ * The methods of this interface should go in the `ValidatorInterface`, however, for backward compatibility
+ * we can't just add methods to an existing interface or any custom validator out there will immediately break.
+ * In next major release, we can deprecate this interface and move its methods to `ValidatorInterface`.
  * Finally, a major release after, we can remove this interface for good.
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
@@ -30,5 +30,12 @@ interface ErrorAwareValidatorInterface extends ValidatorInterface {
 	 * @return string
 	 */
 	public function get_error_code();
+
+	/**
+	 * Return the input data that can be used to provide information on the error.
+	 *
+	 * @return array
+	 */
+	public function get_input_data();
 
 }

@@ -10,6 +10,8 @@
 
 namespace Inpsyde\Validator\Error;
 
+use Inpsyde\Validator\ErrorAwareValidatorInterface;
+
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @license http://opensource.org/licenses/MIT MIT
@@ -33,18 +35,115 @@ class ErrorLogger implements ErrorLoggerInterface {
 	private $last_error = '';
 
 	/**
+	 * Constructor.
+	 *
+	 * @param string[] $messages An array of messages to replace default ones.
+	 */
+	public function __construct( array $messages = [ ] ) {
+
+		$default = [
+			self::INVALID_TYPE_NON_STRING      => __(
+				'Invalid type given for <code>%value%</code>. String expected.',
+				'inpsyde-validator'
+			),
+			self::INVALID_TYPE_NON_NUMERIC     => __(
+				'Invalid type given for <code>%value%</code>. Integer or float expected.',
+				'inpsyde-validator'
+			),
+			self::INVALID_TYPE_NON_SCALAR      => __(
+				'Invalid type given for <code>%value%</code>. String, integer or float expected.',
+				'inpsyde-validator'
+			),
+			self::INVALID_TYPE_NON_TRAVERSABLE => __(
+				'Invalid type given for <code>%value%</code>. Array or object implementing Traversable expected.',
+				'inpsyde-validator'
+			),
+			self::INVALID_TYPE_NON_DATE        => __(
+				'Invalid type given for <code>%value%</code>. String, integer, array or DateTime expected.',
+				'inpsyde-validator'
+			),
+			self::NOT_BETWEEN                  => __(
+				'The input <code>%value%</code> is not between <code>%min%</code> and <code>%max%</code>, inclusively.',
+				'inpsyde-validator'
+			),
+			self::NOT_BETWEEN_STRICT           => __(
+				'The input <code>%value%</code> is not strictly between <code>%min%</code> and <code>%max%</code>.',
+				'inpsyde-validator'
+			),
+			self::INVALID_DATE                 => __(
+				'The input <code>%value%</code> does not appear to be a valid date.',
+				'inpsyde-validator'
+			),
+			self::INVALID_DATE_FORMAT          => __(
+				'The input <code>%value%</code> does not fit the date format <code>%format%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_GREATER                  => __(
+				'The input <code>%value%</code> is not greater than <code>%min%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_GREATER_INCLUSIVE        => __(
+				'The input <code>%value%</code> is not greater or equal than <code>%min%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_IN_ARRAY                 => __(
+				'The input <code>%value%</code> is not in the haystack: <code>%haystack%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_LESS                     => __(
+				'The input <code>%value%</code> is not less than <code>%max%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_LESS_INCLUSIVE           => __(
+				'The input <code>%value%</code> is not less or equal than <code>%max%</code>.',
+				'inpsyde-validator'
+			),
+			self::IS_EMPTY                     => __(
+				'This value should not be empty.',
+				'inpsyde-validator'
+			),
+			self::NOT_MATCH                    => __(
+				'The input does not match against pattern <code>%pattern%</code>.',
+				'inpsyde-validator'
+			),
+			self::REGEX_INTERNAL_ERROR         => __(
+				'There was an internal error while using the pattern <code>%pattern%</code>.',
+				'inpsyde-validator'
+			),
+			self::NOT_URL                      => __(
+				'The input <code>%value%</code> is not a valid URL.',
+				'inpsyde-validator'
+			),
+			self::INVALID_DNS                  => __(
+				'The host for the given input <code>%value%</code> could not be resolved.',
+				'inpsyde-validator'
+			),
+			self::MULTIPLE_ERRORS              => __(
+				'The host for the given input <code>%value%</code> could not be resolved.',
+				'inpsyde-validator'
+			),
+		];
+
+		$this->messages = array_merge( $default, array_filter( $messages, 'is_string' ) );
+	}
+
+	/**
 	 * @inheritdoc
 	 */
-	public function log_error( $error_code, $error_message = NULL ) {
+	public function log_error( ErrorAwareValidatorInterface $validator, $error_template = NULL ) {
 
-		$this->check_error_code( $error_code );
-		is_null( $error_message )
-			? $this->check_error_message( $error_message )
-			: $error_message = $this->messages[ $error_code ];
+		$code = $validator->get_error_code();
 
-		isset( $this->errors[ $error_code ] ) or $this->errors[ $error_code ] = [ ];
-		$this->errors[ $error_code ][] = $error_message;
-		$this->last_error              = $error_message;
+		$this->check_error_code( $code );
+		is_null( $error_template )
+			? $this->check_error_template( $error_template )
+			: $error_template = $this->messages[ $code ];
+
+		$error_message = $this->build_message( $validator, $error_template );
+
+		isset( $this->errors[ $code ] ) or $this->errors[ $code ] = [ ];
+		$this->errors[ $code ][] = $error_message;
+		$this->last_error        = $error_message;
 
 		return $this;
 	}
@@ -60,7 +159,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		if ( ! is_null( $error_code ) ) {
 			$this->check_error_code( $error_code );
-			
+
 			return isset( $this->errors[ $error_code ] ) ? $this->errors[ $error_code ] : [ ];
 		}
 
@@ -111,12 +210,12 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function use_error_message( $error_code, $custom_message ) {
+	public function use_error_template( $error_code, $error_template ) {
 
 		$this->check_error_code( $error_code );
-		$this->check_error_message( $custom_message );
+		$this->check_error_template( $error_template );
 
-		$this->messages[ $error_code ] = $custom_message;
+		$this->messages[ $error_code ] = $error_template;
 	}
 
 	/**
@@ -153,14 +252,81 @@ class ErrorLogger implements ErrorLoggerInterface {
 	}
 
 	/**
-	 * @param string $message
+	 * @param string $template
 	 */
-	private function check_error_message( $message ) {
+	private function check_error_template( $template ) {
 
-		if ( ! is_string( $message ) ) {
+		if ( ! is_string( $template ) ) {
 			throw new \InvalidArgumentException(
-				sprintf( 'Error message must be in a string, %s given.', gettype( $message ) )
+				sprintf( 'Error message must be in a string, %s given.', gettype( $template ) )
 			);
 		}
+	}
+
+	/**
+	 * @param ErrorAwareValidatorInterface $validator
+	 *
+	 * @param                              $error_template
+	 *
+	 * @return string
+	 */
+	private function build_message( ErrorAwareValidatorInterface $validator, $error_template ) {
+
+		if ( ! substr_count( $error_template, '%' ) ) {
+			return $error_template;
+		}
+
+		$input_data = (array) $validator->get_input_data();
+
+		if ( ! isset( $input_data[ 'value' ] ) ) {
+
+			return vsprintf( $error_template, array_map( [ $this, 'as_string' ], $input_data ) );
+		}
+
+		// replacing the placeholder for the %value%
+		$message = str_replace( '%value%', $this->as_string( $input_data[ 'value' ] ), $error_template );
+
+		unset( $input_data[ 'value' ] );
+
+		// replacing the possible options-placeholder on the message
+		foreach ( $input_data as $key => $replace ) {
+			is_numeric( $key ) or $message = str_replace( '%' . $key . '%', $this->as_string( $replace ), $message );
+		}
+
+		return $message;
+
+	}
+
+	/**
+	 * Returns a string representation of any value.
+	 *
+	 * @param   mixed $value
+	 *
+	 * @return  string $type
+	 */
+	private function as_string( $value ) {
+
+		if ( is_object( $value ) && method_exists( $value, '__toString' ) ) {
+			$value = (string) $value;
+		}
+
+		if ( is_string( $value ) ) {
+			return $value;
+		} elseif ( is_null( $value ) ) {
+			return 'NULL';
+		} elseif ( is_bool( $value ) ) {
+			return $value ? '(boolean) TRUE' : '(boolean) FALSE';
+		}
+
+		if ( is_object( $value ) ) {
+			$value = get_class( $value );
+		} elseif ( is_array( $value ) ) {
+			$type  = '';
+			$value = var_export( $value, TRUE );
+		}
+
+		isset( $type ) or $type = '(' . gettype( $value ) . ') ';
+
+		return $type . (string) $value;
 	}
 }

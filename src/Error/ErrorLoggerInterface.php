@@ -10,6 +10,8 @@
 
 namespace Inpsyde\Validator\Error;
 
+use Inpsyde\Validator\ErrorAwareValidatorInterface;
+
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @license http://opensource.org/licenses/MIT MIT
@@ -18,13 +20,15 @@ namespace Inpsyde\Validator\Error;
 interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 
 	const INVALID_TYPE_NON_STRING = 'invalid_type_non_string';
+	const INVALID_TYPE_NON_NUMERIC = 'invalid_type_non_numeric';
 	const INVALID_TYPE_NON_SCALAR = 'invalid_type_non_scalar';
 	const INVALID_TYPE_NON_ARRAY = 'invalid_type_non_array';
 	const INVALID_TYPE_NON_TRAVERSABLE = 'invalid_type_non_traversable';
+	const INVALID_TYPE_NON_DATE = 'invalid_type_non_date';
 	const NOT_BETWEEN = 'not_between';
 	const NOT_BETWEEN_STRICT = 'not_between_strict';
 	const INVALID_DATE = 'invalid_date';
-	const INVALID_FORMAT = 'invalid_format';
+	const INVALID_DATE_FORMAT = 'invalid_date_format';
 	const NOT_GREATER = 'not_greater_than';
 	const NOT_GREATER_INCLUSIVE = 'not_greater_than_inclusive';
 	const NOT_IN_ARRAY = 'not_in_array';
@@ -33,22 +37,24 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	const IS_EMPTY = 'is_empty';
 	const NOT_MATCH = 'not_match';
 	const REGEX_INTERNAL_ERROR = 'regex_internal';
-	const NOT_URL = 'notURL';
+	const NOT_URL = 'not_url';
 	const INVALID_DNS = 'invalid_dns';
+	const MULTIPLE_ERRORS = 'multiple_errors';
 
 	/**
 	 * Logs an error.
 	 *
 	 * If no custom message is provided, a default one have to be used.
 	 *
-	 * @param string      $error_code One of the interface constants.
-	 * @param string|null $error_message
+	 * @param ErrorAwareValidatorInterface $validator
+	 * @param string|null                  $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 *
-	 * @throws \InvalidArgumentException If given error code is invalid or custom message is not a string.
+	 * @internal param string $error_code One of the interface constants.
+	 * @internal param array $error_data
 	 */
-	public function log_error( $error_code, $error_message = NULL );
+	public function log_error( ErrorAwareValidatorInterface $validator, $error_template = NULL );
 
 	/**
 	 * Returns an array of logged error messages.
@@ -90,12 +96,12 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 * Useful to set a custom default message for all errors of a specific code.
 	 *
 	 * @param string $error_code
-	 * @param string $custom_message
+	 * @param string $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 *
 	 * @throws \InvalidArgumentException If given error code is invalid or custom message is not a string.
 	 */
-	public function use_error_message( $error_code, $custom_message );
+	public function use_error_template( $error_code, $error_template );
 
 }
