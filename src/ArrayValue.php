@@ -172,6 +172,8 @@ class ArrayValue implements ErrorAwareValidatorInterface {
 	 * @param   mixed $values
 	 *
 	 * @return  bool TRUE|FALSE
+	 *
+	 * @deprecated
 	 */
 	protected function validate_by_key( $values ) {
 
