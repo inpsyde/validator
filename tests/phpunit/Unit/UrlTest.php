@@ -42,7 +42,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider provide__basic_data
 	 *
 	 * @param string $input
-	 * @param bool $expect
+	 * @param bool   $expect
 	 *
 	 * @return void
 	 */

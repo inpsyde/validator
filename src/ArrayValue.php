@@ -13,10 +13,10 @@ namespace Inpsyde\Validator;
 /**
  * Class ArrayValue
  *
- * @author  Christian Brückner <chris@chrico.info>
- * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
- * @package inpsyde-validator
- * @license http://opensource.org/licenses/MIT MIT
+ * @author     Christian Brückner <chris@chrico.info>
+ * @author     Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package    inpsyde-validator
+ * @license    http://opensource.org/licenses/MIT MIT
  * @deprecated Use DataValidator instead
  */
 class ArrayValue implements ErrorAwareValidatorInterface {
@@ -41,7 +41,7 @@ class ArrayValue implements ErrorAwareValidatorInterface {
 	 * @var array
 	 * @deprecated
 	 */
-	protected $error_messages = [];
+	protected $error_messages = [ ];
 
 	/**
 	 * Contains a group of validators.

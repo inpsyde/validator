@@ -40,16 +40,26 @@ class RegExTest extends \PHPUnit_Framework_TestCase {
 	public function provide__basic() {
 
 		return [
-			"chars_valid"   => [
+			"chars_valid"              => [
 				'/[a-z]/',
 				TRUE,
 				[ 'abc123', 'foo', 'a', 'z' ]
 			],
-			"chars_invalid" => [
+			"chars_invalid"            => [
 				'/[a-z]/',
 				FALSE,
 				[ '123', 'A' ]
-			]
+			],
+			"chars_valid_add_boundary" => [
+				'[a-z]',
+				TRUE,
+				[ 'abc123', 'foo', 'a', 'z' ]
+			],
+			"chars_valid_bad_pattern"  => [
+				'/[a-z]',
+				FALSE,
+				[ 'abc123', 'foo', 'a', 'z' ]
+			],
 		];
 	}
 

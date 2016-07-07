@@ -43,7 +43,7 @@ class ValidatorFactory {
 	 *
 	 * @throws Exception\InvalidArgumentException if validator of given $type is not found.
 	 *
-	 * @return ValidatorInterface
+	 * @return ValidatorInterface|ErrorAwareValidatorInterface
 	 */
 	public function create( $type, array $properties = [ ] ) {
 

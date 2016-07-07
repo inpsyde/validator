@@ -118,9 +118,9 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 		/** @var \Inpsyde\Validator\ValidatorInterface */
 		$stub = $this->create_stub();
 		$stub->expects( $this->any() )
-		     ->method( 'is_valid' )
-		     ->with( $value )
-		     ->will( $this->returnValue( FALSE ) );
+			->method( 'is_valid' )
+			->with( $value )
+			->will( $this->returnValue( FALSE ) );
 
 		$this->assertFalse( $stub->is_valid( $value ) );
 	}
