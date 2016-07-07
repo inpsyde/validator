@@ -56,13 +56,8 @@ class Between implements ErrorAwareValidatorInterface {
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
 			: TRUE;
 
-		$this->options[ 'min' ] = ( isset( $options[ 'min' ] ) && is_numeric( $options[ 'min' ] ) )
-			? $options[ 'min' ]
-			: 0;
-
-		$this->options[ 'max' ] = ( isset( $options[ 'max' ] ) && is_numeric( $options[ 'max' ] ) )
-			? $options[ 'max' ]
-			: PHP_INT_MAX;
+		$this->options[ 'min' ] = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
+		$this->options[ 'max' ] = isset( $options[ 'max' ] ) ? $options[ 'max' ] : PHP_INT_MAX;
 
 		$this->input_data            = $this->options;
 		$this->input_data[ 'value' ] = NULL;
@@ -74,15 +69,8 @@ class Between implements ErrorAwareValidatorInterface {
 	public function is_valid( $value ) {
 
 		$this->input_data[ 'value' ] = $value;
-
-		if ( ! is_numeric( $value ) ) {
-			$this->error_code = ErrorLoggerInterface::INVALID_TYPE_NON_NUMERIC;
-
-			return FALSE;
-		}
-
-		$inc = $this->options[ 'inclusive' ];
-		$ok  = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
+		$inc                         = $this->options[ 'inclusive' ];
+		$ok                          = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
 		$ok and $ok = $inc ? $value <= $this->options[ 'max' ] : $value < $this->options[ 'max' ];
 		$ok or $this->error_code = $inc ? ErrorLoggerInterface::NOT_BETWEEN_STRICT : ErrorLoggerInterface::NOT_BETWEEN;
 

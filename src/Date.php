@@ -74,7 +74,7 @@ class Date implements ErrorAwareValidatorInterface {
 
 		$this->input_data[ 'value' ] = $value;
 
-		if ( $this->convert_to_date_time( $value ) instanceof \DateTime ) {
+		if ( ! $this->convert_to_date_time( $value ) instanceof \DateTimeInterface ) {
 			$this->error_code or $this->error_code = Error\ErrorLoggerInterface::INVALID_DATE;
 
 			return FALSE;
@@ -92,7 +92,7 @@ class Date implements ErrorAwareValidatorInterface {
 	 */
 	protected function convert_to_date_time( $value ) {
 
-		if ( $value instanceof \DateTime || $value instanceof \DateTimeInterface ) {
+		if ( $value instanceof \DateTimeInterface ) {
 			return $value;
 		}
 

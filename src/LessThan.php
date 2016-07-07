@@ -55,12 +55,9 @@ class LessThan implements ErrorAwareValidatorInterface {
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
 		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
-			: TRUE;
+			: FALSE;
 
-		$this->options[ 'max' ] = ( isset( $options[ 'max' ] ) && is_numeric( $options[ 'max' ] ) )
-			? $options[ 'max' ]
-			: PHP_INT_MAX;
-
+		$this->options[ 'max' ]      = isset( $options[ 'max' ] ) ? $options[ 'max' ] : 0;
 		$this->input_data            = $this->options;
 		$this->input_data[ 'value' ] = NULL;
 	}
@@ -71,12 +68,6 @@ class LessThan implements ErrorAwareValidatorInterface {
 	public function is_valid( $value ) {
 
 		$this->input_data[ 'value' ] = $value;
-
-		if ( ! is_numeric( $value ) ) {
-			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_NUMERIC;
-
-			return FALSE;
-		}
 
 		$inc   = $this->options[ 'inclusive' ];
 		$valid = $inc ? $value <= $this->options[ 'max' ] : $value < $this->options[ 'max' ];

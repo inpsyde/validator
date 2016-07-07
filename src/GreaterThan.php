@@ -55,12 +55,9 @@ class GreaterThan implements ErrorAwareValidatorInterface {
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
 		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
-			: TRUE;
+			: FALSE;
 
-		$this->options[ 'min' ] = ( isset( $options[ 'min' ] ) && is_numeric( $options[ 'min' ] ) )
-			? $options[ 'min' ]
-			: 0;
-
+		$this->options[ 'min' ]      = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
 		$this->input_data            = $this->options;
 		$this->input_data[ 'value' ] = NULL;
 	}
@@ -71,12 +68,6 @@ class GreaterThan implements ErrorAwareValidatorInterface {
 	public function is_valid( $value ) {
 
 		$this->input_data[ 'value' ] = $value;
-
-		if ( ! is_numeric( $value ) ) {
-			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_NUMERIC;
-
-			return FALSE;
-		}
 
 		$inc   = $this->options[ 'inclusive' ];
 		$valid = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];

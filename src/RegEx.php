@@ -59,12 +59,9 @@ class RegEx implements ErrorAwareValidatorInterface {
 	public function __construct( array $options = [ ] ) {
 
 		$pattern = isset( $options[ 'pattern' ] ) && is_string( $options[ 'pattern' ] ) ? $options[ 'pattern' ] : '';
-		$first   = $pattern ? substr( $this->options[ 'pattern' ], 0, 1 ) : '';
-		$last    = $pattern ? substr( $this->options[ 'pattern' ], - 1, 1 ) : '';
-
-		if ( $first && ( $first !== $last || strlen( $this->options[ 'pattern' ] ) === 1 ) ) {
-			$pattern = "~{$pattern}~";
-		}
+		$first   = $pattern ? substr( $pattern, 0, 1 ) : '';
+		$last    = $pattern ? substr( $pattern, - 1, 1 ) : '';
+		( $first && ( $first !== $last || strlen( $pattern ) === 1 ) ) and $pattern = "~{$pattern}~";
 
 		$this->options[ 'pattern' ]  = $pattern;
 		$this->input_data            = $this->options;
