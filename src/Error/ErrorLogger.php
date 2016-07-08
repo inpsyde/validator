@@ -107,9 +107,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			$this->errors,
 			function ( array $messages, array $code_errors ) {
 
-				foreach ( $code_errors as $error ) {
-					$messages[] = $error;
-				}
+				return array_merge( $messages, $code_errors );
 			},
 			[ ]
 		);
@@ -168,7 +166,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		foreach ( $codes as $code ) {
 
-			if ( ! defined( "static::{$code}" ) ) {
+			if ( ! array_key_exists( $code, $this->messages ) ) {
 				continue;
 			}
 
@@ -184,7 +182,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	 */
 	public function count() {
 
-		return array_sum( array_count_values( $this->errors ) );
+		return array_sum( array_map( 'count', $this->errors ) );
 	}
 
 	/**
