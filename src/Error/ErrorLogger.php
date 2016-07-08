@@ -221,6 +221,27 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
+	public function merge( ErrorLoggerInterface $logger ) {
+
+		$merged = clone $this;
+		$codes  = $logger->get_error_codes();
+
+		foreach ( $codes as $code ) {
+
+			if ( ! defined( "static::{$code}" ) ) {
+				continue;
+			}
+
+			isset( $merged->errors[ $code ] ) or $merged->errors[ $code ] = [ ];
+			$merged->errors[ $code ] = array_merge( $merged->errors[ $code ], $logger->get_error_messages( $code ) );
+		}
+
+		return $merged;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function count() {
 
 		return array_sum( array_count_values( $this->errors ) );
@@ -265,7 +286,6 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 	/**
 	 * @param ExtendedValidatorInterface   $validator
-	 *
 	 * @param                              $error_template
 	 *
 	 * @return string

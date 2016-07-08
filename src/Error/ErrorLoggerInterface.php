@@ -50,9 +50,6 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 * @param string|null                $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
-	 *
-	 * @internal param string $error_code One of the interface constants.
-	 * @internal param array $error_data
 	 */
 	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL );
 
@@ -103,5 +100,16 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 * @throws \InvalidArgumentException If given error code is invalid or custom message is not a string.
 	 */
 	public function use_error_template( $error_code, $error_template );
+
+	/**
+	 * Return an instance of ErrorLoggerInterface that contains all information from current logger
+	 * and the logger provided as argument.
+	 * The method should be implemented to keep object immutability.
+	 *
+	 * @param ErrorLoggerInterface $logger
+	 *
+	 * @return ErrorLoggerInterface
+	 */
+	public function merge( ErrorLoggerInterface $logger );
 
 }
