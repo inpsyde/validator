@@ -17,7 +17,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-interface MultiValidatorInterface extends ValidatorInterface, \Countable {
+interface MultiValidatorInterface extends ExtendedValidatorInterface, \Countable {
 
 	/**
 	 * Adds a "leaf" validator to the stack.
@@ -44,6 +44,6 @@ interface MultiValidatorInterface extends ValidatorInterface, \Countable {
 	 *
 	 * @return array[]
 	 */
-	public function get_error_data( $error_code = null );
+	public function get_error_data( $error_code = NULL );
 
 }
