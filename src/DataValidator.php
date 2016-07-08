@@ -144,6 +144,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function count() {
 
+		return array_sum( array_map( 'count', $this->validators ) );
 	}
 
 	/**
