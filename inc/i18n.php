@@ -27,7 +27,7 @@ function load_translations( $path = '' ) {
 	$domain = 'inpsyde-validator';
 
 	// Filter the .mo path
-	$path = apply_filters( 'inpsyde-validator.translation_path', '' );
+	$path = apply_filters( 'inpsyde-validator.translation_path', $path );
 
 	// If user provides a path to a .mo file, just loads it
 	if ( is_file( $path ) && strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) === 'mo' ) {
