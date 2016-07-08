@@ -48,7 +48,8 @@ trait GetErrorMessagesTrait {
 
 		/** @var ExtendedValidatorInterface $this */
 
-		$logger = ( new Error\ErrorLogger() )
+		$logger = ( new Error\ErrorLoggerFactory() )
+			->get_logger()
 			->log_error( $this );
 
 		return [ $logger->get_last_message( $this->get_error_code() ) ];

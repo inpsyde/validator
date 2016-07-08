@@ -10,6 +10,7 @@
 
 namespace Inpsyde\Validator;
 
+use Inpsyde\Validator\Error\ErrorLoggerFactory;
 use Inpsyde\Validator\Error\ErrorLoggerInterface;
 
 /**
@@ -21,7 +22,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 
 	use ValidatorDataGetterTrait;
 
-	const GENERIC_VALIDATOR_KEY = -1;
+	const GENERIC_VALIDATOR_KEY = - 1;
 
 	/**
 	 * @var Error\ErrorLoggerInterface
@@ -46,10 +47,10 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	/**
 	 * @param Error\ErrorLoggerInterface $error_logger
 	 */
-	public function __construct( Error\ErrorLoggerInterface $error_logger ) {
+	public function __construct( Error\ErrorLoggerInterface $error_logger = NULL ) {
 
 		$this->validator_factory = new ValidatorFactory();
-		$this->error_logger      = $error_logger;
+		$this->error_logger      = $error_logger ? : ( new ErrorLoggerFactory() )->get_logger();
 	}
 
 	/**
@@ -164,7 +165,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 		$valid = TRUE;
 
 		/** @var \SplObjectStorage $generic */
-		$generic = isset( $this->validators[ self::GENERIC_VALIDATOR_KEY] )
+		$generic = isset( $this->validators[ self::GENERIC_VALIDATOR_KEY ] )
 			? $this->validators[ self::GENERIC_VALIDATOR_KEY ]
 			: [ ];
 

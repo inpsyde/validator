@@ -29,7 +29,7 @@ interface ValidatorInterface {
 	public function is_valid( $value );
 
 	/**
-	 * @deprecated Messages are now managed via the `Error\ErrorLogger` class.
+	 * @deprecated Messages are now managed via the `Error\WordPressErrorLogger` class.
 	 *
 	 * @return array
 	 */
