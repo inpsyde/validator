@@ -21,6 +21,8 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 
 	use ValidatorDataGetterTrait;
 
+	const GENERIC_VALIDATOR_KEY = -1;
+
 	/**
 	 * @var Error\ErrorLoggerInterface
 	 */
@@ -66,7 +68,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function add_validator( ExtendedValidatorInterface $validator ) {
 
-		return $this->add_validator_to_stack( $validator, - 1 );
+		return $this->add_validator_to_stack( $validator, self::GENERIC_VALIDATOR_KEY );
 	}
 
 	/**
@@ -162,14 +164,16 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 		$valid = TRUE;
 
 		/** @var \SplObjectStorage $generic */
-		$generic = isset( $this->validators[ - 1 ] ) ? $this->validators[ - 1 ] : [ ];
+		$generic = isset( $this->validators[ self::GENERIC_VALIDATOR_KEY] )
+			? $this->validators[ self::GENERIC_VALIDATOR_KEY ]
+			: [ ];
 
 		foreach ( $value as $item ) {
 			$valid = $this->validate_validators( $generic, $item ) && $valid;
 		}
 
 		foreach ( $this->validators as $key => $validators ) {
-			if ( $key !== - 1 ) {
+			if ( $key !== self::GENERIC_VALIDATOR_KEY ) {
 				$to_validate = isset( $value[ $key ] ) ? $value[ $key ] : NULL;
 				$valid       = $this->validate_validators( $validators, $to_validate, $key ) && $valid;
 			}
