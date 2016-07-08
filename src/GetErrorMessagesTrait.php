@@ -24,14 +24,14 @@ trait GetErrorMessagesTrait {
 
 	/**
 	 * @see ValidatorInterface::get_error_messages()
-	 * @see ErrorAwareValidatorInterface::get_error_code()
+	 * @see ExtendedValidatorInterface::get_error_code()
 	 * @see ErrorLogger::log_error()
 	 * @see ErrorLogger::get_last_message()
 	 * @return array
 	 */
 	public function get_error_messages() {
 
-		if ( $this instanceof ErrorAwareInterface ) {
+		if ( $this instanceof ExtendedValidatorInterface ) {
 			return [ ];
 		}
 
@@ -46,7 +46,7 @@ trait GetErrorMessagesTrait {
 			);
 		}
 
-		/** @var ErrorAwareInterface $this */
+		/** @var ExtendedValidatorInterface $this */
 
 		$logger = ( new Error\ErrorLogger() )
 			->log_error( $this );

@@ -10,7 +10,7 @@
 
 namespace Inpsyde\Validator\Error;
 
-use Inpsyde\Validator\ErrorAwareInterface;
+use Inpsyde\Validator\ExtendedValidatorInterface;
 
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
@@ -46,15 +46,15 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 *
 	 * If no custom message is provided, a default one have to be used.
 	 *
-	 * @param ErrorAwareInterface $validator
-	 * @param string|null         $error_template
+	 * @param ExtendedValidatorInterface $validator
+	 * @param string|null                $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 *
 	 * @internal param string $error_code One of the interface constants.
 	 * @internal param array $error_data
 	 */
-	public function log_error( ErrorAwareInterface $validator, $error_template = NULL );
+	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL );
 
 	/**
 	 * Returns an array of logged error messages.

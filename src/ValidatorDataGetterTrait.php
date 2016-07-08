@@ -28,7 +28,7 @@ trait ValidatorDataGetterTrait {
 	protected $error_code = '';
 
 	/**
-	 * @see ErrorAwareValidatorInterface::get_error_code()
+	 * @see ExtendedValidatorInterface::get_error_code()
 	 */
 	public function get_error_code() {
 
@@ -36,7 +36,7 @@ trait ValidatorDataGetterTrait {
 	}
 
 	/**
-	 * @see ErrorAwareValidatorInterface::get_input_data()
+	 * @see ExtendedValidatorInterface::get_input_data()
 	 */
 	public function get_input_data() {
 

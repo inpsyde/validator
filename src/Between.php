@@ -20,7 +20,7 @@ use Inpsyde\Validator\Error\ErrorLoggerInterface;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Between implements ErrorAwareInterface {
+class Between implements ExtendedValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;

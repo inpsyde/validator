@@ -17,13 +17,13 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Multi implements ErrorAwareInterface, MultiValidatorInterface {
+class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var ErrorAwareInterface[]
+	 * @var ExtendedValidatorInterface[]
 	 */
 	private $validators = [ ];
 
@@ -53,8 +53,8 @@ class Multi implements ErrorAwareInterface, MultiValidatorInterface {
 	/**
 	 * Multi constructor.
 	 *
-	 * @param array                 $options
-	 * @param ErrorAwareInterface[] $validators
+	 * @param array                        $options
+	 * @param ExtendedValidatorInterface[] $validators
 	 */
 	public function __construct( array $options = [ ], array $validators = [ ] ) {
 
@@ -83,7 +83,7 @@ class Multi implements ErrorAwareInterface, MultiValidatorInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function add_validator( ErrorAwareInterface $validator ) {
+	public function add_validator( ExtendedValidatorInterface $validator ) {
 
 		$this->validators[] = $validator;
 

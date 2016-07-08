@@ -19,7 +19,7 @@ namespace Inpsyde\Validator;
  * @license    http://opensource.org/licenses/MIT MIT
  * @deprecated Use DataValidator instead
  */
-class ArrayValue implements ErrorAwareInterface {
+class ArrayValue implements ExtendedValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;

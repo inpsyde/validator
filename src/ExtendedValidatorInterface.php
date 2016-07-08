@@ -11,18 +11,18 @@
 namespace Inpsyde\Validator;
 
 /**
- * Interface ValidatorInterface
+ * Interface ExtendedValidatorInterface
  *
  * The methods of this interface should go in the `ValidatorInterface`, however, for backward compatibility
  * we can't just add methods to an existing interface or any custom validator out there will immediately break.
- * In next major release, we can deprecate this interface and move its methods to `ValidatorInterface`.
+ * In next major release WE WILL DEPRECATE THIS interface and move its methods to `ValidatorInterface`.
  * Finally, a major release after, we can remove this interface for good.
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-interface ErrorAwareInterface extends ValidatorInterface {
+interface ExtendedValidatorInterface extends ValidatorInterface {
 
 	/**
 	 * Return the error code

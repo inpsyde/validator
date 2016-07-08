@@ -11,12 +11,7 @@
 namespace Inpsyde\Validator;
 
 /**
- * Interface ValidatorInterface
- *
- * The methods of this interface should go in the `ValidatorInterface`, however, for backward compatibility
- * we can't just add methods to an existing interface or any custom validator out there will immediately break.
- * In next major release, we can deprecate this interface and move its methods to `ValidatorInterface`.
- * Finally, a major release after, we can remove this interface for good.
+ * Interface MultiValidatorInterface
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
@@ -27,11 +22,11 @@ interface MultiValidatorInterface extends ValidatorInterface, \Countable {
 	/**
 	 * Adds a "leaf" validator to the stack.
 	 *
-	 * @param ErrorAwareInterface $validator
+	 * @param ExtendedValidatorInterface $validator
 	 *
 	 * @return MultiValidatorInterface
 	 */
-	public function add_validator( ErrorAwareInterface $validator );
+	public function add_validator( ExtendedValidatorInterface $validator );
 
 	/**
 	 * Returns and array of occurred error codes
