@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Inpsyde\Validator\Tests\Stub;
 
 use Inpsyde\Validator\AbstractValidator;

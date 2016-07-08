@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\Tests\Stub\AlwaysFalseWithInvalidMessageValidator;
