@@ -1,6 +1,15 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace Inpsyde\Validator\Tests\Unit\Fake;
+
+namespace Inpsyde\Validator\Tests\Stub;
 
 use Inpsyde\Validator\AbstractValidator;
 
@@ -10,7 +19,9 @@ use Inpsyde\Validator\AbstractValidator;
  * This class is just a simple "Fake" which is only used in tests to check, if the $options and error messages can be
  * overwritten.
  *
- * @package Inpsyde\Validator\Tests\Unit\Fake
+ * @author     Christian Brückner <chris@chrico.info>
+ * @package    inpsyde-validator
+ * @license    http://opensource.org/licenses/MIT MIT
  */
 class AlwaysFalseWithInvalidMessageValidator extends AbstractValidator {
 

@@ -1,4 +1,12 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator\Tests\Unit;
 
@@ -8,7 +16,10 @@ use Inpsyde\Validator\RegEx;
 /**
  * Class RegExTest
  *
- * @package Inpsyde\Validator\Tests\Unit
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
 class RegExTest extends \PHPUnit_Framework_TestCase {
 

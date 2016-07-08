@@ -4,9 +4,18 @@ namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\Date;
 use Inpsyde\Validator\GreaterThan;
+use Inpsyde\Validator\Tests\Stub\AlwaysFalseWithInvalidMessageValidator;
 use Inpsyde\Validator\ValidatorFactory;
 use Inpsyde\Validator\ValidatorInterface;
 
+/**
+ * Class ValidatorFactoryTest
+ *
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
+ */
 class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
 
 	/**
@@ -36,7 +45,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
 	public function test_external_validator() {
 
 		$factory = new ValidatorFactory();
-		$factory->create( Fake\AlwaysFalseWithInvalidMessageValidator::class );
+		$factory->create( AlwaysFalseWithInvalidMessageValidator::class );
 	}
 
 	/**
