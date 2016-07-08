@@ -31,7 +31,7 @@ trait GetErrorMessagesTrait {
 	 */
 	public function get_error_messages() {
 
-		if ( $this instanceof ExtendedValidatorInterface ) {
+		if ( ! $this instanceof ExtendedValidatorInterface ) {
 			return [ ];
 		}
 
