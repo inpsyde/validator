@@ -25,15 +25,7 @@ class AlwaysFalseWithInvalidMessageValidator extends AbstractValidator {
 	];
 
 	/**
-	 * Returns true if and only if $value meets the validation requirements
-	 *
-	 * If $value fails validation, then this method returns false, and
-	 * get_error_messages() will return an array of messages that explain why the
-	 * validation failed.
-	 *
-	 * @param   mixed $value
-	 *
-	 * @return  bool $is_valid
+	 * Always return false.
 	 */
 	public function is_valid( $value ) {
 

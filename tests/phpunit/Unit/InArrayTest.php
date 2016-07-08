@@ -31,8 +31,7 @@ class InArrayTest extends \PHPUnit_Framework_TestCase {
 		foreach ( $inputs as $input ) {
 			$this->assertEquals(
 				$expected,
-				$validator->is_valid( $input ),
-				implode( "\n", $validator->get_error_messages() )
+				$validator->is_valid( $input )
 			);
 		}
 	}

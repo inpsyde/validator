@@ -22,8 +22,7 @@ class LessThanTest extends \PHPUnit_Framework_TestCase {
 		foreach ( $values as $value ) {
 			$this->assertEquals(
 				$excepted,
-				$validator->is_valid( $value ),
-				implode( "\n", $validator->get_error_messages() )
+				$validator->is_valid( $value )
 			);
 		}
 

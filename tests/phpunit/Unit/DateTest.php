@@ -42,8 +42,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 		$validator = new Validator\Date( $options );
 		$this->assertEquals(
 			$result,
-			$validator->is_valid( $input ),
-			implode( "\n", $validator->get_error_messages() )
+			$validator->is_valid( $input )
 		);
 	}
 
@@ -110,8 +109,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result,
-			$validator->is_valid( $input ),
-			implode( "\n", $validator->get_error_messages() )
+			$validator->is_valid( $input )
 		);
 	}
 

@@ -43,7 +43,7 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 
 		/** @var \Inpsyde\Validator\AbstractValidator $stub */
 		$stub = $this->create_stub();
-		$this->assertEquals( [ ], $stub->get_error_messages() );
+		$this->assertEquals( [ ], @$stub->get_error_messages() );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator();
 		$validator->is_valid( '' );
 
-		$this->assertNotEmpty( $validator->get_error_messages() );
+		$this->assertNotEmpty( @$validator->get_error_messages() );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator( $options, $message_template );
 		$validator->is_valid( $expected_value );
 
-		$this->assertEquals( [ $expected_error ], $validator->get_error_messages() );
+		$this->assertEquals( [ $expected_error ], @$validator->get_error_messages() );
 	}
 
 	/**

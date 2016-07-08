@@ -52,11 +52,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$expect,
-			$validator->is_valid( $input ),
-			implode( "\n", $validator->get_error_messages() )
+			$validator->is_valid( $input )
 		);
-
-		echo implode( "\n", $validator->get_error_messages() );
 	}
 
 }

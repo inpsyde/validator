@@ -28,8 +28,7 @@ class RegExTest extends \PHPUnit_Framework_TestCase {
 		foreach ( $input_values as $input ) {
 			$this->assertEquals(
 				$expected,
-				$validator->is_valid( $input ),
-				implode( "\n", $validator->get_error_messages() )
+				$validator->is_valid( $input )
 			);
 		}
 	}
