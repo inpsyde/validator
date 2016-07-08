@@ -64,7 +64,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			self::MULTIPLE_ERRORS              => 'The host for the given input <code>%value%</code> could not be resolved.',
 		];
 
-		$this->messages = array_merge( $default, $messages );
+		$this->messages = array_merge( $default, array_filter( $messages, 'is_string' ) );
 	}
 
 	/**
