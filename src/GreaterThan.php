@@ -75,6 +75,8 @@ class GreaterThan implements ExtendedValidatorInterface {
 			? Error\ErrorLoggerInterface::NOT_GREATER_INCLUSIVE
 			: Error\ErrorLoggerInterface::NOT_GREATER;
 
+		$valid or $this->update_error_messages();
+
 		return $valid;
 	}
 }

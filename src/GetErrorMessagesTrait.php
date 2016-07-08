@@ -23,6 +23,20 @@ namespace Inpsyde\Validator;
 trait GetErrorMessagesTrait {
 
 	/**
+	 * Here for backward compatibility, will disappear with get_error_messages()
+	 *
+	 * @var string[]
+	 */
+	private $messages = [ ];
+
+	/**
+	 * Here for backward compatibility, will disappear with get_error_messages()
+	 *
+	 * @var Error\ErrorLoggerInterface
+	 */
+	private $logger;
+
+	/**
 	 * @see ValidatorInterface::get_error_messages()
 	 * @see ExtendedValidatorInterface::get_error_code()
 	 * @see ErrorLogger::log_error()
@@ -46,13 +60,16 @@ trait GetErrorMessagesTrait {
 			);
 		}
 
-		/** @var ExtendedValidatorInterface $this */
+		return $this->messages;
+	}
 
-		$logger = ( new Error\ErrorLoggerFactory() )
-			->get_logger()
-			->log_error( $this );
+	/**
+	 * Here for backward compatibility, will disappear with get_error_messages().
+	 */
+	private function update_error_messages() {
 
-		return [ $logger->get_last_message( $this->get_error_code() ) ];
-
+		$this->logger or $this->logger = ( new Error\ErrorLoggerFactory() )->get_logger();
+		$this->logger->log_error( $this );
+		$this->messages[] = $this->logger->get_last_message();
 	}
 }

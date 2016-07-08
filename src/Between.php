@@ -72,7 +72,8 @@ class Between implements ExtendedValidatorInterface {
 		$inc                         = $this->options[ 'inclusive' ];
 		$ok                          = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
 		$ok and $ok = $inc ? $value <= $this->options[ 'max' ] : $value < $this->options[ 'max' ];
-		$ok or $this->error_code = $inc ? ErrorLoggerInterface::NOT_BETWEEN_STRICT : ErrorLoggerInterface::NOT_BETWEEN;
+		$ok or $this->error_code = $inc ? ErrorLoggerInterface::NOT_BETWEEN : ErrorLoggerInterface::NOT_BETWEEN_STRICT;
+		$ok or $this->update_error_messages();
 
 		return $ok;
 	}

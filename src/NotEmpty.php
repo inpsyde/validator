@@ -45,6 +45,7 @@ class NotEmpty implements ExtendedValidatorInterface {
 
 		$valid = ! empty( $value ) || in_array( $value, [ 0, '0' ], TRUE );
 		$valid or $this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+		$valid or $this->update_error_messages();
 
 		return $valid;
 	}

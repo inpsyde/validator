@@ -68,6 +68,7 @@ class InArray implements ExtendedValidatorInterface {
 
 		$valid = in_array( $value, $this->options[ 'haystack' ], $this->options[ 'strict' ] );
 		$valid or $this->error_code = Error\ErrorLoggerInterface::NOT_IN_ARRAY;
+		$valid or $this->update_error_messages();
 
 		return $valid;
 	}

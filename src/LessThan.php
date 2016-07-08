@@ -74,6 +74,7 @@ class LessThan implements ExtendedValidatorInterface {
 		$valid or $this->error_code = $inc
 			? Error\ErrorLoggerInterface::NOT_LESS_INCLUSIVE
 			: Error\ErrorLoggerInterface::NOT_LESS;
+		$valid or $this->update_error_messages();
 
 		return $valid;
 	}

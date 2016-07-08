@@ -112,9 +112,13 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			}
 
 			if ( ! $valid && $this->options[ 'stop_on_failure' ] ) {
+				$this->update_error_messages();
+
 				return FALSE;
 			}
 		}
+
+		$valid or $this->update_error_messages();
 
 		return $valid;
 	}

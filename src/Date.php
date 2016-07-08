@@ -76,6 +76,7 @@ class Date implements ExtendedValidatorInterface {
 
 		if ( ! $this->convert_to_date_time( $value ) instanceof \DateTimeInterface ) {
 			$this->error_code or $this->error_code = Error\ErrorLoggerInterface::INVALID_DATE;
+			$this->update_error_messages();
 
 			return FALSE;
 		}
@@ -151,7 +152,7 @@ class Date implements ExtendedValidatorInterface {
 		// Invalid dates can show up as warnings (ie. "2007-02-99") and still return a DateTime object.
 		$errors = \DateTime::getLastErrors();
 		if ( $errors[ 'warning_count' ] > 0 ) {
-			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE;
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_DATE_FORMAT;
 
 			return FALSE;
 		}

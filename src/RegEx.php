@@ -83,17 +83,18 @@ class RegEx implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		$status = @preg_match( $pattern, $value );
+		$valid = @preg_match( $pattern, $value );
 
-		if ( $status === FALSE ) {
+		if ( $valid === FALSE ) {
 			$this->error_code = Error\ErrorLoggerInterface::REGEX_INTERNAL_ERROR;
 
 			return FALSE;
 		}
 
-		$status or $this->error_code = Error\ErrorLoggerInterface::NOT_MATCH;
+		$valid or $this->error_code = Error\ErrorLoggerInterface::NOT_MATCH;
+		$valid or $this->update_error_messages();
 
-		return $status > 0;
+		return $valid > 0;
 	}
 
 }

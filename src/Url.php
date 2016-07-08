@@ -136,6 +136,7 @@ class Url implements ExtendedValidatorInterface {
 		$host  = parse_url( $value, PHP_URL_HOST );
 		$valid = $host && checkdnsrr( $host, 'ANY' );
 		$valid or $this->error_code = Error\ErrorLoggerInterface::INVALID_DNS;
+		$valid or $this->update_error_messages();
 
 		return $valid;
 	}

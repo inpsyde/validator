@@ -22,7 +22,6 @@ namespace Inpsyde\Validator;
 class ArrayValue implements ExtendedValidatorInterface {
 
 	use ValidatorDataGetterTrait;
-	use GetErrorMessagesTrait;
 
 	/**
 	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
@@ -131,6 +130,16 @@ class ArrayValue implements ExtendedValidatorInterface {
 	}
 
 	/**
+	 * @deprecated Messages are now managed via the `Error\WordPressErrorLogger` class.
+	 *
+	 * @return array
+	 */
+	public function get_error_messages() {
+
+		return $this->error_messages;
+	}
+
+	/**
 	 * Validates all values.
 	 *
 	 * @param $values
@@ -207,5 +216,4 @@ class ArrayValue implements ExtendedValidatorInterface {
 
 		return $is_valid;
 	}
-
 }
