@@ -51,8 +51,8 @@ class InArray implements ExtendedValidatorInterface {
 			? filter_var( $options[ 'strict' ], FILTER_VALIDATE_BOOLEAN )
 			: TRUE;
 
-		$this->options[ 'haystack' ] = ( isset( $options[ 'haystack' ] ) && is_array( $options[ 'haystack' ] ) )
-			? $options[ 'haystack' ]
+		$this->options[ 'haystack' ] = isset( $options[ 'haystack' ] )
+			? (array) $options[ 'haystack' ]
 			: [ ];
 
 		$this->input_data            = $this->options;

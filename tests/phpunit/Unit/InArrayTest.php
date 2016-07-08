@@ -2,6 +2,7 @@
 
 namespace Inpsyde\Validator\Tests\Unit;
 
+use Inpsyde\Validator\Error\ErrorLoggerInterface;
 use Inpsyde\Validator\InArray;
 
 /**
@@ -53,4 +54,37 @@ class InArrayTest extends \PHPUnit_Framework_TestCase {
 			]
 		];
 	}
+
+	/**
+	 * Tests that error code is returned according to validation results and options.
+	 */
+	public function test_get_error_code() {
+
+		$validator = new InArray( [ 'haystack' => [ 'foo', '1' ] ] );
+		$validator->is_valid( 1 );
+		$code = $validator->get_error_code();
+
+		$this->assertSame( ErrorLoggerInterface::NOT_IN_ARRAY, $code );
+	}
+
+	/**
+	 * Tests that input data is returned according to validation results and options.
+	 */
+	public function test_get_input_data() {
+
+		$validator = new InArray();
+
+		$validator->is_valid( 'foo' );
+		$input = $validator->get_input_data();
+
+		$this->assertInternalType( 'array', $input );
+		$this->assertArrayHasKey( 'value', $input );
+		$this->assertSame( 'foo', $input[ 'value' ] );
+
+		$validator->is_valid( 'bar' );
+
+		$input = $validator->get_input_data();
+		$this->assertSame( 'bar', $input[ 'value' ] );
+	}
+
 }

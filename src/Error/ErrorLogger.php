@@ -76,8 +76,8 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		$this->check_error_code( $code );
 		is_null( $error_template )
-			? $this->check_error_template( $error_template )
-			: $error_template = $this->messages[ $code ];
+			? $error_template = $this->messages[ $code ]
+			: $this->check_error_template( $error_template );
 
 		$error_message = $this->build_message( $validator, $error_template );
 
@@ -206,7 +206,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			);
 		}
 
-		if ( ! defined( "static::{$code}" ) ) {
+		if ( ! array_key_exists( $code, $this->messages ) ) {
 
 			throw new \InvalidArgumentException( sprintf( '%s is not a valid error code.', $code ) );
 		}

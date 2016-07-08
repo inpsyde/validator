@@ -2,6 +2,7 @@
 
 namespace Inpsyde\Validator\Tests\Unit;
 
+use Inpsyde\Validator\Error\ErrorLoggerInterface;
 use Inpsyde\Validator\NotEmpty;
 
 /**
@@ -28,6 +29,38 @@ class tNotEmptyTes extends \PHPUnit_Framework_TestCase {
 		} else {
 			$this->assertFalse( $is_valid );
 		}
+	}
+
+	/**
+	 * Tests that error code is returned according to validation results and options.
+	 */
+	public function test_get_error_code() {
+
+		$validator = new NotEmpty();
+		$validator->is_valid( '' );
+		$code = $validator->get_error_code();
+
+		$this->assertSame( ErrorLoggerInterface::IS_EMPTY, $code );
+	}
+
+	/**
+	 * Tests that input data is returned according to validation results and options.
+	 */
+	public function test_get_input_data() {
+
+		$validator = new NotEmpty();
+
+		$validator->is_valid( 'x' );
+		$input = $validator->get_input_data();
+
+		$this->assertInternalType( 'array', $input );
+		$this->assertArrayHasKey( 'value', $input );
+		$this->assertSame( 'x', $input[ 'value' ] );
+
+		$validator->is_valid( 'y' );
+
+		$input = $validator->get_input_data();
+		$this->assertSame( 'y', $input[ 'value' ] );
 	}
 
 	/**
