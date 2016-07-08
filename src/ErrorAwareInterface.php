@@ -22,7 +22,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-interface ErrorAwareValidatorInterface extends ValidatorInterface {
+interface ErrorAwareInterface extends ValidatorInterface {
 
 	/**
 	 * Return the error code

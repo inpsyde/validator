@@ -31,7 +31,7 @@ trait GetErrorMessagesTrait {
 	 */
 	public function get_error_messages() {
 
-		if ( $this instanceof ErrorAwareValidatorInterface ) {
+		if ( $this instanceof ErrorAwareInterface ) {
 			return [ ];
 		}
 
@@ -46,7 +46,7 @@ trait GetErrorMessagesTrait {
 			);
 		}
 
-		/** @var ErrorAwareValidatorInterface $this */
+		/** @var ErrorAwareInterface $this */
 
 		$logger = ( new Error\ErrorLogger() )
 			->log_error( $this );

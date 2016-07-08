@@ -18,7 +18,7 @@ namespace Inpsyde\Validator;
  * @author     Christian Brückner <chris@chrico.info>
  * @package    inpsyde-validator
  * @license    http://opensource.org/licenses/MIT MIT
- * @deprecated Implement ErrorAwareValidatorInterface for custom validators
+ * @deprecated Implement ErrorAwareInterface for custom validators
  */
 abstract class AbstractValidator implements ValidatorInterface {
 

@@ -10,7 +10,7 @@
 
 namespace Inpsyde\Validator\Error;
 
-use Inpsyde\Validator\ErrorAwareValidatorInterface;
+use Inpsyde\Validator\ErrorAwareInterface;
 
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
@@ -19,42 +19,42 @@ use Inpsyde\Validator\ErrorAwareValidatorInterface;
  */
 interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 
-	const INVALID_TYPE_NON_STRING = 'invalid_type_non_string';
-	const INVALID_TYPE_NON_NUMERIC = 'invalid_type_non_numeric';
-	const INVALID_TYPE_NON_SCALAR = 'invalid_type_non_scalar';
-	const INVALID_TYPE_NON_ARRAY = 'invalid_type_non_array';
-	const INVALID_TYPE_NON_TRAVERSABLE = 'invalid_type_non_traversable';
-	const INVALID_TYPE_NON_DATE = 'invalid_type_non_date';
-	const NOT_BETWEEN = 'not_between';
-	const NOT_BETWEEN_STRICT = 'not_between_strict';
 	const INVALID_DATE = 'invalid_date';
 	const INVALID_DATE_FORMAT = 'invalid_date_format';
+	const INVALID_DNS = 'invalid_dns';
+	const INVALID_TYPE_NON_ARRAY = 'invalid_type_non_array';
+	const INVALID_TYPE_NON_DATE = 'invalid_type_non_date';
+	const INVALID_TYPE_NON_NUMERIC = 'invalid_type_non_numeric';
+	const INVALID_TYPE_NON_SCALAR = 'invalid_type_non_scalar';
+	const INVALID_TYPE_NON_STRING = 'invalid_type_non_string';
+	const INVALID_TYPE_NON_TRAVERSABLE = 'invalid_type_non_traversable';
+	const IS_EMPTY = 'is_empty';
+	const NOT_BETWEEN = 'not_between';
+	const NOT_BETWEEN_STRICT = 'not_between_strict';
 	const NOT_GREATER = 'not_greater_than';
 	const NOT_GREATER_INCLUSIVE = 'not_greater_than_inclusive';
 	const NOT_IN_ARRAY = 'not_in_array';
 	const NOT_LESS = 'not_less_than';
 	const NOT_LESS_INCLUSIVE = 'not_less_than_inclusive';
-	const IS_EMPTY = 'is_empty';
 	const NOT_MATCH = 'not_match';
-	const REGEX_INTERNAL_ERROR = 'regex_internal';
 	const NOT_URL = 'not_url';
-	const INVALID_DNS = 'invalid_dns';
 	const MULTIPLE_ERRORS = 'multiple_errors';
+	const REGEX_INTERNAL_ERROR = 'regex_internal';
 
 	/**
 	 * Logs an error.
 	 *
 	 * If no custom message is provided, a default one have to be used.
 	 *
-	 * @param ErrorAwareValidatorInterface $validator
-	 * @param string|null                  $error_template
+	 * @param ErrorAwareInterface $validator
+	 * @param string|null         $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 *
 	 * @internal param string $error_code One of the interface constants.
 	 * @internal param array $error_data
 	 */
-	public function log_error( ErrorAwareValidatorInterface $validator, $error_template = NULL );
+	public function log_error( ErrorAwareInterface $validator, $error_template = NULL );
 
 	/**
 	 * Returns an array of logged error messages.

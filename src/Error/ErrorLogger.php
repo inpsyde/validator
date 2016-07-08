@@ -10,7 +10,7 @@
 
 namespace Inpsyde\Validator\Error;
 
-use Inpsyde\Validator\ErrorAwareValidatorInterface;
+use Inpsyde\Validator\ErrorAwareInterface;
 
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
@@ -130,7 +130,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function log_error( ErrorAwareValidatorInterface $validator, $error_template = NULL ) {
+	public function log_error( ErrorAwareInterface $validator, $error_template = NULL ) {
 
 		$code = $validator->get_error_code();
 
@@ -264,13 +264,13 @@ class ErrorLogger implements ErrorLoggerInterface {
 	}
 
 	/**
-	 * @param ErrorAwareValidatorInterface $validator
+	 * @param ErrorAwareInterface          $validator
 	 *
 	 * @param                              $error_template
 	 *
 	 * @return string
 	 */
-	private function build_message( ErrorAwareValidatorInterface $validator, $error_template ) {
+	private function build_message( ErrorAwareInterface $validator, $error_template ) {
 
 		if ( ! substr_count( $error_template, '%' ) ) {
 			return $error_template;

@@ -18,7 +18,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Date implements ErrorAwareValidatorInterface {
+class Date implements ErrorAwareInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;

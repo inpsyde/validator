@@ -30,6 +30,7 @@ class ValidatorFactory {
 		'greater_than' => GreaterThan::class,
 		'in_array'     => InArray::class,
 		'less_than'    => LessThan::class,
+		'multi'        => Multi::class,
 		'not_empty'    => NotEmpty::class,
 		'regex'        => RegEx::class,
 		'url'          => Url::class,
@@ -43,7 +44,7 @@ class ValidatorFactory {
 	 *
 	 * @throws Exception\InvalidArgumentException if validator of given $type is not found.
 	 *
-	 * @return ValidatorInterface|ErrorAwareValidatorInterface
+	 * @return ValidatorInterface|ErrorAwareInterface
 	 */
 	public function create( $type, array $properties = [ ] ) {
 

@@ -18,7 +18,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class NotEmpty implements ErrorAwareValidatorInterface {
+class NotEmpty implements ErrorAwareInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
