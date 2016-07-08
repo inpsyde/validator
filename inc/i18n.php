@@ -17,6 +17,25 @@ namespace Inpsyde\Validator;
  */
 function load_translations( $path = '' ) {
 
+	// If called outside WP context, let's cleanup WP globals we added and exit.
+	if (! function_exists('apply_filters') ) {
+
+		if (isset($GLOBALS['wp_filter']['after_setup_theme'][99][__NAMESPACE__ . '\\' . 'load_translations'])) {
+			unset($GLOBALS['wp_filter']['after_setup_theme'][99][__NAMESPACE__ . '\\' . 'load_translations']);
+			if (empty($GLOBALS['wp_filter']['after_setup_theme'][99])) {
+				unset($GLOBALS['wp_filter']['after_setup_theme'][99]);
+			}
+			if (empty($GLOBALS['wp_filter']['after_setup_theme'])) {
+				unset($GLOBALS['wp_filter']['after_setup_theme']);
+			}
+			if (empty($GLOBALS['wp_filter'])) {
+				unset($GLOBALS['wp_filter']);
+			}
+		}
+
+		return;
+	}
+
 	// Prevent function is called more than once with same path as argument (which would mean load same file again)
 	static $done;
 	if ( is_array( $done ) && $path === end( $done ) ) {
