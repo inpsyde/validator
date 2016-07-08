@@ -25,9 +25,7 @@ class ErrorLoggerFactory {
 			return is_object( $class ) ? $class : $this->create_with_args( $args );
 		}
 
-		$class = function_exists( '__' )
-			? WordPressErrorLogger::class
-			: NoTranslationErrorLogger::class;
+		$class = function_exists( '__' ) ? WordPressErrorLogger::class : ErrorLogger::class;
 
 		return $this->create_with_args( $class, $args );
 
