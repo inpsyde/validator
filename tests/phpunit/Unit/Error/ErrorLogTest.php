@@ -115,6 +115,44 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests is possible to use use_error_template to replace message for default error codes.
+	 */
+	public function test_use_error_template_replace_default_message() {
+
+		$logger = new ErrorLogger();
+		$logger->use_error_template( ErrorLogger::IS_EMPTY, '%value% is empty, bro!' );
+		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY, FALSE ) );
+
+		$this->assertContains( 'is empty, bro!', $logger->get_last_message() );
+	}
+
+	/**
+	 * Tests is possible to use use_error_template to let logger make use of custom error codes.
+	 */
+	public function test_use_error_template_add_custom_message() {
+
+		$logger = new ErrorLogger();
+
+		$logger->use_error_template( 'custom_error', 'Custom error for %value%.' );
+
+		$stub =
+			$this->getMockBuilder( ExtendedValidatorInterface::class )
+				->getMock();
+
+		$stub
+			->method( 'get_error_code' )
+			->willReturn( 'custom_error' );
+
+		$stub
+			->method( 'get_input_data' )
+			->willReturn( [ 'value' => 'value' ] );
+
+		$logger->log_error( $stub );
+
+		$this->assertSame( 'Custom error for value.', $logger->get_last_message() );
+	}
+
+	/**
 	 * Tests that a custom template can be used for messages, with atomic control
 	 */
 	public function test_custom_template() {

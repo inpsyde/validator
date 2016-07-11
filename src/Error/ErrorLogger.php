@@ -150,7 +150,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	 */
 	public function use_error_template( $error_code, $error_template ) {
 
-		$this->check_error_code( $error_code );
+		$this->check_error_code( $error_code, FALSE );
 		$this->check_error_template( $error_template );
 
 		$this->messages[ $error_code ] = $error_template;
@@ -195,8 +195,9 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 	/**
 	 * @param string $code
+	 * @param bool   $check_exists
 	 */
-	private function check_error_code( $code ) {
+	private function check_error_code( $code, $check_exists = TRUE ) {
 
 		if ( ! is_string( $code ) ) {
 			throw new \InvalidArgumentException(
@@ -204,7 +205,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			);
 		}
 
-		if ( ! array_key_exists( $code, $this->messages ) ) {
+		if ( $check_exists && ! array_key_exists( $code, $this->messages ) ) {
 
 			throw new \InvalidArgumentException( sprintf( '%s is not a valid error code.', $code ) );
 		}
