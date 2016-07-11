@@ -32,85 +32,154 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	public function __construct( array $messages = [ ] ) {
 
 		$default = [
-			self::INVALID_TYPE_NON_STRING      => __(
-				'Invalid type given for <code>%value%</code>. String expected.',
-				'inpsyde-validator'
+			self::INVALID_TYPE_NON_STRING      => sprintf(
+				__(
+					'Invalid type given for %s. String expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_TYPE_NON_NUMERIC     => __(
-				'Invalid type given for <code>%value%</code>. Integer or float expected.',
-				'inpsyde-validator'
+			self::INVALID_TYPE_NON_NUMERIC     => sprintf(
+				__(
+					'Invalid type given for %s. Integer or float expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_TYPE_NON_SCALAR      => __(
-				'Invalid type given for <code>%value%</code>. String, integer or float expected.',
-				'inpsyde-validator'
+			self::INVALID_TYPE_NON_SCALAR      => sprintf(
+				__(
+					'Invalid type given for %s. String, integer or float expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_TYPE_NON_TRAVERSABLE => __(
-				'Invalid type given for <code>%value%</code>. Array or object implementing Traversable expected.',
-				'inpsyde-validator'
+			self::INVALID_TYPE_NON_TRAVERSABLE => sprintf(
+				__(
+					'Invalid type given for %s. Array or object implementing Traversable expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_TYPE_NON_DATE        => __(
-				'Invalid type given for <code>%value%</code>. String, integer, array or DateTime expected.',
-				'inpsyde-validator'
+			self::INVALID_TYPE_NON_DATE        => sprintf(
+				__(
+					'Invalid type given for %s. String, integer, array or DateTime expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::NOT_BETWEEN                  => __(
-				'The input <code>%value%</code> is not between <code>%min%</code> and <code>%max%</code>, inclusively.',
-				'inpsyde-validator'
+			self::NOT_BETWEEN                  => sprintf(
+				__(
+					'The input %1$s is not between %2$s and %3$s, inclusively.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%min%</code>',
+				'<code>%max%</code>'
 			),
-			self::NOT_BETWEEN_STRICT           => __(
-				'The input <code>%value%</code> is not strictly between <code>%min%</code> and <code>%max%</code>.',
-				'inpsyde-validator'
+			self::NOT_BETWEEN_STRICT           => sprintf(
+				__(
+					'The input %1$s is not strictly between %2$s and %3$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%min%</code>',
+				'<code>%max%</code>'
 			),
-			self::INVALID_DATE                 => __(
-				'The input <code>%value%</code> does not appear to be a valid date.',
-				'inpsyde-validator'
+			self::INVALID_DATE                 => sprintf(
+				__(
+					'The input %s does not appear to be a valid date.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_DATE_FORMAT          => __(
-				'The input <code>%value%</code> does not fit the date format <code>%format%</code>.',
-				'inpsyde-validator'
+			self::INVALID_DATE_FORMAT          => sprintf(
+				__(
+					'The input %1$s does not fit the date format %2$s .',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%format%</code>'
 			),
-			self::NOT_GREATER                  => __(
-				'The input <code>%value%</code> is not greater than <code>%min%</code>.',
-				'inpsyde-validator'
+			self::NOT_GREATER                  => sprintf(
+				__(
+					'The input %1$s is not greater than %2$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%min%</code>'
 			),
-			self::NOT_GREATER_INCLUSIVE        => __(
-				'The input <code>%value%</code> is not greater or equal than <code>%min%</code>.',
-				'inpsyde-validator'
+			self::NOT_GREATER_INCLUSIVE        => sprintf(
+				__(
+					'The input %1$s is not greater or equal than %2$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%min%</code>'
 			),
-			self::NOT_IN_ARRAY                 => __(
-				'The input <code>%value%</code> is not in the haystack: <code>%haystack%</code>.',
-				'inpsyde-validator'
+			self::NOT_IN_ARRAY                 => sprintf(
+				__(
+					'The input %1$s is not in the haystack: %2$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%haystack%</code>'
 			),
-			self::NOT_LESS                     => __(
-				'The input <code>%value%</code> is not less than <code>%max%</code>.',
-				'inpsyde-validator'
+			self::NOT_LESS                     => sprintf(
+				__(
+					'The input %1$s is not less than %1$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%max%</code>'
 			),
-			self::NOT_LESS_INCLUSIVE           => __(
-				'The input <code>%value%</code> is not less or equal than <code>%max%</code>.',
-				'inpsyde-validator'
+			self::NOT_LESS_INCLUSIVE           => sprintf(
+				__(
+					'The input %1$s is not less or equal than %2$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%max%</code>'
 			),
 			self::IS_EMPTY                     => __(
 				'This value should not be empty.',
 				'inpsyde-validator'
 			),
-			self::NOT_MATCH                    => __(
-				'The input does not match against pattern <code>%pattern%</code>.',
-				'inpsyde-validator'
+			self::NOT_MATCH                    => sprintf(
+				__(
+					'The input %1$s does not match against pattern %2$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%pattern%</code>'
 			),
-			self::REGEX_INTERNAL_ERROR         => __(
-				'There was an internal error while using the pattern <code>%pattern%</code>.',
-				'inpsyde-validator'
+			self::REGEX_INTERNAL_ERROR         => sprintf(
+				__(
+					'There was an internal error while using the pattern %2$s for string %1$s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%pattern%</code>'
 			),
-			self::NOT_URL                      => __(
-				'The input <code>%value%</code> is not a valid URL.',
-				'inpsyde-validator'
+			self::NOT_URL                      => sprintf(
+				__(
+					'The input %s is not a valid URL.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::INVALID_DNS                  => __(
-				'The host for the given input <code>%value%</code> could not be resolved.',
-				'inpsyde-validator'
+			self::INVALID_DNS                  => sprintf(
+				__(
+					'The host for the given input %s could not be resolved.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
-			self::MULTIPLE_ERRORS              => __(
-				'The host for the given input <code>%value%</code> could not be resolved.',
-				'inpsyde-validator'
+			self::MULTIPLE_ERRORS              => sprintf(
+				__(
+					'The host for the given input %s could not be resolved.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
 			),
 		];
 
