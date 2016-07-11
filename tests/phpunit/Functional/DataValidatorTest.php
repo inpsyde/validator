@@ -45,7 +45,11 @@ class DataValidatorTest extends \PHPUnit_Framework_TestCase {
 			->add_validator_by_key( $multi_1, 'an_integer' )
 			->add_validator_by_key( new RegEx( [ 'pattern' => '/Hello/' ] ), 'a_string' )
 			->add_validator_by_key( new RegEx( [ 'pattern' => '/Hello/' ] ), 'an_empty_string' )
-			->add_validator_by_key( $multi_2, 'a_float', '%key% should be a float > 10 and < 20. "%value%" is wrong.' )
+			->add_validator_by_key(
+				$multi_2,
+				[ 'key' => 'a_float', 'label' => 'Float value' ],
+				'"%key%" should be a float > 10 and < 20. "%value%" is wrong.'
+			)
 			->add_validator_by_key( new Date( [ 'format' => 'd/m/Y' ] ), 'a_date' )
 			->add_validator_by_key(
 				new Date( [ 'format' => 'd/m/Y' ] ),
@@ -73,7 +77,7 @@ class DataValidatorTest extends \PHPUnit_Framework_TestCase {
 			'<code>an_empty_string</code>: No data value should be empty.',
 			'<code>an_integer</code>: The input <code>(integer) 10</code> is not less than <code>(integer) 9</code>.',
 			'<code>an_empty_string</code>: The input does not match against pattern <code>/Hello/</code>.',
-			'a_float should be a float > 10 and < 20. "(double) 5.5" is wrong.',
+			'"Float value" should be a float > 10 and < 20. "(double) 5.5" is wrong.',
 			'<code>Some Bad Date</code>: The input <code>99/09/1982</code> does not fit the date format <code>d/m/Y</code>.',
 		];
 
