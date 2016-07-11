@@ -66,7 +66,8 @@ class ErrorLogger implements ErrorLoggerInterface {
 			self::REGEX_INTERNAL_ERROR         => 'There was an internal error while using the pattern <code>%pattern%</code>.',
 			self::NOT_URL                      => 'The input <code>%value%</code> is not a valid URL.',
 			self::INVALID_DNS                  => 'The host for the given input <code>%value%</code> could not be resolved.',
-			self::MULTIPLE_ERRORS              => 'The host for the given input <code>%value%</code> could not be resolved.',
+			self::MULTIPLE_ERRORS              => 'Some errors occurred for <code>%value%</code>.',
+			self::CUSTOM_ERROR                 => 'Some errors occurred for <code>%value%</code>.',
 		];
 
 		$this->messages = array_merge( $default, array_filter( $messages, 'is_string' ) );
@@ -108,8 +109,13 @@ class ErrorLogger implements ErrorLoggerInterface {
 			);
 		}
 
+		if ( is_null( $error_template ) ) {
+			$this->check_error_code( $code );
+			$error_template = $this->messages[ $code ];
+		}
+
 		if ( is_string( $error_template ) && ! substr_count( $error_template, '%key%' ) ) {
-			$error_template = '%key%: ' . $error_template;
+			$error_template = '<code>%key%</code>: ' . $error_template;
 		}
 
 		return $this->log_error( $code, $data, $error_template );

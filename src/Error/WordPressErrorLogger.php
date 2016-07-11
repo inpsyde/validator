@@ -176,7 +176,14 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 			),
 			self::MULTIPLE_ERRORS              => sprintf(
 				__(
-					'The host for the given input %s could not be resolved.',
+					'ome errors occurred for %s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::CUSTOM_ERROR                 => sprintf(
+				__(
+					'Some errors occurred for %s.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>'

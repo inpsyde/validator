@@ -19,6 +19,7 @@ use Inpsyde\Validator\ExtendedValidatorInterface;
  */
 interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 
+	const CUSTOM_ERROR = 'custom_error';
 	const INVALID_DATE = 'invalid_date';
 	const INVALID_DATE_FORMAT = 'invalid_date_format';
 	const INVALID_DNS = 'invalid_dns';
