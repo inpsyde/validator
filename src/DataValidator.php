@@ -81,17 +81,11 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	}
 
 	/**
-	 * Adds a "leaf" validator to validate a specific key or a set of keys.
-	 *
-	 * @param ExtendedValidatorInterface $validator
-	 * @param string|string[]            $key
-	 * @param string|null                $error_message
-	 *
 	 * @inheritdoc
 	 */
 	public function add_validator_by_key( ExtendedValidatorInterface $validator, $key, $error_message = NULL ) {
 
-		$key = ( is_string( $key ) && $key ) ? [ $key ] : '';
+		( is_string( $key ) && $key ) and $key = [ $key ];
 		is_array( $key ) and $key = array_filter( $key, 'is_string' );
 
 		if ( ! $key || ! is_array( $key ) ) {
@@ -130,7 +124,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function get_error_codes() {
 
-		$this->error_logger->get_error_codes();
+		return $this->error_logger->get_error_codes();
 	}
 
 	/**
@@ -187,8 +181,10 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 			? $this->validators[ self::GENERIC_VALIDATOR_KEY ]
 			: [ ];
 
-		foreach ( $value as $key => $item ) {
-			$valid = $this->validate_validators( $generic, $item, (string) $key ) && $valid;
+		if ( $generic ) {
+			foreach ( $value as $key => $item ) {
+				$valid = $this->validate_validators( $generic, $item, (string) $key ) && $valid;
+			}
 		}
 
 		foreach ( $this->validators as $key => $validators ) {
@@ -206,7 +202,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function get_error_messages() {
 
-		$this->error_logger->get_error_messages();
+		return $this->error_logger->get_error_messages();
 	}
 
 	/**
