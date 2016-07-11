@@ -237,7 +237,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		$input_data = (array) $validator->get_input_data();
 
-		if ( ! isset( $input_data[ 'value' ] ) ) {
+		if ( ! isset( $input_data[ 'value' ] ) && ! is_null( $input_data[ 'value' ] ) ) {
 
 			return vsprintf( $error_template, array_map( [ $this, 'as_string' ], $input_data ) );
 		}
@@ -279,6 +279,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		if ( is_object( $value ) ) {
 			$value = get_class( $value );
+			$type  = '(object) ';
 		} elseif ( is_array( $value ) ) {
 			$type  = '';
 			$value = var_export( $value, TRUE );

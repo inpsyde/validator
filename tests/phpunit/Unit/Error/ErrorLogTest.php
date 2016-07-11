@@ -135,19 +135,7 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$logger->use_error_template( 'custom_error', 'Custom error for %value%.' );
 
-		$stub =
-			$this->getMockBuilder( ExtendedValidatorInterface::class )
-				->getMock();
-
-		$stub
-			->method( 'get_error_code' )
-			->willReturn( 'custom_error' );
-
-		$stub
-			->method( 'get_input_data' )
-			->willReturn( [ 'value' => 'value' ] );
-
-		$logger->log_error( $stub );
+		$logger->log_error( $this->get_validator_mock( 'custom_error', 'value' ) );
 
 		$this->assertSame( 'Custom error for value.', $logger->get_last_message() );
 	}
@@ -181,6 +169,39 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertCount( 5, $logger );
 
+	}
+
+	/**
+	 * @dataProvider provide__data_for_as_string
+	 *
+	 * @param mixed  $value
+	 * @param string $expected
+	 */
+	public function test_as_string( $value, $expected ) {
+
+		$logger = new ErrorLogger();
+		$logger->use_error_template( 'test', '%value%' );
+		$logger->log_error( $this->get_validator_mock( 'test', $value ) );
+
+		$this->assertSame( $expected, $logger->get_last_message( 'test' ) );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function provide__data_for_as_string() {
+
+		return [
+			[ 'a string', 'a string' ],
+			[ 'a string with a %percent sign', 'a string with a %percent sign' ],
+			[ NULL, 'NULL' ],
+			[ TRUE, '(boolean) TRUE' ],
+			[ FALSE, '(boolean) FALSE' ],
+			[ 10, '(integer) 10' ],
+			[ 10.0, '(double) 10' ],
+			[ [ 'an', 'array' ], var_export( [ 'an', 'array' ], TRUE ) ],
+			[ (object) [ 'an' => 'object' ], '(object) stdClass' ]
+		];
 	}
 
 	/**
