@@ -75,16 +75,14 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL ) {
-
-		$code = $validator->get_error_code();
+	public function log_error( $code, array $data = [ ], $error_template = NULL ) {
 
 		$this->check_error_code( $code );
 		is_null( $error_template )
 			? $error_template = $this->messages[ $code ]
 			: $this->check_error_template( $error_template );
 
-		$error_message = $this->build_message( $validator, $error_template );
+		$error_message = $this->build_message( $data, $error_template );
 
 		isset( $this->errors[ $code ] ) or $this->errors[ $code ] = [ ];
 		$this->errors[ $code ][] = $error_message;
@@ -96,7 +94,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function log_error_for_key( $key, ExtendedValidatorInterface $validator, $error_template = NULL ) {
+	public function log_error_for_key( $key, $code, array $data = [ ], $error_template = NULL ) {
 
 		if ( is_array( $key ) && count( $key ) === 1 && is_string( key( $key ) ) && is_string( reset( $key ) ) ) {
 			$key_key                      = key( $key );
@@ -114,12 +112,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			$error_template = '%key%: ' . $error_template;
 		}
 
-		if ( is_null( $error_template ) ) {
-			$code = $validator->get_error_code();
-			$this->check_error_code( $code );
-		}
-
-		return $this->log_error( $validator, '%key%: ' . $this->messages[ $code ] );
+		return $this->log_error( $code, $data, $error_template );
 	}
 
 	/**
@@ -258,23 +251,18 @@ class ErrorLogger implements ErrorLoggerInterface {
 	}
 
 	/**
-	 * @param ExtendedValidatorInterface   $validator
-	 * @param                              $error_template
+	 * @param array $input_data
+	 * @param       $error_template
 	 *
 	 * @return string
 	 */
-	private function build_message( ExtendedValidatorInterface $validator, $error_template ) {
+	private function build_message( array $input_data = [ ], $error_template ) {
 
 		if ( ! substr_count( $error_template, '%' ) ) {
 			return $error_template;
 		}
 
-		$input_data = (array) $validator->get_input_data();
-
-		if ( ! isset( $input_data[ 'value' ] ) && ! is_null( $input_data[ 'value' ] ) ) {
-
-			return vsprintf( $error_template, array_map( [ $this, 'as_string' ], $input_data ) );
-		}
+		array_key_exists( 'value', $input_data ) or $input_data[ 'value' ] = NULL;
 
 		// replacing the placeholder for the %value%
 		$message = str_replace( '%value%', $this->as_string( $input_data[ 'value' ] ), $error_template );

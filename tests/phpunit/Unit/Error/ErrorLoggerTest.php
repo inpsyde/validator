@@ -11,7 +11,6 @@
 namespace Inpsyde\Validator\Tests\Unit\Error;
 
 use Inpsyde\Validator\Error\ErrorLogger;
-use Inpsyde\Validator\ExtendedValidatorInterface;
 
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
@@ -44,8 +43,8 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$logger = new ErrorLogger();
 
-		$logged1        = $logger->log_error( $this->get_validator_mock() );
-		$logged2        = $logger->log_error( $this->get_validator_mock( ErrorLogger::INVALID_TYPE_NON_STRING ) );
+		$logged1        = $logger->log_error( ErrorLogger::IS_EMPTY );
+		$logged2        = $logger->log_error( ErrorLogger::INVALID_TYPE_NON_STRING );
 		$messages       = $logger->get_error_messages();
 		$messages_empty = $logger->get_error_messages( ErrorLogger::IS_EMPTY );
 		$codes          = $logger->get_error_codes();
@@ -74,7 +73,7 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	public function test_get_errors_throws_if_bad_code() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock() );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
 		$logger->get_error_messages( [ ] );
 	}
 
@@ -84,18 +83,18 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	public function test_get_errors_throws_if_bad_template() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock(), [ ] );
+		$logger->log_error( ErrorLogger::IS_EMPTY, [ ], [ ] );
 	}
 
 	public function test_merge() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::INVALID_DNS ) );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::INVALID_DNS );
 
 		$logger2 = new ErrorLogger();
-		$logger2->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
-		$logger2->log_error( $this->get_validator_mock( ErrorLogger::NOT_IN_ARRAY ) );
+		$logger2->log_error( ErrorLogger::IS_EMPTY );
+		$logger2->log_error( ErrorLogger::NOT_IN_ARRAY );
 
 		$merged   = $logger->merge( $logger2 );
 		$codes    = $merged->get_error_codes();
@@ -121,9 +120,9 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$logger = new ErrorLogger();
 		$logger->use_error_template( ErrorLogger::IS_EMPTY, '%value% is empty, bro!' );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY, FALSE ) );
+		$logger->log_error( ErrorLogger::IS_EMPTY, [ 'value' => 'Test' ] );
 
-		$this->assertContains( 'is empty, bro!', $logger->get_last_message() );
+		$this->assertSame( 'Test is empty, bro!', $logger->get_last_message() );
 	}
 
 	/**
@@ -135,9 +134,9 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$logger->use_error_template( 'custom_error', 'Custom error for %value%.' );
 
-		$logger->log_error( $this->get_validator_mock( 'custom_error', 'value' ) );
+		$logger->log_error( 'custom_error', [ 'value' => 'Test' ] );
 
-		$this->assertSame( 'Custom error for value.', $logger->get_last_message() );
+		$this->assertSame( 'Custom error for Test.', $logger->get_last_message() );
 	}
 
 	/**
@@ -146,9 +145,9 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	public function test_custom_template() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY, 'Inpsyde' ), '%value% rocks!' );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::IS_EMPTY, [ 'value' => 'Inpsyde' ], '%value% rocks!' );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
 
 		$messages = $logger->get_error_messages();
 		$first    = array_shift( $messages );
@@ -161,11 +160,11 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	public function test_count() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::INVALID_DNS ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::INVALID_TYPE_NON_STRING ) );
-		$logger->log_error( $this->get_validator_mock( ErrorLogger::IS_EMPTY ) );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::INVALID_DNS );
+		$logger->log_error( ErrorLogger::INVALID_TYPE_NON_STRING );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
 
 		$this->assertCount( 5, $logger );
 
@@ -181,7 +180,7 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$logger = new ErrorLogger();
 		$logger->use_error_template( 'test', '%value%' );
-		$logger->log_error( $this->get_validator_mock( 'test', $value ) );
+		$logger->log_error( 'test', [ 'value' => $value ] );
 
 		$this->assertSame( $expected, $logger->get_last_message( 'test' ) );
 	}
@@ -189,9 +188,9 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 	public function test_get_iterator() {
 
 		$logger = new ErrorLogger();
-		$logger->log_error( $this->get_validator_mock() );
-		$logger->log_error( $this->get_validator_mock() );
-		$logger->log_error( $this->get_validator_mock() );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
+		$logger->log_error( ErrorLogger::IS_EMPTY );
 
 		$expected = 'This value should not be empty.';
 		$it       = $logger->getIterator();
@@ -219,28 +218,6 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 			[ [ 'an', 'array' ], var_export( [ 'an', 'array' ], TRUE ) ],
 			[ (object) [ 'an' => 'object' ], '(object) stdClass' ]
 		];
-	}
-
-	/**
-	 * @param string $code
-	 * @param mixed  $value
-	 *
-	 * @return ExtendedValidatorInterface
-	 */
-	private function get_validator_mock( $code = ErrorLogger::IS_EMPTY, $value = '' ) {
-
-		$stub = $this->getMockBuilder( ExtendedValidatorInterface::class )
-			->getMock();
-
-		$stub
-			->method( 'get_error_code' )
-			->willReturn( $code );
-
-		$stub
-			->method( 'get_input_data' )
-			->willReturn( [ 'value' => $value ] );
-
-		return $stub;
 	}
 
 	/**

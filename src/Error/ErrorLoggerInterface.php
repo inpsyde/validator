@@ -46,12 +46,13 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 *
 	 * If no custom message is provided, a default one have to be used.
 	 *
-	 * @param ExtendedValidatorInterface $validator
-	 * @param string|null                $error_template
+	 * @param string      $code
+	 * @param array       $data
+	 * @param string|null $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 */
-	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL );
+	public function log_error( $code, array $data = [ ], $error_template = NULL );
 
 	/**
 	 * Logs an error for a key.
@@ -61,13 +62,14 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	 * Since validator-by-key feature is available only for validators implementing `MapValidatorInterface`,
 	 * we use that interface as type int.
 	 *
-	 * @param string                     $key
-	 * @param ExtendedValidatorInterface $validator
-	 * @param null                       $error_template
+	 * @param string      $key
+	 * @param string      $code
+	 * @param array       $data
+	 * @param null|string $error_template
 	 *
 	 * @return ErrorLoggerInterface Implements fluent interface
 	 */
-	public function log_error_for_key( $key, ExtendedValidatorInterface $validator, $error_template = NULL );
+	public function log_error_for_key( $key, $code, array $data = [ ], $error_template = NULL );
 
 	/**
 	 * Returns an array of logged error messages.

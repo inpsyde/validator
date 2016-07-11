@@ -73,6 +73,14 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function add_validator_with_message( ExtendedValidatorInterface $validator, $error_message ) {
+
+		return $this->add_validator_to_stack( $validator, self::GENERIC_VALIDATOR_KEY, $error_message );
+	}
+
+	/**
 	 * Adds a "leaf" validator to validate a specific key or a set of keys.
 	 *
 	 * @param ExtendedValidatorInterface $validator
@@ -86,7 +94,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 		$key = ( is_string( $key ) && $key ) ? [ $key ] : '';
 		is_array( $key ) and $key = array_filter( $key, 'is_string' );
 
-		if ( ! $key || ! ! is_array( $key ) ) {
+		if ( ! $key || ! is_array( $key ) ) {
 			throw new Exception\InvalidArgumentException( 'Validator key must be in a string or an array of string.' );
 		}
 
@@ -152,15 +160,24 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function is_valid( $value ) {
 
+		if ( empty( $this->validators ) ) {
+			return TRUE;
+		}
+
 		if ( ! is_array( $value ) && ! $value instanceof \Traversable ) {
 			$this->input_data = [ 'value' => $value ];
 			$this->error_code = ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE;
 			isset( $this->error_data[ $this->error_code ] ) or $this->error_data[ $this->error_code ] = [ ];
 			$this->error_data[ $this->error_code ][] = $this->input_data;
 
-			$this->error_logger->log_error( $this );
+			$this->error_logger->log_error( $this->error_code, $this->error_data );
 
 			return FALSE;
+		}
+
+		// If value is empty, noting to validate, just return true
+		if ( $value === [ ] || ( $value instanceof \Countable && ! count( $value ) ) ) {
+			return TRUE;
 		}
 
 		$valid = TRUE;
@@ -268,7 +285,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 			$this->error_code          = $code;
 			$this->input_data          = $validator->get_input_data();
 			$this->input_data[ 'key' ] = $key;
-			$this->error_logger->log_error_for_key( $key, $this, $message );
+			$this->error_logger->log_error_for_key( $key, $code, $this->input_data, $message );
 			isset( $this->error_data[ $code ] ) or $this->error_data[ $code ] = [ ];
 			$this->error_data[ $code ][] = $this->input_data;
 		}

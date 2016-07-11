@@ -197,17 +197,17 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL ) {
+	public function log_error( $code, array $data = [ ], $error_template = NULL ) {
 
-		return $this->logger->log_error( $validator, $error_template );
+		return $this->logger->log_error( $code, $data, $error_template );
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function log_error_for_key( $key, ExtendedValidatorInterface $validator, $error_template = NULL ) {
+	public function log_error_for_key( $key, $code, array $data = [ ], $error_template = NULL ) {
 
-		return $this->logger->log_error( $validator, $error_template );
+		return $this->logger->log_error_for_key( $key, $code, $data, $error_template );
 	}
 
 	/**

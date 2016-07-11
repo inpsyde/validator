@@ -69,7 +69,7 @@ trait GetErrorMessagesTrait {
 	private function update_error_messages() {
 
 		$this->logger or $this->logger = ( new Error\ErrorLoggerFactory() )->get_logger();
-		$this->logger->log_error( $this );
+		$this->logger->log_error( $this->get_error_code(), $this->get_input_data() );
 		$this->messages[] = $this->logger->get_last_message();
 	}
 }
