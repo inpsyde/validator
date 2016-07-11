@@ -45,6 +45,11 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	private $error_data = [ ];
 
 	/**
+	 * @var array
+	 */
+	private $key_labels = [ ];
+
+	/**
 	 * @param Error\ErrorLoggerInterface $error_logger
 	 */
 	public function __construct( Error\ErrorLoggerInterface $error_logger = NULL ) {
@@ -85,15 +90,14 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	 */
 	public function add_validator_by_key( ExtendedValidatorInterface $validator, $key, $error_message = NULL ) {
 
-		( is_string( $key ) && $key ) and $key = [ $key ];
-		is_array( $key ) and $key = array_filter( $key, 'is_string' );
+		$keys = $this->parse_validator_key( $key );
 
-		if ( ! $key || ! is_array( $key ) ) {
+		if ( ! is_array( $keys ) ) {
 			throw new Exception\InvalidArgumentException( 'Validator key must be in a string or an array of string.' );
 		}
 
 		array_walk(
-			$key,
+			$keys,
 			function ( $key ) use ( $validator, $error_message ) {
 
 				return $this->add_validator_to_stack( $validator, $key, $error_message );
@@ -273,20 +277,109 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 			return TRUE;
 		}
 
-		$codes = $validator instanceof MultiValidatorInterface
-			? $validator->get_error_codes()
-			: (array) $validator->get_error_code();
+		if ( $validator instanceof MultiValidatorInterface ) {
+			$data = $validator->get_error_data();
+			foreach ( $data as $code => $code_data ) {
+				foreach ( $code_data as $error_data ) {
+					$this->validator_log_error( $code, $error_data, $key, $message );
+				}
+			}
 
-		foreach ( $codes as $code ) {
-			$this->error_code          = $code;
-			$this->input_data          = $validator->get_input_data();
-			$this->input_data[ 'key' ] = $key;
-			$this->error_logger->log_error_for_key( $key, $code, $this->input_data, $message );
-			isset( $this->error_data[ $code ] ) or $this->error_data[ $code ] = [ ];
-			$this->error_data[ $code ][] = $this->input_data;
+			return FALSE;
 		}
 
-		return FALSE;
+		$this->validator_log_error( $validator->get_error_code(), $validator->get_input_data(), $key, $message );
 
+		return FALSE;
+	}
+
+	/**
+	 * @param string $code
+	 * @param array  $data
+	 * @param string $key
+	 * @param string $message
+	 */
+	private function validator_log_error( $code, array $data, $key, $message ) {
+
+		$this->input_data          = $data;
+		$this->input_data[ 'key' ] = $key;
+		array_key_exists( $key, $this->key_labels ) and $key = [ $key => $this->key_labels[ $key ] ];
+		$this->error_code = $code;
+		$this->error_logger->log_error_for_key( $key, $code, $this->input_data, $message );
+		isset( $this->error_data[ $code ] ) or $this->error_data[ $code ] = [ ];
+		$this->error_data[ $code ][] = $this->input_data;
+	}
+
+	/**
+	 * Parse the `$key` argument for `add_validator_by_key()` and return an array of key to which assign the validator.
+	 *
+	 * - When provided a single key as string, return an array with a single element containing that key.
+	 * - When provided more keys as strings, return all of them.
+	 * - It is also possible to provide a "label" for the key that will be used for replacement in error messages.
+	 *   To do that, each key have to be provided as 2-element array with keys "key" and "label",
+	 *   e.g. ['key' => 'foo', 'label' => __('Foo Element')]
+	 *
+	 * @param string|array $key
+	 *
+	 * @return string[]
+	 */
+	private function parse_validator_key( $key ) {
+
+		( is_string( $key ) && $key ) and $key = [ $key ];
+
+		if ( ! is_array( $key ) ) {
+			throw new Exception\InvalidArgumentException( 'Validator key must be in a string or an array of string.' );
+		}
+
+		$maybe_label = function ( $key ) {
+
+			if (
+				is_array( $key )
+				&& ! empty( $key[ 'key' ] )
+				&& ! empty( $key[ 'label' ] )
+				&& is_string( $key[ 'key' ] )
+				&& is_string( $key[ 'label' ] )
+			) {
+				$this->key_labels[ $key[ 'key' ] ] = $key[ 'label' ];
+
+				return $key[ 'key' ];
+			}
+
+			return NULL;
+		};
+
+		$label = $maybe_label( $key );
+		if ( $label ) {
+			return [ $label ];
+		}
+
+		$keys = [ ];
+		foreach ( $key as $k ) {
+
+			if ( is_string( $k ) ) {
+				$keys[] = $k;
+				continue;
+			}
+
+			$label = NULL;
+			if ( is_array( $k ) ) {
+				$label = $maybe_label( $k );
+				$label and $keys[] = $label;
+			}
+
+			$more_keys = [ ];
+			if ( is_array( $k ) && ! $label ) {
+				$more_keys = array_filter( $k, 'is_string' );
+				$more_keys and $keys = array_merge( $keys, $more_keys );
+			}
+
+			if ( ! $more_keys ) {
+				throw new Exception\InvalidArgumentException(
+					'Validator key must be in a string or an array of string.'
+				);
+			}
+		}
+
+		return $keys;
 	}
 }

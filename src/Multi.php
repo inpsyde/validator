@@ -26,12 +26,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	 * @var ExtendedValidatorInterface[]
 	 */
 	private $validators = [ ];
-
-	/**
-	 * @var \SplObjectStorage
-	 */
-	private $validator_input_data;
-
+	
 	/**
 	 * @var array
 	 */
@@ -45,7 +40,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	/**
 	 * Named constructor that can be used obtain an instance by passing a variadic number of validators.
 	 */
-	public function withValidators() {
+	public static function with_validators() {
 
 		return new static( [ ], func_get_args() );
 	}
@@ -62,8 +57,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			? filter_var( $options[ 'stop_on_failure' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
-		$factory                    = new ValidatorFactory();
-		$this->validator_input_data = new \SplObjectStorage();
+		$factory = new ValidatorFactory();
 
 		foreach ( $validators as $validator ) {
 
@@ -74,8 +68,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 				$validator = $validator[ 'validator' ];
 			}
 
-			$instance = $factory->create( $validator, $options );
-			$this->validator_input_data->attach( $instance, $options );
+			$instance           = $factory->create( $validator, $options );
 			$this->validators[] = $instance;
 		}
 	}
@@ -101,7 +94,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 		foreach ( $this->validators as $validator ) {
 			if ( ! $validator->is_valid( $value ) ) {
 
-				$data             = $this->validator_input_data->offsetGet( $validator );
+				$data             = $validator->get_input_data();
 				$data[ 'value' ]  = $value;
 				$this->input_data = $data;
 				$code             = $validator->get_error_code();
