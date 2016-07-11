@@ -17,7 +17,15 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-interface ErrorLoggerAwareValidatorInterface {
+interface ErrorLoggerAwareValidatorInterface extends MultiValidatorInterface {
+
+	/**
+	 * @param ExtendedValidatorInterface $validator
+	 * @param string                     $error_message
+	 *
+	 * @return ErrorLoggerAwareValidatorInterface
+	 */
+	public function add_validator_with_message( ExtendedValidatorInterface $validator, $error_message );
 
 	/**
 	 * Return an instance of `ErrorLoggerAwareValidatorInterface` that make use of given error logger instance.
