@@ -186,6 +186,23 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $expected, $logger->get_last_message( 'test' ) );
 	}
 
+	public function test_get_iterator() {
+
+		$logger = new ErrorLogger();
+		$logger->log_error( $this->get_validator_mock() );
+		$logger->log_error( $this->get_validator_mock() );
+		$logger->log_error( $this->get_validator_mock() );
+
+		$expected = 'This value should not be empty.';
+		$it       = $logger->getIterator();
+
+		$this->assertInstanceOf( 'Iterator', $it );
+
+		foreach ( $it as $message ) {
+			$this->assertSame( $expected, $message );
+		}
+	}
+
 	/**
 	 * @return array
 	 */
