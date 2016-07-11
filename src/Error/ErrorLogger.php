@@ -35,6 +35,11 @@ class ErrorLogger implements ErrorLoggerInterface {
 	private $last_error = '';
 
 	/**
+	 * @var string[]
+	 */
+	private $key_labels = [ ];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string[] $messages An array of messages to replace default ones.
@@ -86,6 +91,35 @@ class ErrorLogger implements ErrorLoggerInterface {
 		$this->last_error        = $error_message;
 
 		return $this;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function log_error_for_key( $key, ExtendedValidatorInterface $validator, $error_template = NULL ) {
+
+		if ( is_array( $key ) && count( $key ) === 1 && is_string( key( $key ) ) && is_string( reset( $key ) ) ) {
+			$key_key                      = key( $key );
+			$this->key_labels[ $key_key ] = reset( $key );
+			$key                          = $key_key;
+		}
+
+		if ( ! is_string( $key ) ) {
+			throw new \InvalidArgumentException(
+				sprintf( 'Error key must be in a string, %s given.', gettype( $key ) )
+			);
+		}
+
+		if ( is_string( $error_template ) && ! substr_count( $error_template, '%key%' ) ) {
+			$error_template = '%key%: ' . $error_template;
+		}
+
+		if ( is_null( $error_template ) ) {
+			$code = $validator->get_error_code();
+			$this->check_error_code( $code );
+		}
+
+		return $this->log_error( $validator, '%key%: ' . $this->messages[ $code ] );
 	}
 
 	/**
@@ -244,8 +278,13 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		// replacing the placeholder for the %value%
 		$message = str_replace( '%value%', $this->as_string( $input_data[ 'value' ] ), $error_template );
-
 		unset( $input_data[ 'value' ] );
+
+		// replacing the placeholder for the %key%
+		$data_key = isset( $input_data[ 'key' ] ) ? $input_data[ 'key' ] : '';
+		array_key_exists( $data_key, $this->key_labels ) and $data_key = $this->key_labels[ $data_key ];
+		$message = str_replace( '%key%', $this->as_string( $data_key ), $message );
+		unset( $input_data[ 'key' ] );
 
 		// replacing the possible options-placeholder on the message
 		foreach ( $input_data as $key => $replace ) {

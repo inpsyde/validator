@@ -170,8 +170,8 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 			? $this->validators[ self::GENERIC_VALIDATOR_KEY ]
 			: [ ];
 
-		foreach ( $value as $item ) {
-			$valid = $this->validate_validators( $generic, $item ) && $valid;
+		foreach ( $value as $key => $item ) {
+			$valid = $this->validate_validators( $generic, $item, (string) $key ) && $valid;
 		}
 
 		foreach ( $this->validators as $key => $validators ) {
@@ -220,11 +220,11 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	/**
 	 * @param \SplObjectStorage $validators
 	 * @param                   $to_validate
-	 * @param string|null       $key
+	 * @param string            $key
 	 *
 	 * @return bool
 	 */
-	private function validate_validators( \SplObjectStorage $validators, $to_validate, $key = NULL ) {
+	private function validate_validators( \SplObjectStorage $validators, $to_validate, $key ) {
 
 		$valid = TRUE;
 
@@ -265,10 +265,10 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 			: (array) $validator->get_error_code();
 
 		foreach ( $codes as $code ) {
-			$this->error_code = $code;
-			$this->input_data = $validator->get_input_data();
-			$key and $this->input_data[ 'key' ] = $key;
-			$this->error_logger->log_error( $this, $message );
+			$this->error_code          = $code;
+			$this->input_data          = $validator->get_input_data();
+			$this->input_data[ 'key' ] = $key;
+			$this->error_logger->log_error_for_key( $key, $this, $message );
 			isset( $this->error_data[ $code ] ) or $this->error_data[ $code ] = [ ];
 			$this->error_data[ $code ][] = $this->input_data;
 		}

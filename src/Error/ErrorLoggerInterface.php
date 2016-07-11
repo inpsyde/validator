@@ -54,6 +54,22 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	public function log_error( ExtendedValidatorInterface $validator, $error_template = NULL );
 
 	/**
+	 * Logs an error for a key.
+	 *
+	 * Similar to `log_error()` but generated error message should be specific to the given key.
+	 *
+	 * Since validator-by-key feature is available only for validators implementing `MapValidatorInterface`,
+	 * we use that interface as type int.
+	 *
+	 * @param string                     $key
+	 * @param ExtendedValidatorInterface $validator
+	 * @param null                       $error_template
+	 *
+	 * @return ErrorLoggerInterface Implements fluent interface
+	 */
+	public function log_error_for_key( $key, ExtendedValidatorInterface $validator, $error_template = NULL );
+
+	/**
 	 * Returns an array of logged error messages.
 	 * If no code is provided, must return all messages, otherwise just the messages for the given code.
 	 * Return empty array if no error was logged at all, or if no error was logged for given code.
