@@ -21,29 +21,13 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
-
-	/**
-	 * @var ExtendedValidatorInterface[]
-	 */
-	private $validators = [ ];
-
-	/**
-	 * @var array
-	 */
-	private $error_data = [ ];
+	use MultiValidatorDataGetterTrait;
+	use MultiValidatorValidatorsTrait;
 
 	/**
 	 * @var array
 	 */
 	private $options = [ ];
-
-	/**
-	 * Named constructor that can be used obtain an instance by passing a variadic number of validators.
-	 */
-	public static function with_validators() {
-
-		return new static( [ ], func_get_args() );
-	}
 
 	/**
 	 * Multi constructor.
@@ -71,16 +55,6 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			$instance           = $factory->create( $validator, $options );
 			$this->validators[] = $instance;
 		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function add_validator( ExtendedValidatorInterface $validator ) {
-
-		$this->validators[] = $validator;
-
-		return $this;
 	}
 
 	/**
@@ -114,36 +88,6 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 		$valid or $this->update_error_messages();
 
 		return $valid;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function get_error_codes() {
-
-		return array_keys( $this->error_data );
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function get_error_data( $error_code = NULL ) {
-
-		if ( is_null( $error_code ) ) {
-			return $this->error_data;
-		} elseif ( ! isset( $this->error_data[ $error_code ] ) ) {
-			return [ ];
-		}
-
-		return $this->error_data[ $error_code ];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function count() {
-
-		return count( $this->validators );
 	}
 
 	/**
