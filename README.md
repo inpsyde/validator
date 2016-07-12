@@ -85,7 +85,7 @@ Other validators can be used in a pretty identical fashion.
 At the moment, there are two composed validators, they are:
 
 Name | Can be used for | Options | Description
---------- | --------- | --------- |
+--------- | --------- | --------- | --------- |
 `Multi` | Any data | `stop_on_failure` | Combine more validators together to check the same value. Will be valid if all child validators are valid.
 `DataValidator` | arrays or instances of `Traversable` | --- | Validate a collection of data, each child validator is assigned to a different part of the data, assigned by key
 
@@ -309,7 +309,12 @@ The method `log_error()` accepts a third argument to pass a specific template th
 use Inpsyde\Validator\Error;
 
 $logger = new Error\WordPressErrorLogger();
-$logger->log_error( $validator->get_error_code(), $validator->get_input_data(), '%value% is wrong, try again.' );
+
+$logger->log_error(
+	$validator->get_error_code(),
+	$validator->get_input_data(),
+	'%value% is wrong, try again.'
+);
 ```
 
 When used like this, the custom template does not affect all the other messages for same code, but only the error
