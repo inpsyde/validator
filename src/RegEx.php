@@ -79,6 +79,7 @@ class RegEx implements ExtendedValidatorInterface {
 
 		if ( ! is_string( $value ) && ! is_int( $value ) && ! is_float( $value ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_SCALAR;
+			$this->update_error_messages();
 
 			return FALSE;
 		}
@@ -87,6 +88,7 @@ class RegEx implements ExtendedValidatorInterface {
 
 		if ( $valid === FALSE ) {
 			$this->error_code = Error\ErrorLoggerInterface::REGEX_INTERNAL_ERROR;
+			$this->update_error_messages();
 
 			return FALSE;
 		}

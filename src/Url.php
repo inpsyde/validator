@@ -111,6 +111,7 @@ class Url implements ExtendedValidatorInterface {
 
 		if ( ! is_string( $value ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_STRING;
+			$this->update_error_messages();
 
 			return FALSE;
 
@@ -118,6 +119,7 @@ class Url implements ExtendedValidatorInterface {
 
 		if ( $value === '' ) {
 			$this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+			$this->update_error_messages();
 
 			return FALSE;
 		}
@@ -125,6 +127,7 @@ class Url implements ExtendedValidatorInterface {
 		$pattern = sprintf( self::PATTERN, implode( '|', $this->options[ 'allowed_protocols' ] ) );
 		if ( ! preg_match( $pattern, $value ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::NOT_URL;
+			$this->update_error_messages();
 
 			return FALSE;
 		}
