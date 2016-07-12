@@ -7,7 +7,7 @@ This package provides a collection of validators for WordPress.
 * [Installation](#installation)
 * [What it is and how it works](#what-it-is-and-how-it-works)
 	* [Simple Validators](#simple-validators)
-	* [Composed validators](#composed-validators)
+	* [Compound validators](#compound-validators)
 	* [Error codes and input data](#error-codes-and-input-data)
 	* [Validators factory](#validators-factory)
 	* [Error messages](#error-messages)
@@ -42,7 +42,7 @@ Best served by Composer from Packagist. Package name is `inpsyde/validator`.
 
 The package provides validator objects that can be used to verify that some given data fulfill specific requirements.
  
-Most important method for each validator is `is_valid()` that receives some data and return `true` or `false`, depending
+Most important method for each validator is `is_valid()` that receives some data and returns `true` or `false`, depending
 on the provided data meets validator requirements.
 
 We can distinguish between "simple" and "compound" validators. Where the latter are validators that are made combining
@@ -60,10 +60,10 @@ Name | Can be used for | Options | Description
 `InArray` | Any data | `haystack`,`strict` | Verifies that given value is present in an haystack defined in options.
 `LessThan` | Any data | `max`,`inclusive` | Verifies that given value is `<` (or `<=`) option value.
 `NotEmpty` | Any data | --- | Verifies that given value is not empty. (Unlike PHP `empty()` function `0` and `'0'` are not considered empty)
-`RegEx` | Strings | `pattern` | Verifies that given string matches a regular expression patter defined in options.
-`Url` | Strings | `allowed_protocols`, `check_dns` | Verifies that given string is a valid URL. Check the DNS for the URL host.
+`RegEx` | Strings | `pattern` | Verifies that given string matches a regular expression pattern defined in options.
+`Url` | Strings | `allowed_protocols`, `check_dns` | Verifies that given string is a valid URL. Optionally also checks DNS.
 
-All validators are defined in `Inpsyde\Validator` namespace, so for example it is possible to use them like this:
+All validators are defined in `Inpsyde\Validator` namespace, so it is possible to use them like this:
 
 ```php
 $value = 8;
@@ -80,9 +80,9 @@ if ( $between->is_valid($value) ) {
 Other validators can be used in a pretty identical fashion.
 
 
-### Composed validators
+### Compound validators
 
-At the moment, there are two composed validators, they are:
+At the moment, there are two compound validators, they are:
 
 Name | Can be used for | Options | Description
 --------- | --------- | --------- | --------- |
@@ -103,28 +103,28 @@ use Inpsyde\Validator;
 $custom_between = new Validator\Multi(
 	['stop_on_failure' => TRUE ],
 	[
-		new Validator\GreaterThan(['min' => 10, inclusive' => true]),
-		new Validator\LessThan(['max' => 20, inclusive' => false]),
+		new Validator\GreaterThan(['min' => 10, 'inclusive' => true]),
+		new Validator\LessThan(['max' => 20, 'inclusive' => false]),
 	]
 );
 ```
 
-The first constructor argument, just like for all the "simple" validators, is an array of options, the second is an
-array of validators.
+The first constructor argument is an array of options, just like for all the "simple" validators.
+The second argument is an array of validators.
 
-By default all validators are called for the given value when `is_valid()` is called, but setting the option `stop_on_failure`
-to TRUE, the validator stop to perform validation when the first failing validator is reached.
+By default all validators are executed for the given value when `is_valid()` is called, but setting the option `stop_on_failure`
+to `TRUE`, the validator stops to perform validation when the first failing validator is reached.
 
-An alternative and less verbose way to build a `Multi` validator instance is to use the static method `with_validators()` that accepts
-a variadic number of validators objects:
+An alternative (and less verbose) way to build a `Multi` validator instance is to use the static method `with_validators()`
+that accepts a variadic number of validator objects:
 
 
 ```php
 use Inpsyde\Validator;
 
 $custom_between = Validator\Multi::with_validators(
-	new Validator\GreaterThan(['min' => 10, inclusive' => true]),
-	new Validator\LessThan(['max' => 20, inclusive' => false]),
+	new Validator\GreaterThan(['min' => 10, 'inclusive' => true]),
+	new Validator\LessThan(['max' => 20, 'inclusive' => false]),
 );
 ```
 
@@ -139,28 +139,29 @@ $custom_between = Validator\Multi::with_validators(...$validators)->stop_on_fail
 
 ### Error codes and input data
 
-In the example above the error message in case of failure is hardcoded. However, some validators may fail for different
-reasons. For example, `RegEx` validator may fail because the input provided is not a string, because the patter is not valid
-or just because the given value does not match the provided valid pattern.
+Some validators may fail for different reasons.
+
+For example, `RegEx` validator may fail because the input provided is not a string, or because the patter is not valid
+or just because the given value does not match the provided pattern.
 
 This is why all validators came with two additional methods (alongside `is_valid()`):
 
 * `get_error_code()`
 * `get_input_data()`
 
-**`get_error_code()`** returns a code that identifies tha kind of error that made the validator fail.
+**`get_error_code()`** returns a code that identifies the kind of error that made the validator fail.
 
-All error codes are available as class constants of the `Inpsyde\Validator\Error\ErrorLoggerInterface`. 
+All default error codes are available as interface constants of `Inpsyde\Validator\Error\ErrorLoggerInterface`. 
 
-For example, in the example above `$between->get_error_code()` had returned a `ErrorLoggerInterface::NOT_BETWEEN_STRICT`
-error, but if the option `inclusive` was `true`, the returned error would be `ErrorLoggerInterface::NOT_BETWEEN`.
+For example, `Between` validator might return `ErrorLoggerInterface::NOT_BETWEEN_STRICT`
+if `inclusive` option is `true`, or `ErrorLoggerInterface::NOT_BETWEEN` if it is `false`.
 
 **`get_input_data()`** returns an array with information on
 
-* the option the validator
-* the value validated
+* the validator options
+* the value that was validated
 
-For example, in the example above `$between->get_input_data()` had returned:
+For example, in the example above `Validator\Between::get_input_data()` might return:
 
 ```
 [
@@ -172,20 +173,20 @@ For example, in the example above `$between->get_input_data()` had returned:
 
 ### Validators factory
 
-The package ships with a validator factory class that can be used to build validator instance starting from some
+The package ships with a validator factory class that can be used to build validator instances starting from some
 configuration values.
 
-This is useful when more validators have to built in bulk form configuration files or for lazy instantiation.
+This is useful when more validators have to built in bulk from configuration files or for lazy instantiation.
 
-The factory has just one method `create()` that accepts a validator identifier as string and an ptional array of options.
+The factory has just one method `create()` that accepts a validator identifier as string and an optional array of options.
 
 Usage example:
 
 ```php
 $configuration = [
-	'between'   => ['min' => 10, 'max' => 20],
+	'between'   => [ 'min' => 10, 'max' => 20 ],
 	'not-empty' => [],
-	'in_array'  => ['haystack' => ['a', 'b', 'c']]
+	'in_array'  => [ 'haystack' => [ 'a', 'b', 'c' ] ]
 ];
 
 $factory = new Inpsyde\Validator\ValidatorFactory();
@@ -198,32 +199,32 @@ foreach($configuration as $identifier => $options) {
 }
 ```
 
-To construct shipped validators, it is also possible to use as identifier a class name without namespace, like: 
+To construct shipped validators, it is also possible to use as identifier their class name without namespace, like: 
 
 ```php
 $configuration = [
-	'Between'  => ['min' => 10, 'max' => 20],
+	'Between'  => [ 'min' => 10, 'max' => 20 ],
 	'NotEmpty' => [],
-	'InArray'  => ['haystack' => ['a', 'b', 'c']]
+	'InArray'  => [ 'haystack' => [ 'a', 'b', 'c' ] ]
 ];
 ```
 
-For any custom validator that implements validator interfaces, it is possible to pass the fully qualified name of the class
-to obtain a constructed instance.
+For any custom validator (see below) that implements validator interfaces, it is possible to pass the fully qualified
+name of the class to obtain a constructed instance.
 
 ### Error messages
 
-This package comes with objects dedicated to get error messages when validators fails.
+This package comes with objects dedicated to get error messages when validators fail.
 
 They are:
 
 * `Inpsyde\Validator\Error\ErrorLogger`
 * `Inpsyde\Validator\Error\WordPressErrorLogger`
 
-The two loggers works in the same way, however `WordPressErrorLogger` has support for translation via WordPress translation
-features.
+The two loggers works in the same way, however `WordPressErrorLogger` has support for translations via WordPress
+translation feature.
 
-There are two step involved in showing errors on these objects:
+There are two step involved in showing errors using these objects:
 
 1. *Log* the error(s)
 2. *Get* the array of logged errors
@@ -233,7 +234,7 @@ The code looks like this:
 ```php
 use Inpsyde\Validator;
 
-$between = new Validator\Between(['min' => 10, 'max' => 20, 'inclusive' => false]);
+$between = new Validator\Between([ 'min' => 10, 'max' => 20, 'inclusive' => false ]);
 
 if ( ! $between->is_valid() ) {
 
@@ -241,27 +242,28 @@ if ( ! $between->is_valid() ) {
 	$logger->log_error( $between->get_error_code(), $between->get_input_data() );
 	
 	foreach( $logger->get_error_messages() as $error ) {
-		echo "<p>{$error}</p>"
+		echo "<p>{$error}</p>";
 	}
 }
 ```
 
-It might seems it requires too much work, however when validating data with `DataValidator` (see below) most of the code
+It might seem it requires too much work, however when validating data with `DataValidator` (see below) most of the code
 above is not necessary.
 
 ### Error templates
 
-When using error loggers, the error messages are created using "templates": message strings that contain placeholders for
-values.
+When using error loggers, the error messages are created using "templates": message strings that contain placeholders
+for values.
 
-Every error code available as constant of `ErrorLoggerInterface` as a related template. For example, for the code
-`ErrorLoggerInterface::NOT_BETWEEN` the related template is:
+Every error code available as constant of `ErrorLoggerInterface` has a related template.
+
+For example, for the code `ErrorLoggerInterface::NOT_BETWEEN` the related template is:
 
 ```
 'The input <code>%value%</code> is not between <code>%min%</code> and <code>%max%</code>, inclusively.'
 ```
 
-Where `%value%`, `%min%` and `%max%` are placeholder that are replaced with data passed via `get_input_data()` when the
+Where `%value%`, `%min%` and `%max%` are placeholders that are replaced with data passed via `get_input_data()` when the
 error is logged.
 
 Error templates can be customized in 2 different ways:
@@ -281,14 +283,14 @@ For example:
 use Inpsyde\Validator\Error;
 
 $logger = new Error\WordPressErrorLogger();
-$logger->use_error_template(Error\ErrorLoggerInterface::NOT_BETWEEN, 'Hey, the value %value% is not ok.' );
+$logger->use_error_template( Error\ErrorLoggerInterface::NOT_BETWEEN, 'Hey, the value %value% is not ok.' );
 ```
 
 Doing like this, all the errors for `Error\ErrorLoggerInterface::NOT_BETWEEN` will use the given template, unless an
 error-specific template is provided when logging the error.
 
 Instead of using `use_error_template()` that replaces error templates one by one, it is possible to replace more
-templates at once passing an array of templates, where array keys are the error codes:
+templates at once passing to logger constructor an array of templates where array keys are the error codes:
 
 ```php
 use Inpsyde\Validator\Error;
@@ -311,9 +313,9 @@ use Inpsyde\Validator\Error;
 $logger = new Error\WordPressErrorLogger();
 
 $logger->log_error(
-	$validator->get_error_code(),
-	$validator->get_input_data(),
-	'%value% is wrong, try again.'
+	$validator->get_error_code(),   // code
+	$validator->get_input_data(),   // input data
+	'%value% is wrong, try again.', // custom error message template
 );
 ```
 
@@ -342,8 +344,8 @@ validating given data.
 - `add_validator()`
 - `add_validator_with_message()`
 
-The first just accept a validator instance, the second also accepts a custom message template that will be used to build
-the error message when this validator fail.
+The first just accepts a validator instance, the second also accepts a custom message template that will be used to
+build the error message when this validator fail.
 
 Example:
 
@@ -353,8 +355,8 @@ use Inpsyde\Validator;
 $validator = new Validator\DataValidator();
 
 $validator
-	->add_validator_with_message(new Validator\NotEmpty(), 'The given value must not be empty.')
-	->add_validator(new Validator\Url(['check_dns' => true ]));
+	->add_validator_with_message( new Validator\NotEmpty(), 'The given value must not be empty.' )
+	->add_validator( new Validator\Url([ 'check_dns' => true ]) );
 	
 $validator->is_valid([
 	'http://www.example.com',
@@ -363,17 +365,16 @@ $validator->is_valid([
 ]);
 ```
 
-Each element of the array passed to `is_valid()` will be validate against both the validator added.
-
-It is possible to setup `DataValidator` to validate each element of the given data using different validators.
+Each element of the array passed to `is_valid()` will be validated against both the validators added.
 
 In the example above, note how both `add_validator_with_message()` and `add_validator` implements "fluent interface" 
-allowing to chain call to them by returning an instance of validator.
+allowing to "chain" calls to them by returning an instance of validator.
 
 
 ### Add validator to *specific* items
 
-There's one method that allows to add validators to specific element of the given data, it is `add_validator_by_key()`.
+`DataValidator` also has one method that allows to add validators to specific element of the given data, it is
+`add_validator_by_key()`.
 
 It takes three arguments: an instance of validator, a key used to identify the data element, and optionally an error
 message template to use for the validator.
@@ -386,8 +387,8 @@ use Inpsyde\Validator;
 $validator = new Validator\DataValidator();
 
 $validator
-	->add_validator_by_key(new Validator\NotEmpty(), 'name', 'Name cannot be empty.')
-	->add_validator_by_key(new Validator\Url(), 'homepage', 'Homepage must be a valid URL.')
+	->add_validator_by_key( new Validator\NotEmpty(), 'name', 'Name cannot be empty.' )
+	->add_validator_by_key( new Validator\Url(), 'homepage', 'Homepage must be a valid URL.' )
 	
 $valid = $validator->is_valid([
 	'name'     => 'Inpsyde',
@@ -396,12 +397,12 @@ $valid = $validator->is_valid([
 
 if (! $valid) {
 	foreach( $validator->get_error_messages() as $error ) {
-		echo "<p>{$error}</p>"
+		echo "<p>{$error}</p>";
     }
 }
 ```
 
-As shown above, `DataValidator` is the only validator that supports `get_error_messages()` to obtain an array of all
+`DataValidator` is the only validator that supports `get_error_messages()` to obtain an array of all
 error occurred.
 
 
@@ -415,14 +416,15 @@ So, it is possible to create an error logger instance with custom error messages
 `DataValidator` constructor:
 
 ```php
-use Inpsyde\Validator;
+use Inpsyde\Validator\Error;
+use Inpsyde\Validator\DataValidator;
 
 $custom_templates = [
-	Validator\Error\ErrorLoggerInterface::NOT_BETWEEN        => 'Hey, the value %value% is not ok.',
-	Validator\Error\ErrorLoggerInterface::NOT_BETWEEN_STRICT => 'Hey, the value %value% is not ok. Really.' 
+	Error\ErrorLoggerInterface::NOT_BETWEEN        => 'Hey, the value %value% is not ok.',
+	Error\ErrorLoggerInterface::NOT_BETWEEN_STRICT => 'Hey, the value %value% is not ok. Really.' 
 ];
 
-$logger = new Validator\Error\WordPressErrorLogger( $custom_templates );
+$logger = new Error\WordPressErrorLogger( $custom_templates );
 
 $validator = new DataValidator( $logger );
 ```
@@ -432,18 +434,26 @@ $validator = new DataValidator( $logger );
 When using `DataValidator`, there is an additional placeholder:`'%key%'`, that will be replaced with the item key of the 
 value that caused the error.
 
-By default error messages have no `'%key%'` placeholder, so the string `"<code>%key%</code>: "` is prepended to default message.
+By default, error messages have no `'%key%'` placeholder, so the string `"<code>%key%</code>: "` is prepended to default message.
 
-For example the default message template `"The input <code>%value%</code> is not a valid URL."` becomes: 
-"<code>%key%</code>: The input <code>%value%</code> is not a valid URL."`.
+For example, the default message template
+
+> The input <code>%value%</code> is not a valid URL.
+ 
+becomes: 
+
+> <code>%key%</code>: The input <code>%value%</code> is not a valid URL.
 
 This only happens when **no** custom error template is provided using `add_validator_by_key()` or `add_validator_with_message()`,
-when that happens nothing is prepended, but if the custom template contain the `'%key%'` placeholder it will be replaced as well.
+when custom error template is provided, nothing is prepended to it, but if the custom template contains the `'%key%'` placeholder
+it will be replaced as well.
 
 ### Item key labels for error messages
 
-Sometimes it might be desirable that the error message does not contain the item key, but a label. For example, if the validator
-is used for data coming from an HTML form, would be nice if the error message would contain the input label, and not input name.
+Sometimes it might be desirable that the error message does not contain the item key, but a label.
+
+For example, if the validator is used to validate data coming from an HTML form, would be nice if the error message would
+contain the input label, and not input name.
 
 However, the input name (that will be the key in the submitted data array) is also needed to let `DataValidator` identify
 which validator apply to each field.
@@ -460,7 +470,7 @@ $validator = new DataValidator();
 
 $validator->add_validator_by_key(
 	new Validator\NotEmpty(),
-	[ 'key' => 'username', 'label' => __( 'User name', , 'txtdomain' ) ],
+	[ 'key' => 'username', 'label' => __( 'User name', , 'txtdomain' ) ], // key param is an array here
 	sprintf( __( '%s must not be empty.', 'txtdomain' ), %key% )
 );
 
@@ -483,7 +493,7 @@ Note how the label is used to replace the placeholder instead of the key.
 
 It is possible to create custom validators to be used with the package.
 
-Custom validators should implements the interface `ExtendedValidatorInterface` which contains the following methods:
+Custom validators should implement the interface `ExtendedValidatorInterface` which contains the following methods:
 
 * `get_error_code()`
 * `get_input_data()`
@@ -517,7 +527,7 @@ class YesNo implements ExtendedValidatorInterface {
 	public function is_valid( $value ) {
 	
 		/** @see ValidatorDataGetterTrait */
-		$this->input_data[ 'value' => $value]; 
+		$this->input_data[ 'value' => $value ]; 
 		
 		if ( ! is_string( $value ) ) {
 			// this is a default error
@@ -526,7 +536,7 @@ class YesNo implements ExtendedValidatorInterface {
 			return false;
 		}
 			
-		if ( ! in_array( strtolower( $value ), ['yes', 'no'], true ) ) {
+		if ( ! in_array( strtolower( $value ), [ 'yes', 'no' ], true ) ) {
 		    // custom error
 			$this->error_code = self::ERROR_CODE;
 			
@@ -539,9 +549,9 @@ class YesNo implements ExtendedValidatorInterface {
 }
 ```
 
-The validator emit two error codes, one is a default one, the other is custom.
+The validator might emit two error codes in case of error, one of them is a default error code, the other is custom.
 
-If the validator is intended to be used with `DataValidator` it is necessary to add the custom code to the error logger,
+If the validator is intended to be used with `DataValidator`, it is necessary to add the custom code to the error logger,
 something like:
 
 ```php
@@ -551,13 +561,11 @@ use Inpsyde\Validator\DataValidator;
 use Inpsyde\Validator\Error\WordPressErrorLogger;
 
 $yes_no_message = sprintf(
-	__( 'Accepted values are only "yes" and no. %s was given.', 'txtdmn' ),
-	'<code>%value%</code>'
+	__( 'Accepted values are only "yes" and "no". "%s" was given.', 'txtdmn' ),
+	'%value%'
 );
 
-$logger = new WordPressErrorLogger([
-	Validator\YesNo::ERROR_CODE => $message
-]);
+$logger = new WordPressErrorLogger([ Validator\YesNo::ERROR_CODE => $message ]);
 
 $validator = new DataValidator( $logger );
 
@@ -566,18 +574,20 @@ $validator->add_validator_by_key( new Validator\YesNo(), 'accepted' );
 
 ### Upgrading from version 1.0
 
-* The interface `ExtendedValidatorInterface` that contains `get_error_code()` and `get_input_data()`, was introduced in
-  version 1.1 of the package, version 1.0 used `ValidatorInterface`.
+* The interface `ExtendedValidatorInterface` that extends `ValidatorInterface` and contains
+  `get_error_code()` and `get_input_data()`, was introduced in version 1.1 of the package.
+  In version 1.0 validators implemented just `ValidatorInterface`.
 * `get_error_messages()` is deprecated from version 1.1
-* The whole reason for `ExtendedValidatorInterface` existence is maintain backward compatibility with any custom validator
-  built for version 1.0 and extending `ValidatorInterface` (we could not add methods to it without breaking compatibility).
+* The whole reason for `ExtendedValidatorInterface` existence is to maintain backward compatibility with any custom validator
+  built for version 1.0 and so extending `ValidatorInterface` (we could not add methods to it without breaking compatibility).
 
 For reasons above starting from version **2.0**:
 
 * `get_error_messages()` will be removed
 * `get_error_code()` and `get_input_data()` will be added to `ValidatorInterface`
-* `ExtendedValidatorInterface` will so become empty, and will just extend `ValidatorInterface`. It will be maintained for
-  compatibility with custom validators written for 1.1+, but will be deprecated and removed from version `3.0`.
+* `ExtendedValidatorInterface` will thus become empty, and will just extend `ValidatorInterface`.
+  It will be maintained for backward compatibility with custom validators written for 1.1+, but will be deprecated and
+  removed from version `3.0`.
 
 
 ----------------
