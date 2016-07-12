@@ -33,6 +33,7 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	const IS_EMPTY = 'is_empty';
 	const NOT_BETWEEN = 'not_between';
 	const NOT_BETWEEN_STRICT = 'not_between_strict';
+	const NOT_CLASS_NAME = 'not_class_name';
 	const NOT_EMAIL = 'not_email';
 	const NOT_GREATER = 'not_greater_than';
 	const NOT_GREATER_INCLUSIVE = 'not_greater_than_inclusive';

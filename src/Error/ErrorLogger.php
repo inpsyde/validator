@@ -64,6 +64,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			self::MULTIPLE_ERRORS              => 'Some errors occurred for <code>%value%</code>.',
 			self::NOT_BETWEEN                  => 'The input <code>%value%</code> is not between <code>%min%</code> and <code>%max%</code>, inclusively.',
 			self::NOT_BETWEEN_STRICT           => 'The input <code>%value%</code> is not strictly between <code>%min%</code> and <code>%max%</code>.',
+			self::NOT_CLASS_NAME               => 'The input <code>%value%</code> is not a valid class name.',
 			self::NOT_EMAIL                    => 'The input <code>%value%</code> is not a valid email address.',
 			self::NOT_GREATER                  => 'The input <code>%value%</code> is not greater than <code>%min%</code>.',
 			self::NOT_GREATER_INCLUSIVE        => 'The input <code>%value%</code> is not greater or equal than <code>%min%</code>.',

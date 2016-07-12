@@ -152,6 +152,13 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				'<code>%min%</code>',
 				'<code>%max%</code>'
 			),
+			self::NOT_CLASS_NAME               => sprintf(
+				__(
+					'The input %s is not a valid class name.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
 			self::NOT_EMAIL                    => sprintf(
 				__(
 					'The input %s is not a valid email address.',
