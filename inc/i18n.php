@@ -17,21 +17,10 @@ namespace Inpsyde\Validator;
  */
 function load_translations( $path = '' ) {
 
-	// If called outside WP context, let's cleanup WP globals we added and exit.
-	if (! function_exists('apply_filters') ) {
+	// If called outside WP context, let's cleanup WP globals and exit.
+	if ( ! function_exists( 'apply_filters' ) ) {
 
-		if (isset($GLOBALS['wp_filter']['after_setup_theme'][99][__NAMESPACE__ . '\\' . 'load_translations'])) {
-			unset($GLOBALS['wp_filter']['after_setup_theme'][99][__NAMESPACE__ . '\\' . 'load_translations']);
-			if (empty($GLOBALS['wp_filter']['after_setup_theme'][99])) {
-				unset($GLOBALS['wp_filter']['after_setup_theme'][99]);
-			}
-			if (empty($GLOBALS['wp_filter']['after_setup_theme'])) {
-				unset($GLOBALS['wp_filter']['after_setup_theme']);
-			}
-			if (empty($GLOBALS['wp_filter'])) {
-				unset($GLOBALS['wp_filter']);
-			}
-		}
+		cleanup_globals();
 
 		return;
 	}
@@ -68,8 +57,50 @@ function load_translations( $path = '' ) {
 	return $done[ 0 ];
 }
 
-// This file might be loaded from Composer autoload before `add_action` is available.
-// In that case, we "manually" add the function that loads the translation in global `$wp_filter`.
+/**
+ * If the package is used outside of WP context, we probably want to cleanup global vars
+ * we used to setup WP hook to load translations.
+ */
+function cleanup_globals() {
+
+	// If in WP context, don't mess up with global `$wp_filter`.
+	// If global `$wp_filter` already empty, there's nothing to cleanup.
+	if (
+		function_exists( 'add_action' )
+		|| ! is_array( $GLOBALS[ 'wp_filter' ] )
+		|| empty( $GLOBALS[ 'wp_filter' ] )
+	) {
+		return;
+	}
+
+	$callable = __NAMESPACE__ . '\\load_translations';
+
+	if ( isset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ][ $callable ] ) ) {
+		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ][ $callable ] );
+	}
+
+	if (
+		array_key_exists( 'after_setup_theme', $GLOBALS[ 'wp_filter' ] )
+		&& array_key_exists( 99, $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] )
+		&& empty( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] )
+	) {
+		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] );
+	}
+
+	if (
+		array_key_exists( 'after_setup_theme', $GLOBALS[ 'wp_filter' ] )
+		&& empty( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] )
+	) {
+		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] );
+	}
+
+	if ( empty( $GLOBALS[ 'wp_filter' ] ) ) {
+		unset( $GLOBALS[ 'wp_filter' ] );
+	}
+}
+
+// This file is loaded by Composer autoload, and that may happen before `add_action` is available.
+// In that case, we "manually" add in global `$wp_filter` the function that loads translations.
 // We use `after_setup_theme` with late priority so that from a plugin or theme would be possible to remove the hook
 // (and load no translation) or change the translation path via 'inpsyde-validator.translation_path' filter.
 // If an user want to load translation before 'after_setup_theme' is fired, it is possible to call
@@ -82,14 +113,14 @@ if ( ! function_exists( 'add_action' ) ) {
 	isset( $wp_filter[ 'after_setup_theme' ] ) or $wp_filter[ 'after_setup_theme' ] = [ ];
 	isset( $wp_filter[ 'after_setup_theme' ][ 99 ] ) or $wp_filter[ 'after_setup_theme' ][ 99 ] = [ ];
 
-	$wp_filter[ 'after_setup_theme' ][ 99 ][ __NAMESPACE__ . '\\' . 'load_translations' ] = [
+	$wp_filter[ 'after_setup_theme' ][ 99 ][ __NAMESPACE__ . '\\load_translations' ] = [
 		__NAMESPACE__ . '\\' . 'load_translations',
 		1
 	];
 
 } else {
 
-	add_action( 'after_setup_theme', __NAMESPACE__ . '\\' . 'load_translations', 99 );
+	add_action( 'after_setup_theme', __NAMESPACE__ . '\\load_translations', 99 );
 }
 
 
