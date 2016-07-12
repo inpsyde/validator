@@ -39,12 +39,12 @@ class Callback implements ExtendedValidatorInterface {
 		}
 
 		$this->options[ 'callback' ]   = $options[ 'callback' ];
-		$this->options[ 'error_code' ] = ( empty( $options[ 'error_code' ] )
-			|| ! is_string(
-				$options[ 'error_code' ]
-			) )
+		$this->options[ 'error_code' ] = empty( $options[ 'error_code' ] ) || ! is_string( $options[ 'error_code' ] )
 			? ErrorLoggerInterface::CUSTOM_ERROR
 			: $options[ 'error_code' ];
+
+		$this->input_data            = $this->options;
+		$this->input_data[ 'value' ] = NULL;
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Callback implements ExtendedValidatorInterface {
 		/** @var callable $callback */
 		$callback = $this->options[ 'callback' ];
 
-		$valid = $callback( $value );
+		$valid = filter_var( $callback( $value ), FILTER_VALIDATE_BOOLEAN );
 
 		if ( ! $valid ) {
 			$this->error_code = $this->options[ 'error_code' ];
