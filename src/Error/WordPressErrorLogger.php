@@ -32,9 +32,57 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	public function __construct( array $messages = [ ] ) {
 
 		$default = [
-			self::INVALID_TYPE_NON_STRING      => sprintf(
+			self::CUSTOM_ERROR                 => sprintf(
 				__(
-					'Invalid type given for %s. String expected.',
+					'Some errors occurred for %s.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::INVALID_DATE                 => sprintf(
+				__(
+					'The input %s does not appear to be a valid date.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::INVALID_DATE_FORMAT          => sprintf(
+				__(
+					'The input %1$s does not fit the date format %2$s .',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%format%</code>'
+			),
+			self::INVALID_DNS                  => sprintf(
+				__(
+					'The host for the given input %s could not be resolved.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::INVALID_SIZE                 => sprintf(
+				'Size for input %1$s is not %2$s.',
+				'<code>%value%</code>',
+				'<code>%size%</code>'
+			),
+			self::INVALID_TYPE_NON_ARRAY       => sprintf(
+				__(
+					'Invalid type given for %s. Array expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::INVALID_TYPE_NON_COUNTABLE   => sprintf(
+				__(
+					'Invalid type given for %s. Countable data expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
+			self::INVALID_TYPE_NON_DATE        => sprintf(
+				__(
+					'Invalid type given for %s. String, integer, array or DateTime expected.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>'
@@ -53,6 +101,13 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				),
 				'<code>%value%</code>'
 			),
+			self::INVALID_TYPE_NON_STRING      => sprintf(
+				__(
+					'Invalid type given for %s. String expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>'
+			),
 			self::INVALID_TYPE_NON_TRAVERSABLE => sprintf(
 				__(
 					'Invalid type given for %s. Array or object implementing Traversable expected.',
@@ -60,9 +115,21 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				),
 				'<code>%value%</code>'
 			),
-			self::INVALID_TYPE_NON_DATE        => sprintf(
+			self::INVALID_TYPE_GIVEN           => sprintf(
 				__(
-					'Invalid type given for %s. String, integer, array or DateTime expected.',
+					'Invalid type given for %1$s. %2$s expected.',
+					'inpsyde-validator'
+				),
+				'<code>%value%</code>',
+				'<code>%type%</code>'
+			),
+			self::IS_EMPTY                     => __(
+				'This value should not be empty.',
+				'inpsyde-validator'
+			),
+			self::MULTIPLE_ERRORS              => sprintf(
+				__(
+					'ome errors occurred for %s.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>'
@@ -85,20 +152,12 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				'<code>%min%</code>',
 				'<code>%max%</code>'
 			),
-			self::INVALID_DATE                 => sprintf(
+			self::NOT_EMAIL                    => sprintf(
 				__(
-					'The input %s does not appear to be a valid date.',
+					'The input %s is not a valid email address.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>'
-			),
-			self::INVALID_DATE_FORMAT          => sprintf(
-				__(
-					'The input %1$s does not fit the date format %2$s .',
-					'inpsyde-validator'
-				),
-				'<code>%value%</code>',
-				'<code>%format%</code>'
 			),
 			self::NOT_GREATER                  => sprintf(
 				__(
@@ -140,21 +199,9 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				'<code>%value%</code>',
 				'<code>%max%</code>'
 			),
-			self::IS_EMPTY                     => __(
-				'This value should not be empty.',
-				'inpsyde-validator'
-			),
 			self::NOT_MATCH                    => sprintf(
 				__(
 					'The input %1$s does not match against pattern %2$s.',
-					'inpsyde-validator'
-				),
-				'<code>%value%</code>',
-				'<code>%pattern%</code>'
-			),
-			self::REGEX_INTERNAL_ERROR         => sprintf(
-				__(
-					'There was an internal error while using the pattern %2$s for string %1$s.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>',
@@ -167,26 +214,13 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				),
 				'<code>%value%</code>'
 			),
-			self::INVALID_DNS                  => sprintf(
+			self::REGEX_INTERNAL_ERROR         => sprintf(
 				__(
-					'The host for the given input %s could not be resolved.',
+					'There was an internal error while using the pattern %2$s for string %1$s.',
 					'inpsyde-validator'
 				),
-				'<code>%value%</code>'
-			),
-			self::MULTIPLE_ERRORS              => sprintf(
-				__(
-					'ome errors occurred for %s.',
-					'inpsyde-validator'
-				),
-				'<code>%value%</code>'
-			),
-			self::CUSTOM_ERROR                 => sprintf(
-				__(
-					'Some errors occurred for %s.',
-					'inpsyde-validator'
-				),
-				'<code>%value%</code>'
+				'<code>%value%</code>',
+				'<code>%pattern%</code>'
 			),
 		];
 
