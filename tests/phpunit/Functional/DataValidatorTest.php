@@ -36,7 +36,7 @@ class DataValidatorTest extends \PHPUnit_Framework_TestCase {
 			[ 'validator' => 'greater-than', 'options' => [ 'min' => 8, 'max' => 9 ] ],
 			new LessThan( [ 'max' => 9 ] )
 		);
-		$multi_1->stopOnFailure();
+		$multi_1->stop_on_failure();
 
 		$multi_2 = Multi::with_validators( new GreaterThan( [ 'min' => 10 ] ), new LessThan( [ 'max' => 20 ] ) );
 
@@ -74,7 +74,7 @@ class DataValidatorTest extends \PHPUnit_Framework_TestCase {
 		];
 
 		$expected_messages = [
-			'<code>an_empty_string</code>: No data value should be empty.',
+			'No data value should be empty.',
 			'<code>an_integer</code>: The input <code>(integer) 10</code> is not less than <code>(integer) 9</code>.',
 			'<code>an_empty_string</code>: The input does not match against pattern <code>/Hello/</code>.',
 			'"Float value" should be a float > 10 and < 20. "(double) 5.5" is wrong.',
@@ -84,7 +84,6 @@ class DataValidatorTest extends \PHPUnit_Framework_TestCase {
 		$this->assertFalse( $validator->is_valid( $data ) );
 		$this->assertSame( $expected_codes, $validator->get_error_codes() );
 		$this->assertSame( $expected_messages, $validator->get_error_messages() );
-
 	}
 
 }

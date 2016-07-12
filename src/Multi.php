@@ -26,7 +26,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	 * @var ExtendedValidatorInterface[]
 	 */
 	private $validators = [ ];
-	
+
 	/**
 	 * @var array
 	 */
@@ -151,7 +151,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	 *
 	 * @return Multi
 	 */
-	public function stopOnFailure() {
+	public function stop_on_failure() {
 
 		$validator                               = clone $this;
 		$validator->options[ 'stop_on_failure' ] = TRUE;
