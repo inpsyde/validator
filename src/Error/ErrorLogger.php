@@ -111,11 +111,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 
 		if ( is_null( $error_template ) ) {
 			$this->check_error_code( $code );
-			$error_template = $this->messages[ $code ];
-		}
-
-		if ( is_string( $error_template ) && ! substr_count( $error_template, '%key%' ) ) {
-			$error_template = '<code>%key%</code>: ' . $error_template;
+			$error_template = '<code>%key%</code>: ' . $this->messages[ $code ];
 		}
 
 		return $this->log_error( $code, $data, $error_template );
