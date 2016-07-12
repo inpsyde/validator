@@ -1,11 +1,24 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator;
 
 /**
- * Class AbstractValidator
+ * Class AbstractValidator.
  *
- * @package Inpsyde\Validator
+ * Deprecated, will be removed in future versions.
+ *
+ * @author     Christian Brückner <chris@chrico.info>
+ * @package    inpsyde-validator
+ * @license    http://opensource.org/licenses/MIT MIT
+ * @deprecated Implement ExtendedValidatorInterface for custom validators
  */
 abstract class AbstractValidator implements ValidatorInterface {
 
@@ -35,6 +48,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * @param array $message_templates
 	 *
 	 * @return \Inpsyde\Validator\AbstractValidator
+	 * @deprecated
 	 */
 	public function __construct( array $options = [ ], array $message_templates = [ ] ) {
 
@@ -49,6 +63,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 
 	/**
 	 * {@inheritdoc}
+	 * @deprecated
 	 */
 	public function get_error_messages() {
 
@@ -59,6 +74,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * Returns the stored messages templates.
 	 *
 	 * @return array
+	 * @deprecated
 	 */
 	public function get_message_templates() {
 
@@ -71,6 +87,8 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * @param    String $name
 	 *
 	 * @return    String $template
+	 *
+	 * @deprecated
 	 */
 	public function get_message_template( $name ) {
 
@@ -85,6 +103,8 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * Returns the stored options.
 	 *
 	 * @return array
+	 *
+	 * @deprecated
 	 */
 	public function get_options() {
 
@@ -97,6 +117,8 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * @param mixed  $value
 	 *
 	 * @return ValidatorInterface
+	 *
+	 * @deprecated
 	 */
 	protected function set_error_message( $message_name, $value ) {
 
@@ -112,6 +134,8 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * @param   String $value
 	 *
 	 * @return  Null|String
+	 *
+	 * @deprecated
 	 */
 	protected function create_error_message( $message_name, $value ) {
 
@@ -139,6 +163,8 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 * @param   mixed $value
 	 *
 	 * @return  string $type
+	 *
+	 * @deprecated
 	 */
 	protected function get_value_as_string( $value ) {
 

@@ -9,6 +9,11 @@
       "email": "chris@chrico.info",
       "homepage": "https://www.chrico.info",
       "role": "Developer"
+    },
+    {
+      "name": "Giuseppe Mazzapica",
+      "email": "giuseppe.mazzapica@gmail.com",
+      "role": "Developer"
     }
   ],
   "support": {
@@ -19,13 +24,16 @@
     "php": ">=5.5.0"
   },
   "require-dev": {
-    "php": ">=5.5.0",
-    "phpunit/phpunit": "~4.8|~5.1"
+    "phpunit/phpunit": "~4.8|~5.1",
+    "mockery/mockery": "0.9.*"
   },
   "autoload": {
     "psr-4": {
       "Inpsyde\\Validator\\": "src/"
-    }
+    },
+    "files": [
+      "inc/i18n.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

@@ -1,25 +1,53 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator;
 
 /**
  * Class Url
  *
- * @package Inpsyde\Validator
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
-class Url extends AbstractValidator {
+class Url implements ExtendedValidatorInterface {
 
-	const NOT_URL = 'notURL';
-	const INVALID_TYPE = 'invalidType';
-	const INVALID_DNS = 'invalidDNS';
-	const NOT_EMPTY = 'notEmpty';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const NOT_URL = Error\ErrorLoggerInterface::NOT_URL;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_TYPE = Error\ErrorLoggerInterface::INVALID_TYPE_NON_STRING;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_DNS = Error\ErrorLoggerInterface::INVALID_DNS;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const NOT_EMPTY = Error\ErrorLoggerInterface::IS_EMPTY;
 
 	/**
 	 * The pattern to validate the given value as "url".
 	 *
-	 * @var string
 	 */
-	private $pattern = '~^
+	const PATTERN = '~^
             (%s)://                                 # protocol
             (([\pL\pN-]+:)?([\pL\pN-]+)@)?          # basic auth
             (
@@ -38,53 +66,79 @@ class Url extends AbstractValidator {
 	/**
 	 * @var array
 	 */
-	protected $message_templates = [
-		self::NOT_URL      => "The input <code>%value%</code> is not a valid URL.",
-		self::INVALID_TYPE => "The input <code>%value%</code> should be a string.",
-		self::INVALID_DNS  => "The host for the given input <code>%value%</code> could not be resolved.",
-		self::NOT_EMPTY    => "The given input shouldn't be empty."
-	];
-
 	protected $options = [
 		'allowed_protocols' => [ 'http', 'https' ],
 		'check_dns'         => FALSE
 	];
 
 	/**
+	 * @var array
+	 */
+	protected $message_templates = [
+		Error\ErrorLoggerInterface::NOT_URL                 => "The input <code>%value%</code> is not a valid URL.",
+		Error\ErrorLoggerInterface::INVALID_TYPE_NON_STRING => "The input <code>%value%</code> should be a string.",
+		Error\ErrorLoggerInterface::INVALID_DNS             => "The host for the given input <code>%value%</code> could not be resolved.",
+		Error\ErrorLoggerInterface::IS_EMPTY                => "The given input shouldn't be empty."
+	];
+
+	/**
+	 * @param array $options
+	 */
+	public function __construct( array $options = [ ] ) {
+
+		$protocols = isset( $options[ 'allowed_protocols' ] ) && is_array( $options[ 'allowed_protocols' ] )
+			? array_filter( $options[ 'allowed_protocols' ], 'is_string ' )
+			: [ ];
+
+		$this->options[ 'allowed_protocols' ] = $protocols ? : [ 'http', 'https' ];
+
+		$this->options[ 'check_dns' ] = isset( $options[ 'check_dns' ] )
+			? filter_var( $options[ 'check_dns' ], FILTER_VALIDATE_BOOLEAN )
+			: FALSE;
+
+		$this->input_data            = $this->options;
+		$this->input_data[ 'value' ] = NULL;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function is_valid( $value ) {
 
-		if ( ! is_scalar( $value ) && ! ( is_object( $value ) && method_exists( $value, '__toString' ) ) ) {
-			$this->set_error_message( self::INVALID_TYPE, $value );
+		$this->input_data[ 'value' ] = $value;
+
+		( is_object( $value ) && method_exists( $value, '__toString' ) ) and $value = (string) $value;
+
+		if ( ! is_string( $value ) ) {
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_STRING;
 
 			return FALSE;
 
 		}
 
-		$value = (string) $value;
 		if ( $value === '' ) {
-			$this->set_error_message( self::NOT_EMPTY, $value );
+			$this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
 
 			return FALSE;
 		}
 
-		$pattern = sprintf( $this->pattern, implode( '|', $this->options[ 'allowed_protocols' ] ) );
+		$pattern = sprintf( self::PATTERN, implode( '|', $this->options[ 'allowed_protocols' ] ) );
 		if ( ! preg_match( $pattern, $value ) ) {
-			$this->set_error_message( self::NOT_URL, $value );
+			$this->error_code = Error\ErrorLoggerInterface::NOT_URL;
 
 			return FALSE;
 		}
 
-		if ( (bool) $this->options[ 'check_dns' ] ) {
-			$host = parse_url( $value, PHP_URL_HOST );
-			if ( ! checkdnsrr( $host, 'ANY' ) ) {
-
-				return FALSE;
-			}
+		if ( ! $this->options[ 'check_dns' ] ) {
+			return TRUE;
 		}
 
-		return TRUE;
+		$host  = parse_url( $value, PHP_URL_HOST );
+		$valid = $host && checkdnsrr( $host, 'ANY' );
+		$valid or $this->error_code = Error\ErrorLoggerInterface::INVALID_DNS;
+		$valid or $this->update_error_messages();
+
+		return $valid;
 	}
 
 }
