@@ -1,4 +1,12 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator\Tests\Unit;
 
@@ -11,7 +19,10 @@ use stdClass;
 /**
  * Class DateTest
  *
- * @package Inpsyde\Validator\Tests\Unit
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
 class DateTest extends \PHPUnit_Framework_TestCase {
 
@@ -42,8 +53,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 		$validator = new Validator\Date( $options );
 		$this->assertEquals(
 			$result,
-			$validator->is_valid( $input ),
-			implode( "\n", $validator->get_error_messages() )
+			$validator->is_valid( $input )
 		);
 	}
 
@@ -99,7 +109,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Ensures that the validator can handle different manual dateformats
+	 * Ensures that the validator can handle different manual date formats
 	 *
 	 * @dataProvider provide__manual_dates
 	 */
@@ -110,8 +120,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result,
-			$validator->is_valid( $input ),
-			implode( "\n", $validator->get_error_messages() )
+			$validator->is_valid( $input )
 		);
 	}
 
@@ -128,6 +137,66 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 			"day_month_year_invalid"   => [ '08/22/10', 'd/m/Y', FALSE ],
 			"day_month_year_invalid_2" => [ '22/10', 'd/m/Y', FALSE ],
 		];
+	}
+
+	/**
+	 * Tests that error code is returned according to validation results and options.
+	 */
+	public function test_get_error_code() {
+
+		$validator_bad_type = new Validator\Date();
+		$validator_bad_type->is_valid( new stdClass() );
+		$code_bad_type = $validator_bad_type->get_error_code();
+
+		$validator_bad_format = new Validator\Date( [ 'format' => 'Y-d-m' ] );
+		$validator_bad_format->is_valid( '2007-02-99' );
+		$code_bad_format = $validator_bad_format->get_error_code();
+
+		$validator_bad_date = new Validator\Date( [ 'format' => 'Y-d-m' ] );
+		$validator_bad_date->is_valid( '' );
+		$code_bad_date = $validator_bad_date->get_error_code();
+
+		$this->assertSame( Validator\Error\ErrorLoggerInterface::INVALID_TYPE_NON_DATE, $code_bad_type );
+		$this->assertSame( Validator\Error\ErrorLoggerInterface::INVALID_DATE_FORMAT, $code_bad_format );
+		$this->assertSame( Validator\Error\ErrorLoggerInterface::INVALID_DATE, $code_bad_date );
+	}
+
+	/**
+	 * Even if deprecated, we need to test get_error_messages() is backward compatible
+	 */
+	public function test_get_error_messages() {
+
+		$validator = new Validator\Date( [ 'format' => 'Y-d-m' ] );
+		$validator->is_valid( '' );
+		$validator->is_valid( '2007-02-99' );
+
+		// muted because triggers deprecation notices
+		$messages = @$validator->get_error_messages();
+
+		$this->assertInternalType( 'array', $messages );
+		$this->assertCount( 2, $messages );
+		$this->assertContains( 'does not appear to be a valid date', reset( $messages ) );
+		$this->assertContains( 'does not fit the date format', end( $messages ) );
+	}
+
+	/**
+	 * Tests that input data is returned according to validation results and options.
+	 */
+	public function test_get_input_data() {
+
+		$validator = new Validator\Date();
+
+		$validator->is_valid( '01.01.2007' );
+		$input = $validator->get_input_data();
+
+		$this->assertInternalType( 'array', $input );
+		$this->assertArrayHasKey( 'value', $input );
+		$this->assertSame( '01.01.2007', $input[ 'value' ] );
+
+		$validator->is_valid( '01.01.2008' );
+
+		$input = $validator->get_input_data();
+		$this->assertSame( '01.01.2008', $input[ 'value' ] );
 	}
 
 }

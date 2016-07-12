@@ -1,13 +1,25 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator\Tests\Unit;
 
+use Inpsyde\Validator\Error\ErrorLoggerInterface;
 use Inpsyde\Validator\LessThan;
 
 /**
  * Class LessThanTest
  *
- * @package Inpsyde\Validator\Tests\Unit
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
 class LessThanTest extends \PHPUnit_Framework_TestCase {
 
@@ -22,8 +34,7 @@ class LessThanTest extends \PHPUnit_Framework_TestCase {
 		foreach ( $values as $value ) {
 			$this->assertEquals(
 				$excepted,
-				$validator->is_valid( $value ),
-				implode( "\n", $validator->get_error_messages() )
+				$validator->is_valid( $value )
 			);
 		}
 
@@ -77,6 +88,43 @@ class LessThanTest extends \PHPUnit_Framework_TestCase {
 				[ 100, 100.0, 100.01 ]
 			]
 		];
+	}
+
+	/**
+	 * Tests that error code is returned according to validation results and options.
+	 */
+	public function test_get_error_code() {
+
+		$validator = new LessThan( [ 'max' => 2, 'inclusive' => FALSE ] );
+		$validator->is_valid( 2 );
+		$code = $validator->get_error_code();
+
+		$validator_inc = new LessThan( [ 'max' => 2, 'inclusive' => TRUE ] );
+		$validator_inc->is_valid( 3 );
+		$code_inc = $validator_inc->get_error_code();
+
+		$this->assertSame( ErrorLoggerInterface::NOT_LESS, $code );
+		$this->assertSame( ErrorLoggerInterface::NOT_LESS_INCLUSIVE, $code_inc );
+	}
+
+	/**
+	 * Tests that input data is returned according to validation results and options.
+	 */
+	public function test_get_input_data() {
+
+		$validator = new LessThan();
+
+		$validator->is_valid( 1 );
+		$input = $validator->get_input_data();
+
+		$this->assertInternalType( 'array', $input );
+		$this->assertArrayHasKey( 'value', $input );
+		$this->assertSame( 1, $input[ 'value' ] );
+
+		$validator->is_valid( 2 );
+
+		$input = $validator->get_input_data();
+		$this->assertSame( 2, $input[ 'value' ] );
 	}
 
 }

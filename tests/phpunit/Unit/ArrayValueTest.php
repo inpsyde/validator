@@ -1,14 +1,23 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator\Tests\Unit;
 
 use Inpsyde\Validator\ArrayValue;
-use Inpsyde\Validator\ValidatorInterface;
 
 /**
  * Class ArrayValueTest
  *
- * @package Inpsyde\Validator\Tests\Unit
+ * @author  Christian Brückner <chris@chrico.info>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
 class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 
@@ -23,7 +32,7 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * Tests the different input types and expected result.
-	 * 
+	 *
 	 * @dataProvider provide__value_types
 	 */
 	public function test__invalid_value_type( $input, $expected ) {
@@ -40,12 +49,12 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 	public function provide__value_types() {
 
 		return [
-			'valid_array'       => [ [ 'key' => 'value' ], TRUE ],
+			'valid_array'         => [ [ 'key' => 'value' ], TRUE ],
 			'valid_traversable_1' => [ $this->getMock( 'Traversable' ), TRUE ],
 			'valid_traversable_2' => [ $this->getMock( 'Iterator' ), TRUE ],
-			'string'            => [ '', FALSE ],
-			'int'               => [ 1, FALSE ],
-			'boolean'           => [ TRUE, FALSE ]
+			'string'              => [ '', FALSE ],
+			'int'                 => [ 1, FALSE ],
+			'boolean'             => [ TRUE, FALSE ]
 		];
 
 	}
@@ -144,8 +153,8 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 
 		$mock = $this->getMock( '\Inpsyde\Validator\ValidatorInterface' );
 		$mock->expects( new \PHPUnit_Framework_MockObject_Matcher_InvokedCount( $called ) )
-		     ->method( 'is_valid' )
-		     ->will( $this->returnValue( $return_value ) );
+			->method( 'is_valid' )
+			->will( $this->returnValue( $return_value ) );
 
 		return $mock;
 	}

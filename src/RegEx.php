@@ -1,62 +1,100 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator;
 
 /**
  * Class RegEx
  *
- * @package Inpsyde\Validator
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
-class RegEx extends AbstractValidator {
+class RegEx implements ExtendedValidatorInterface {
 
-	const INVALID_TYPE = 'invalidType';
-	const NOT_MATCH = 'notMatch';
-	const ERROROUS = 'errorous';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const INVALID_TYPE = Error\ErrorLoggerInterface::INVALID_TYPE_NON_SCALAR;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const NOT_MATCH = Error\ErrorLoggerInterface::NOT_MATCH;
+
+	/**
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const ERROROUS = Error\ErrorLoggerInterface::REGEX_INTERNAL_ERROR;
 
 	/**
 	 * @var array
+	 */
+	protected $options = [ ];
+
+	/**
+	 * @var array
+	 * @deprecated
 	 */
 	protected $message_templates = [
-		self::INVALID_TYPE => "Invalid type given. String, integer or float expected",
-		self::NOT_MATCH    => "The input does not match against pattern '%pattern%'",
-		self::ERROROUS     => "There was an internal error while using the pattern '%pattern%'",
+		Error\ErrorLoggerInterface::INVALID_TYPE_NON_SCALAR => "Invalid type given. String, integer or float expected",
+		Error\ErrorLoggerInterface::NOT_MATCH               => "The input does not match against pattern '%pattern%'",
+		Error\ErrorLoggerInterface::REGEX_INTERNAL_ERROR    => "There was an internal error while using the pattern '%pattern%'",
 	];
 
 	/**
-	 * @var array
+	 * @param array $options
 	 */
-	protected $options = [
-		'pattern' => ''
-	];
+	public function __construct( array $options = [ ] ) {
+
+		$pattern = isset( $options[ 'pattern' ] ) && is_string( $options[ 'pattern' ] ) ? $options[ 'pattern' ] : '';
+		$first   = $pattern ? substr( $pattern, 0, 1 ) : '';
+		$last    = $pattern ? substr( $pattern, - 1, 1 ) : '';
+		( $first && ( $first !== $last || strlen( $pattern ) === 1 ) ) and $pattern = "~{$pattern}~";
+
+		$this->options[ 'pattern' ]  = $pattern;
+		$this->input_data            = $this->options;
+		$this->input_data[ 'value' ] = NULL;
+	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function is_valid( $value ) {
+
+		$this->input_data[ 'value' ] = $value;
 
 		$pattern = $this->options[ 'pattern' ];
 
 		if ( ! is_string( $value ) && ! is_int( $value ) && ! is_float( $value ) ) {
-			$this->set_error_message( self::INVALID_TYPE, $value );
+			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_SCALAR;
 
 			return FALSE;
 		}
 
-		$status = preg_match( $pattern, $value );
+		$valid = @preg_match( $pattern, $value );
 
-		if ( $status === FALSE ) {
-			$this->set_error_message( self::ERROROUS, $value );
-
-			return FALSE;
-		}
-
-		if ( ! $status ) {
-			$this->set_error_message( self::NOT_MATCH, $value );
+		if ( $valid === FALSE ) {
+			$this->error_code = Error\ErrorLoggerInterface::REGEX_INTERNAL_ERROR;
 
 			return FALSE;
 		}
 
-		return TRUE;
+		$valid or $this->error_code = Error\ErrorLoggerInterface::NOT_MATCH;
+		$valid or $this->update_error_messages();
+
+		return $valid > 0;
 	}
 
 }

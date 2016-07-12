@@ -1,6 +1,16 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator\Tests\Unit;
+
+use Inpsyde\Validator\Tests\Stub\AlwaysFalseWithInvalidMessageValidator;
 
 /**
  * Class AbstractValidatorTest
@@ -43,7 +53,7 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 
 		/** @var \Inpsyde\Validator\AbstractValidator $stub */
 		$stub = $this->create_stub();
-		$this->assertEquals( [ ], $stub->get_error_messages() );
+		$this->assertEquals( [ ], @$stub->get_error_messages() );
 	}
 
 	/**
@@ -51,10 +61,10 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function test_error_message_creation() {
 
-		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator();
+		$validator = new AlwaysFalseWithInvalidMessageValidator();
 		$validator->is_valid( '' );
 
-		$this->assertNotEmpty( $validator->get_error_messages() );
+		$this->assertNotEmpty( @$validator->get_error_messages() );
 	}
 
 	/**
@@ -77,13 +87,13 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 			'key' => $expected_option_value
 		];
 		$message_template = [
-			Fake\AlwaysFalseWithInvalidMessageValidator::INVALID => $message_template
+			AlwaysFalseWithInvalidMessageValidator::INVALID => $message_template
 		];
 
-		$validator = new Fake\AlwaysFalseWithInvalidMessageValidator( $options, $message_template );
+		$validator = new AlwaysFalseWithInvalidMessageValidator( $options, $message_template );
 		$validator->is_valid( $expected_value );
 
-		$this->assertEquals( [ $expected_error ], $validator->get_error_messages() );
+		$this->assertEquals( [ $expected_error ], @$validator->get_error_messages() );
 	}
 
 	/**
@@ -118,9 +128,9 @@ class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
 		/** @var \Inpsyde\Validator\ValidatorInterface */
 		$stub = $this->create_stub();
 		$stub->expects( $this->any() )
-		     ->method( 'is_valid' )
-		     ->with( $value )
-		     ->will( $this->returnValue( FALSE ) );
+			->method( 'is_valid' )
+			->with( $value )
+			->will( $this->returnValue( FALSE ) );
 
 		$this->assertFalse( $stub->is_valid( $value ) );
 	}

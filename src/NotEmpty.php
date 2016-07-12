@@ -1,35 +1,53 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+/*
+ * This file is part of the inpsyde-validator package.
+ *
+ * (c) Inpsyde GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Inpsyde\Validator;
 
 /**
  * Class NotEmpty
  *
- * @package Inpsyde\Validator
+ * @author  Christian Brückner <chris@chrico.info>
+ * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
+ * @package inpsyde-validator
+ * @license http://opensource.org/licenses/MIT MIT
  */
-class NotEmpty extends AbstractValidator {
+class NotEmpty implements ExtendedValidatorInterface {
 
-	const IS_EMPTY = 'isEmpty';
+	use ValidatorDataGetterTrait;
+	use GetErrorMessagesTrait;
 
 	/**
-	 * {@inheritdoc}
+	 * @deprecated Error codes are now defined in Error\ErrorLoggerInterface
+	 */
+	const IS_EMPTY = Error\ErrorLoggerInterface::IS_EMPTY;
+
+	/**
+	 * @var array
+	 * @deprecated
 	 */
 	protected $message_templates = [
-		self::IS_EMPTY => "This value should not be empty.",
+		Error\ErrorLoggerInterface::IS_EMPTY => "This value should not be empty.",
 	];
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function is_valid( $value ) {
 
-		if ( $value === FALSE || ( empty( $value ) && $value != '0' ) ) {
-			$this->set_error_message( self::IS_EMPTY, $value );
+		$this->input_data = [ 'value' => $value ];
 
-			return FALSE;
-		}
+		$valid = ! empty( $value ) || in_array( $value, [ 0, '0' ], TRUE );
+		$valid or $this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+		$valid or $this->update_error_messages();
 
-		return TRUE;
+		return $valid;
 	}
 
 }

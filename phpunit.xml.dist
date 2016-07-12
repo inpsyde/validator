@@ -7,9 +7,15 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	>
+	<listeners>
+		<listener class="\Mockery\Adapter\Phpunit\TestListener"></listener>
+	</listeners>
 	<testsuites>
 		<testsuite name="unit">
 			<directory suffix="Test.php">tests/phpunit/Unit</directory>
+		</testsuite>
+		<testsuite name="functional">
+			<directory suffix="Test.php">tests/phpunit/Functional</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
