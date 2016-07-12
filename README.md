@@ -354,7 +354,7 @@ $validator = new Validator\DataValidator();
 
 $validator
 	->add_validator_with_message(new Validator\NotEmpty(), 'The given value must not be empty.')
-	->add_validator(new Url(['check_dns' => true ]));
+	->add_validator(new Validator\Url(['check_dns' => true ]));
 	
 $validator->is_valid([
 	'http://www.example.com',
