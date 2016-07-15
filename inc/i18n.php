@@ -10,6 +10,11 @@
 
 namespace Inpsyde\Validator;
 
+// Exit early in case multiple Composer autoloaders try to include this file.
+if ( function_exists( __NAMESPACE__ . '\\' . 'load_translations' ) ) {
+	return;
+}
+
 /**
  * @param string $path
  *
