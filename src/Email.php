@@ -63,7 +63,9 @@ class Email implements ExtendedValidatorInterface {
 			return TRUE;
 		}
 
-		if ( ! checkdnsrr( explode( '@', $value, 2 ), 'ANY' ) ) {
+		$parts = explode( '@', $value, 2 );
+
+		if ( ! checkdnsrr( end( $parts ), 'ANY' ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_DNS;
 			$this->update_error_messages();
 
