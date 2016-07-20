@@ -30,7 +30,9 @@ class Type implements ExtendedValidatorInterface {
 		'string'      => 'string',
 		'int'         => 'integer',
 		'boolean'     => 'boolean',
-		'bool'        => 'bool',
+		'bool'        => 'boolean',
+		'resource'    => 'resource',
+		'object'      => 'object',
 		'null'        => 'null',
 		'traversable' => 'traversable',
 		'numeric'     => 'numeric',
@@ -54,7 +56,7 @@ class Type implements ExtendedValidatorInterface {
 		$type  = $options[ 'type' ];
 		$lower = strtolower( $type );
 
-		$this->options[ 'type' ]     = array_key_exists( $lower, self::$types ) ? $lower : $type;
+		$this->options[ 'type' ]     = array_key_exists( $lower, self::$types ) ? self::$types[ $lower ] : $type;
 		$this->input_data            = $this->options;
 		$this->input_data[ 'value' ] = NULL;
 	}
@@ -66,21 +68,19 @@ class Type implements ExtendedValidatorInterface {
 
 		$this->input_data = [ 'value' => $value ];
 
-		$type = strtolower( gettype( $value ) );
-
-		if ( $type === $this->options[ 'type' ] ) {
+		if ( strtolower( gettype( $value ) ) === $this->options[ 'type' ] ) {
 			return TRUE;
 		}
 
-		if ( $type === 'object' && ltrim( get_class( $value ), '\\' ) === ltrim( $this->options[ 'type' ], '\\' ) ) {
-			return TRUE;
-		}
-
-		if ( $this->options[ 'type' ] === 'traversable' && ( $type === 'array' || $value instanceof \Traversable ) ) {
+		if ( is_object( $value ) && is_a( $value, $this->options[ 'type' ] ) ) {
 			return TRUE;
 		}
 
 		if ( $this->options[ 'type' ] === 'numeric' && is_numeric( $value ) ) {
+			return TRUE;
+		}
+
+		if ( $this->options[ 'type' ] === 'traversable' && ( is_array( $value ) || $value instanceof \Traversable ) ) {
 			return TRUE;
 		}
 
