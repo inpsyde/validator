@@ -48,7 +48,7 @@ class Size implements ExtendedValidatorInterface {
 
 		$this->input_data = [ 'value' => $value ];
 
-		if ( is_resource( $value ) ) {
+		if ( is_resource( $value ) || ( is_object( $value ) && ! $value instanceof \Countable ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_COUNTABLE;
 			$this->update_error_messages();
 
@@ -82,9 +82,8 @@ class Size implements ExtendedValidatorInterface {
 			case 'boolean' :
 				return (int) $value;
 			case 'array' :
-				return count( $value );
 			case 'object' :
-				return $value instanceof \Countable ? count( $value ) : 1;
+				return count( $value );
 		}
 
 		return 0;
