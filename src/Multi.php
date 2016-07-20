@@ -30,6 +30,16 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	private $options = [ ];
 
 	/**
+	 * Named constructor
+	 *
+	 * @return Multi
+	 */
+	public static function with_validators() {
+
+		return new static( [ 'validators' => func_get_args() ] );
+	}
+
+	/**
 	 * Multi constructor.
 	 *
 	 * @param array                        $options

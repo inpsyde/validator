@@ -23,15 +23,10 @@ trait MultiValidatorValidatorsTrait {
 	private $validators = [ ];
 
 	/**
-	 * Named constructor that can be used obtain an instance by passing a variadic number of validators.
-	 */
-	public static function with_validators() {
-
-		return new static( [ ], func_get_args() );
-	}
-
-	/**
-	 * @inheritdoc
+	 * @param ExtendedValidatorInterface $validator
+	 *
+	 * @return MultiValidatorInterface
+	 * @see MultiValidatorInterface::add_validator()
 	 */
 	public function add_validator( ExtendedValidatorInterface $validator ) {
 
@@ -41,7 +36,7 @@ trait MultiValidatorValidatorsTrait {
 	}
 
 	/**
-	 * @inheritdoc
+	 * @see \Countable::count()
 	 */
 	public function count() {
 

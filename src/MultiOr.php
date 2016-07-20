@@ -25,6 +25,16 @@ class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 	use MultiValidatorValidatorsTrait;
 
 	/**
+	 * Named constructor
+	 *
+	 * @return MultiOr
+	 */
+	public static function with_validators() {
+
+		return new static( [ 'validators' => func_get_args() ] );
+	}
+
+	/**
 	 * MultiOr constructor.
 	 *
 	 * @param array                        $options

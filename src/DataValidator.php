@@ -50,6 +50,23 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 	private $key_labels = [ ];
 
 	/**
+	 * @inheritdoc
+	 */
+	public static function with_validators() {
+
+		$instance = new static();
+		$args     = func_get_args();
+		array_walk(
+			$args, function ( $validator ) use ( $instance ) {
+
+			$instance->add_validator_to_stack( $validator, self::GENERIC_VALIDATOR_KEY );
+		}
+		);
+
+		return $instance;
+	}
+
+	/**
 	 * @param Error\ErrorLoggerInterface $error_logger
 	 */
 	public function __construct( Error\ErrorLoggerInterface $error_logger = NULL ) {
