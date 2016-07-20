@@ -11,13 +11,13 @@
 namespace Inpsyde\Validator;
 
 /**
- * Class FirstOf
+ * Class MultiOr
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class FirstOf implements ExtendedValidatorInterface, MultiValidatorInterface {
+class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
@@ -25,7 +25,7 @@ class FirstOf implements ExtendedValidatorInterface, MultiValidatorInterface {
 	use MultiValidatorValidatorsTrait;
 
 	/**
-	 * FirstOf constructor.
+	 * MultiOr constructor.
 	 *
 	 * @param array                        $options
 	 * @param ExtendedValidatorInterface[] $validators
