@@ -32,10 +32,16 @@ class Size implements ExtendedValidatorInterface {
 	 */
 	public function __construct( array $options = [ ] ) {
 
-		$this->options[ 'size' ] = isset( $options[ 'size' ] ) && is_numeric( $options[ 'size' ] )
-			? (int) $options[ 'size' ]
-			: 0;
+		$size = array_key_exists( 'size', $options ) ? $options[ 'size' ] : 0;
+		is_numeric( $size ) and $size = (int) $size;
 
+		if ( ! is_int( $size ) || $size < 0 ) {
+			throw new \InvalidArgumentException(
+				sprintf( 'Size option for %s must be a positive integer or 0.', __CLASS__ )
+			);
+		}
+
+		$this->options[ 'size' ]     = $size;
 		$this->input_data            = $this->options;
 		$this->input_data[ 'value' ] = NULL;
 
@@ -48,11 +54,19 @@ class Size implements ExtendedValidatorInterface {
 
 		$this->input_data = [ 'value' => $value ];
 
-		if ( is_resource( $value ) || ( is_object( $value ) && ! $value instanceof \Countable ) ) {
+		if (
+			is_resource( $value )
+			|| ( is_object( $value ) && ! ( $value instanceof \Countable || $value instanceof \stdClass ) )
+		) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_COUNTABLE;
 			$this->update_error_messages();
 
 			return FALSE;
+		}
+
+		if ( $value instanceof \stdClass ) {
+			$value_copy = clone $value;
+			$value      = get_object_vars( $value_copy );
 		}
 
 		if ( $this->calc_size( $value ) === $this->options[ 'size' ] ) {
@@ -86,7 +100,7 @@ class Size implements ExtendedValidatorInterface {
 				return count( $value );
 		}
 
-		return 0;
+		return - 1;
 
 	}
 
