@@ -37,11 +37,16 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	 */
 	public function __construct( array $options = [ ], array $validators = [ ] ) {
 
-		$this->options = isset( $options[ 'stop_on_failure' ] )
+		$this->options = array_key_exists( 'stop_on_failure', $options )
 			? filter_var( $options[ 'stop_on_failure' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
 		$factory = new ValidatorFactory();
+
+		array_key_exists( 'validators', $options ) and $validators = array_merge(
+			(array) $options[ 'validators' ],
+			$validators
+		);
 
 		foreach ( $validators as $validator ) {
 
@@ -52,8 +57,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 				$validator = $validator[ 'validator' ];
 			}
 
-			$instance           = $factory->create( $validator, $options );
-			$this->validators[] = $instance;
+			$this->add_validator( $factory->create( $validator, $options ) );
 		}
 	}
 

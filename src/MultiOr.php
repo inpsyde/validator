@@ -34,17 +34,21 @@ class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 
 		$factory = new ValidatorFactory();
 
+		array_key_exists( 'validators', $options ) and $validators = array_merge(
+			(array) $options[ 'validators' ],
+			$validators
+		);
+
 		foreach ( $validators as $validator ) {
 
 			$options = [ ];
 
 			if ( is_array( $validator ) && isset( $validator[ 'validator' ] ) ) {
-				isset( $validator[ 'options' ] ) and $options = (array) $validator[ 'options' ];
+				empty( $validator[ 'options' ] ) or $options = (array) $validator[ 'options' ];
 				$validator = $validator[ 'validator' ];
 			}
 
-			$instance           = $factory->create( $validator, $options );
-			$this->validators[] = $instance;
+			$this->add_validator( $factory->create( $validator, $options ) );
 		}
 	}
 
@@ -58,11 +62,16 @@ class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 		$error_data = [ ];
 		$error_code = '';
 
+		if ( ! $this->validators ) {
+			return TRUE;
+		}
+
 		foreach ( $this->validators as $validator ) {
 
 			if ( $validator->is_valid( $value ) ) {
 				$this->input_data = [ 'value' => $value ];
 				$this->error_code = '';
+				$this->error_data = [ ];
 
 				return TRUE;
 			}
