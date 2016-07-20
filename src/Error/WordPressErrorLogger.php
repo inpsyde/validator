@@ -206,6 +206,12 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				'<code>%value%</code>',
 				'<code>%max%</code>'
 			),
+			self::NOT_NEGATE_VALIDATOR         => sprintf(
+				__(
+					'%s returned true, but was expected to return false.',
+					'<code>%validator_name%::is_valid()</code>'
+				)
+			),
 			self::NOT_MATCH                    => sprintf(
 				__(
 					'The input %1$s does not match against pattern %2$s.',

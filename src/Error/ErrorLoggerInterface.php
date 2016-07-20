@@ -40,6 +40,7 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	const NOT_IN_ARRAY = 'not_in_array';
 	const NOT_LESS = 'not_less_than';
 	const NOT_LESS_INCLUSIVE = 'not_less_than_inclusive';
+	const NOT_NEGATE_VALIDATOR = 'not_negate';
 	const NOT_MATCH = 'not_match';
 	const NOT_URL = 'not_url';
 	const MULTIPLE_ERRORS = 'multiple_errors';

@@ -71,6 +71,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			self::NOT_IN_ARRAY                 => 'The input <code>%value%</code> is not in the haystack: <code>%haystack%</code>.',
 			self::NOT_LESS                     => 'The input <code>%value%</code> is not less than <code>%max%</code>.',
 			self::NOT_LESS_INCLUSIVE           => 'The input <code>%value%</code> is not less or equal than <code>%max%</code>.',
+			self::NOT_NEGATE_VALIDATOR         => '<code>%validator_name%::is_valid()</code> returned true, but was expected to return false.',
 			self::NOT_MATCH                    => 'The input does not match against pattern <code>%pattern%</code>.',
 			self::NOT_URL                      => 'The input <code>%value%</code> is not a valid URL.',
 			self::REGEX_INTERNAL_ERROR         => 'There was an internal error while using the pattern <code>%pattern%</code>.',
