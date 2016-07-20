@@ -17,7 +17,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Pool implements ExtendedValidatorInterface {
+class Pool implements SecondaryValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
@@ -26,6 +26,15 @@ class Pool implements ExtendedValidatorInterface {
 	 * @var array
 	 */
 	protected $options = [ ];
+
+	/**
+	 * @inheritdoc
+	 * @return Pool
+	 */
+	public static function with_validator( ExtendedValidatorInterface $validator ) {
+
+		return new static( [ 'validator' => $validator ] );
+	}
 
 	/**
 	 * @param array $options
@@ -62,8 +71,6 @@ class Pool implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
-
 		if ( ! is_array( $value ) && ! $value instanceof \Traversable ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE;
 			$this->update_error_messages();
@@ -74,12 +81,23 @@ class Pool implements ExtendedValidatorInterface {
 		/** @var ExtendedValidatorInterface $validator */
 		$validator = $this->options[ 'validator' ];
 
-		foreach ( $value as $item ) {
-			if ( $validator->is_valid( $item ) ) {
-				$this->input_data = $validator->get_input_data();
+		$valid = NULL;
 
+		foreach ( $value as $item ) {
+
+			$valid            = $validator->is_valid( $item );
+			$this->input_data = $validator->get_input_data();
+
+			if ( $valid ) {
 				return TRUE;
 			}
+		}
+
+		if ( is_null( $valid ) ) {
+			$this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+			$this->update_error_messages();
+
+			return FALSE;
 		}
 
 		$this->error_code = $validator->get_error_code();

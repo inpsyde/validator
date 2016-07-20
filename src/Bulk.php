@@ -10,6 +10,8 @@
 
 namespace Inpsyde\Validator;
 
+use Inpsyde\Validator\Error\ErrorLoggerInterface;
+
 /**
  * Class Bulk
  *
@@ -17,7 +19,7 @@ namespace Inpsyde\Validator;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Bulk implements ExtendedValidatorInterface {
+class Bulk implements SecondaryValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
@@ -26,6 +28,15 @@ class Bulk implements ExtendedValidatorInterface {
 	 * @var array
 	 */
 	protected $options = [ ];
+
+	/**
+	 * @inheritdoc
+	 * @return Bulk
+	 */
+	public static function with_validator( ExtendedValidatorInterface $validator ) {
+
+		return new static( [ 'validator' => $validator ] );
+	}
 
 	/**
 	 * @param array $options
@@ -62,8 +73,6 @@ class Bulk implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
-
 		if ( ! is_array( $value ) && ! $value instanceof \Traversable ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_TRAVERSABLE;
 			$this->update_error_messages();
@@ -71,29 +80,34 @@ class Bulk implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		$valid = TRUE;
+		if ( empty( $value ) ) {
+			$this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+			$this->update_error_messages();
+
+			return FALSE;
+		}
+
 		/** @var ExtendedValidatorInterface $validator */
 		$validator = $this->options[ 'validator' ];
 
+		$valid = NULL;
+
 		foreach ( $value as $item ) {
-			if ( ! $validator->is_valid( $item ) ) {
-				$this->input_data = $validator->get_input_data();
-				$valid            = FALSE;
-				break;
+
+			$valid            = $validator->is_valid( $item );
+			$this->input_data = $validator->get_input_data();
+
+			if ( ! $valid ) {
+				$this->error_code = $validator->get_error_code();
+				$this->update_error_messages();
+
+				return FALSE;
 			}
 		}
 
-		if ( $valid ) {
-			$this->input_data            = $this->options;
-			$this->input_data[ 'value' ] = NULL;
+		is_null( $valid ) and $this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
 
-			return TRUE;
-		}
-
-		$this->error_code = $validator->get_error_code();
-		$this->update_error_messages();
-
-		return FALSE;
+		return (bool) $valid;
 	}
 
 }
