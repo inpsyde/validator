@@ -61,6 +61,9 @@ class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 		foreach ( $this->validators as $validator ) {
 
 			if ( $validator->is_valid( $value ) ) {
+				$this->input_data = [ 'value' => $value ];
+				$this->error_code = '';
+
 				return TRUE;
 			}
 

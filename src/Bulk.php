@@ -84,6 +84,9 @@ class Bulk implements ExtendedValidatorInterface {
 		}
 
 		if ( $valid ) {
+			$this->input_data            = $this->options;
+			$this->input_data[ 'value' ] = NULL;
+
 			return TRUE;
 		}
 

@@ -85,7 +85,10 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			}
 		}
 
-		$valid or $this->update_error_messages();
+		if ( $valid ) {
+			$this->input_data = [ 'value' => NULL ];
+			$this->error_code = '';
+		}
 
 		return $valid;
 	}
