@@ -30,6 +30,16 @@ class Callback implements ExtendedValidatorInterface {
 	protected $options = [ ];
 
 	/**
+	 * @param callable $callback
+	 *
+	 * @return Callback
+	 */
+	public static function with_callback( callable $callback ) {
+
+		return new static( [ 'callback' => $callback ] );
+	}
+
+	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
