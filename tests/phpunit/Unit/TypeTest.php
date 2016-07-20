@@ -10,9 +10,7 @@
 
 namespace Inpsyde\Validator\Tests\Unit;
 
-use Inpsyde\Validator\Error\ErrorLoggerInterface;
 use Inpsyde\Validator\Type;
-use Mockery;
 
 /**
  * Class TypeTest
