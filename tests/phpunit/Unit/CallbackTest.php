@@ -13,7 +13,7 @@ namespace Inpsyde\Validator\Tests\Unit;
 use Inpsyde\Validator\Callback;
 
 /**
- * Class BulkTest
+ * Class CallbackTest
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
