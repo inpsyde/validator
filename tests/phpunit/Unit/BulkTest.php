@@ -35,6 +35,25 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		new Bulk();
 	}
 
+	public function test_with_validator() {
+
+		$validator = Mockery::mock( ExtendedValidatorInterface::class )
+			->shouldReceive( 'is_valid' )
+			->with( 'foo' )
+			->once()
+			->andReturn( TRUE )
+			->getMock()
+			->shouldReceive( 'get_input_data' )
+			->andReturn( [ 'value' => 'foo' ] )
+			->getMock()
+			->shouldReceive( 'get_error_code' )
+			->andReturn( '' );
+
+		$bulk = Bulk::with_validator( $validator->getMock() );
+
+		$this->assertTrue( $bulk->is_valid( [ 'foo' ] ) );
+	}
+
 	public function test_constructor_can_use_factory() {
 
 		$validator       = Mockery::mock( ExtendedValidatorInterface::class );
@@ -69,7 +88,10 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 
 		$bulk   = new Bulk( [ 'validator' => $validator ] );
 		$result = $bulk->is_valid( $value );
-		$expected_valid ? $this->assertTrue( $result ) : $this->assertFalse( $result );
+		$expected_valid
+			? $this->assertTrue( $result, serialize( $value ) )
+			: $this->assertFalse( $result, serialize( $value ) );
+
 		$this->assertSame( $error, $bulk->get_error_code() );
 	}
 
@@ -108,7 +130,7 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( '', $code );
 		$this->assertInternalType( 'array', $data );
 		$this->assertArrayHasKey( 'value', $data );
-		$this->assertNull( $data[ 'value' ] );
+		$this->assertSame( 10, $data[ 'value' ] );
 
 		$this->assertFalse( $bulk->is_valid( [ 6, 7, 8, 2, 10 ] ) );
 		$code = $bulk->get_error_code();
