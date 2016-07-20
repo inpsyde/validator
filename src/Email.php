@@ -52,8 +52,15 @@ class Email implements ExtendedValidatorInterface {
 
 		}
 
+		if ( ! $value ) {
+			$this->error_code = Error\ErrorLoggerInterface::IS_EMPTY;
+			$this->update_error_messages();
+
+			return FALSE;
+		}
+
 		if ( ! filter_var( $value, FILTER_VALIDATE_EMAIL ) ) {
-			$this->error_code = Error\ErrorLoggerInterface::INVALID_EMAIL;
+			$this->error_code = Error\ErrorLoggerInterface::NOT_EMAIL;
 			$this->update_error_messages();
 
 			return FALSE;
