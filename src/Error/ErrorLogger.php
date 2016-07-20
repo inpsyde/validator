@@ -74,6 +74,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			self::NOT_MATCH                    => 'The input does not match against pattern <code>%pattern%</code>.',
 			self::NOT_URL                      => 'The input <code>%value%</code> is not a valid URL.',
 			self::REGEX_INTERNAL_ERROR         => 'There was an internal error while using the pattern <code>%pattern%</code>.',
+			self::WP_FILTER_ERROR              => 'The filter <code>%filter%</code> returned a false value for <code>%value%</code>.',
 		];
 
 		$this->messages = array_merge( $default, array_filter( $messages, 'is_string' ) );

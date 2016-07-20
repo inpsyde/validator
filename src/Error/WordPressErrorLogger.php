@@ -229,6 +229,14 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 				'<code>%value%</code>',
 				'<code>%pattern%</code>'
 			),
+			self::WP_FILTER_ERROR              => sprintf(
+				__(
+					'The filter %2$s returned a false value for %1$s.',
+					'inpsyde-validator'
+				),
+				'<code>%filter%</code>',
+				'<code>%value%</code>'
+			),
 		];
 
 		$this->logger = new ErrorLogger( array_merge( $default, array_filter( $messages, 'is_string' ) ) );

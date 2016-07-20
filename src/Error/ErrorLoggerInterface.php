@@ -44,6 +44,7 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	const NOT_URL = 'not_url';
 	const MULTIPLE_ERRORS = 'multiple_errors';
 	const REGEX_INTERNAL_ERROR = 'regex_internal';
+	const WP_FILTER_ERROR = 'wp_filter_error';
 
 	/**
 	 * Logs an error.
