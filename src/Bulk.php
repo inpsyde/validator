@@ -11,13 +11,13 @@
 namespace Inpsyde\Validator;
 
 /**
- * Class Collection
+ * Class Bulk
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Collection implements ExtendedValidatorInterface {
+class Bulk implements ExtendedValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
