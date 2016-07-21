@@ -11,13 +11,13 @@
 namespace Inpsyde\Validator;
 
 /**
- * Class Multi
+ * Class MultiOr
  *
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
+class MultiOr implements ExtendedValidatorInterface, MultiValidatorInterface {
 
 	use ValidatorDataGetterTrait;
 	use GetErrorMessagesTrait;
@@ -25,14 +25,9 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	use MultiValidatorValidatorsTrait;
 
 	/**
-	 * @var array
-	 */
-	private $options = [ ];
-
-	/**
 	 * Named constructor
 	 *
-	 * @return Multi
+	 * @return MultiOr
 	 */
 	public static function with_validators() {
 
@@ -40,16 +35,12 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	}
 
 	/**
-	 * Multi constructor.
+	 * MultiOr constructor.
 	 *
 	 * @param array                        $options
 	 * @param ExtendedValidatorInterface[] $validators
 	 */
 	public function __construct( array $options = [ ], array $validators = [ ] ) {
-
-		$this->options = array_key_exists( 'stop_on_failure', $options )
-			? filter_var( $options[ 'stop_on_failure' ], FILTER_VALIDATE_BOOLEAN )
-			: FALSE;
 
 		$factory = new ValidatorFactory();
 
@@ -63,7 +54,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			$options = [ ];
 
 			if ( is_array( $validator ) && isset( $validator[ 'validator' ] ) ) {
-				isset( $validator[ 'options' ] ) and $options = (array) $validator[ 'options' ];
+				empty( $validator[ 'options' ] ) or $options = (array) $validator[ 'options' ];
 				$validator = $validator[ 'validator' ];
 			}
 
@@ -77,46 +68,38 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	public function is_valid( $value ) {
 
 		$this->input_data = [ 'value' => $value ];
-		$valid            = TRUE;
+
+		$error_data = [ ];
+		$error_code = '';
+
+		if ( ! $this->validators ) {
+			return TRUE;
+		}
 
 		foreach ( $this->validators as $validator ) {
-			if ( ! $validator->is_valid( $value ) ) {
 
-				$data             = $validator->get_input_data();
-				$data[ 'value' ]  = $value;
-				$this->input_data = $data;
-				$code             = $validator->get_error_code();
-				$this->error_code = $code;
-				isset( $this->error_data[ $code ] ) or $this->error_data[ $code ] = [ ];
-				$this->error_data[ $code ][] = $data;
-				$valid                       = FALSE;
+			if ( $validator->is_valid( $value ) ) {
+				$this->input_data = [ 'value' => $value ];
+				$this->error_code = '';
+				$this->error_data = [ ];
+
+				return TRUE;
 			}
 
-			if ( ! $valid && $this->options[ 'stop_on_failure' ] ) {
-				$this->update_error_messages();
-
-				return FALSE;
-			}
+			$data             = $validator->get_input_data();
+			$data[ 'value' ]  = $value;
+			$this->input_data = $data;
+			$error_code       = $validator->get_error_code();
+			isset( $error_data[ $error_code ] ) or $error_data[ $error_code ] = [ ];
+			$error_data[ $error_code ][] = $data;
 		}
 
-		if ( $valid ) {
-			$this->input_data = [ 'value' => NULL ];
-			$this->error_code = '';
-		}
+		$this->error_data = $error_data;
+		$this->error_code = $error_code;
 
-		return $valid;
+		$this->update_error_messages();
+
+		return FALSE;
 	}
 
-	/**
-	 * Return an instance of the class that will stop at first failure.
-	 *
-	 * @return Multi
-	 */
-	public function stop_on_failure() {
-
-		$validator                               = clone $this;
-		$validator->options[ 'stop_on_failure' ] = TRUE;
-
-		return $validator;
-	}
 }

@@ -10,8 +10,6 @@
 
 namespace Inpsyde\Validator\Error;
 
-use Inpsyde\Validator\ExtendedValidatorInterface;
-
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @license http://opensource.org/licenses/MIT MIT
@@ -24,23 +22,30 @@ interface ErrorLoggerInterface extends \Countable, \IteratorAggregate {
 	const INVALID_DATE_FORMAT = 'invalid_date_format';
 	const INVALID_DNS = 'invalid_dns';
 	const INVALID_TYPE_NON_ARRAY = 'invalid_type_non_array';
+	const INVALID_TYPE_NON_COUNTABLE = 'invalid_type_non_countable';
 	const INVALID_TYPE_NON_DATE = 'invalid_type_non_date';
 	const INVALID_TYPE_NON_NUMERIC = 'invalid_type_non_numeric';
 	const INVALID_TYPE_NON_SCALAR = 'invalid_type_non_scalar';
 	const INVALID_TYPE_NON_STRING = 'invalid_type_non_string';
 	const INVALID_TYPE_NON_TRAVERSABLE = 'invalid_type_non_traversable';
+	const INVALID_TYPE_GIVEN = 'invalid_type_given';
+	const INVALID_SIZE = 'invalid_size';
 	const IS_EMPTY = 'is_empty';
 	const NOT_BETWEEN = 'not_between';
 	const NOT_BETWEEN_STRICT = 'not_between_strict';
+	const NOT_CLASS_NAME = 'not_class_name';
+	const NOT_EMAIL = 'not_email';
 	const NOT_GREATER = 'not_greater_than';
 	const NOT_GREATER_INCLUSIVE = 'not_greater_than_inclusive';
 	const NOT_IN_ARRAY = 'not_in_array';
 	const NOT_LESS = 'not_less_than';
 	const NOT_LESS_INCLUSIVE = 'not_less_than_inclusive';
+	const NOT_NEGATE_VALIDATOR = 'not_negate';
 	const NOT_MATCH = 'not_match';
 	const NOT_URL = 'not_url';
 	const MULTIPLE_ERRORS = 'multiple_errors';
 	const REGEX_INTERNAL_ERROR = 'regex_internal';
+	const WP_FILTER_ERROR = 'wp_filter_error';
 
 	/**
 	 * Logs an error.

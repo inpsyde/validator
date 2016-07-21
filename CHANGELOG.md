@@ -1,37 +1,66 @@
 # Changelog
 
+## 1.2.0
+
+### Fixed
+
+* Add missing, but referenced error codes in `ErrorLoggerInterface` 
+
+### Changed
+
+* Updated README
+* `composer.lock` is removed from VCS
+
+### Added
+
+* Simple validators: `Callback`, `ClassName`, `Email`, `Size`, `Type` and `WpFilter`
+* `SecondaryValidatorInterface` and secondary validators: `Negate`, `Bulk` and `Pool`
+* `DataValidator::with_validators()` method
+* Unit tests for all new classes
+
+-----
+
+
 ## 1.1.1
 
-#### Fixed
+### Fixed
+
 * Avoid possible function redeclaration in case of multiple autoloaders, thanks @schlessera, see #6
 
-#### Added
+### Added
+
 * _Nothing_
 
-#### Changed
+### Changed
+
 * _Nothing_
 
----------------
+-----
+
 
 ## 1.1.0
 
-#### Fixed
+### Fixed
+
 * CS fixes
 
-#### Changed
+### Changed
+
 * General refactoring
 * Decoupled messages from validators
-* Deprecated get_error_messages() validators method
-* Deprecated ArrayValue in favor of newly added DataValidator
-* Error codes constants moved to ErrorLoggerInterface from single validators classes (old constants still available for BC, but usage is deprecated)
+* Deprecated `get_error_messages()` validators method
+* Deprecated `ArrayValue` in favor of newly added `DataValidator`
+* Error codes constants moved to `ErrorLoggerInterface` from single validators classes (old constants still available for BC, but usage is deprecated)
 
-#### Added
-* Multi validator
-* DataValidator validator
-* ErrorLoggerInterface, ErrorLogger and WordPressErrorLogger
+### Added
+
+* `Multi` validator
+* `DataValidator`
+* `ErrorLoggerInterface`, ErrorLogger and WordPressErrorLogger
 * Support for messages translation
 
----------------
+-----
 
 ## 1.0.0
+
 * Initial Release.
