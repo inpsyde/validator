@@ -7,20 +7,26 @@ This package provides a collection of validators for WordPress.
 * [Installation](#installation)
 * [What it is and how it works](#what-it-is-and-how-it-works)
 	* [Simple Validators](#simple-validators)
+	* [Secondary Validators](#secondary-validators)
+		* `Negate` example
+		* `Bulk` example
+		* `Pool` example
 	* [Compound validators](#compound-validators)
+		* `Multi` example
+		* `MultiOr` example
 	* [Error codes and input data](#error-codes-and-input-data)
 	* [Validators factory](#validators-factory)
 	* [Error messages](#error-messages)
 	* [Error templates](#error-templates)
 		* Code-specific templates
 		* Error-specific templates
-* [`DataValidator`](#)
+* [`DataValidator`](#datavalidator)
 	* [Add validators to all items](#)
 	* [Add validator to specific items](#)
 	* [Customize error message templates](#)
 	* [Item keys in error messages](#)
 	* [Item key labels for error messages](#)
-* [Custom validators](#)
+* [Custom validators](#custom-validators)
 	* [Custom validator example](#custom-validator-example)
 	* [Upgrading from version 1.0](#upgrading-from-version-10)
 * [Other notes](#other-notes)
@@ -45,8 +51,17 @@ The package provides validator objects that can be used to verify that some give
 Most important method for each validator is `is_valid()` that receives some data and returns `true` or `false`, depending
 on the provided data meets validator requirements.
 
-We can distinguish between "simple" and "compound" validators. Where the latter are validators that are made combining
-simple validators together.
+We can distinguish among three types of validators:
+
+- "simple"
+- "secondary"
+- "compound"
+
+**Simple** validators are used to verify single values, according to some specifications.
+
+**Secondary** validators are created taking a simple validator and modifying its behavior. Can be seen as "decorators" for validators.
+ 
+ **Compound** validators are made by combining togheter more validators.
 
 ### Simple validators
 
@@ -54,14 +69,20 @@ This is a summary of simple validators provided as of now with the package:
 
 Name | Can be used for | Options | Description
 --------- | --------- | --------- | ---------
-`Between` | Any data | `min`, `max`,`inclusive` | Verifies that given value is between a maximum and a minimum defined in options. 
+`Between` | Any data | `min`, `max`,`inclusive` | Verifies given value is between a maximum and a minimum defined in options.
+`Callback` | Any data | `callback` | Run give callback passing value to validate. If callback returns a true-ish value, value is considered valid.
+`ClassName` | Strings | `autoload` | Check that value is a valid class name string. Trigger autoload by default, but ir  can be prevented by option.
 `Date`    | String, array, integers and`DateTimeInterface` objects | `format` | Verifies that given data is a valid date according to format defined in options.
-`GreaterThan` | Any data | `min`,`inclusive` | Verifies that given value is `>` (or `>=`) option value.
-`InArray` | Any data | `haystack`,`strict` | Verifies that given value is present in an haystack defined in options.
-`LessThan` | Any data | `max`,`inclusive` | Verifies that given value is `<` (or `<=`) option value.
-`NotEmpty` | Any data | --- | Verifies that given value is not empty. (Unlike PHP `empty()` function `0` and `'0'` are not considered empty)
-`RegEx` | Strings | `pattern` | Verifies that given string matches a regular expression pattern defined in options.
+`Email` | Strings | `check_dns` | Check that value is a valid email. Optionally also checks DNS.
+`GreaterThan` | Any data | `min`,`inclusive` | Verifies given value is `>` (or `>=`) option value.
+`InArray` | Any data | `haystack`,`strict` | Verifies given value is present in an haystack defined in options.
+`LessThan` | Any data | `max`,`inclusive` | Verifies given value is `<` (or `<=`) option value.
+`NotEmpty` | Any data | --- | Verifies given value is not empty. (Unlike PHP `empty()` function `0` and `'0'` are not considered empty)
+`RegEx` | Strings | `pattern` | Verifies given string matches a regular expression pattern defined in options.
+`Size` | Any data | `size` | Verifies given data has size defined by option. For strings it means length, arrays and countable objects are counted, numbers cast to integer.
+`Type` | Any data | `type` | Verifies that given data is of a specific type. Works with built-in types like "integer", "string" and with class and interface names. Also has 2 special types "numeric" and "traversable"
 `Url` | Strings | `allowed_protocols`, `check_dns` | Verifies that given string is a valid URL. Optionally also checks DNS.
+`WpFilter` | Any data | `filter` | Calls `apply_filters` with the filter set, passing the value as argument. If callbacks hooked to filter returns a true-ish value, value is considered valid.
 
 All validators are defined in `Inpsyde\Validator` namespace, so it is possible to use them like this:
 
@@ -80,37 +101,97 @@ if ( $between->is_valid($value) ) {
 Other validators can be used in a pretty identical fashion.
 
 
+### Secondary validators
+
+At the moment, are available following secondary validators:
+
+Name | Can be used for | Description
+--------- | --------- | --------- |
+`Bulk` | Traversable data | Takes one validator and applies it to all items of a traversable value. Validate if validator validates *all* the items.
+`Negate` | Any data | Takes one validator and negate its result. If given validator validates, the `Negate` validator will fail, and the other way around.
+`Pool` | Traversable data | Similar to `Bulk`, it applies a validator to all items of a traversable value. But it validates if the validator validates any of the items.
+
+All secondary validators have a `with_validator()` static method, that can be used as named constructor to obtain an instance.
+
+#### `Negate` example
+
+Here an example on how to use `Negate` to check that given value is _not_ included in a given haystack of values:
+
+```php
+$not_in_array = Negate::with_validator( new InArray( [ 'haystack' => [ 'foo', 'bar' ] ] ) );
+
+$not_in_array->is_valid( 'hello' ); // true
+$not_in_array->is_valid( 'foo' ); // false
+```
+
+#### `Bulk` example
+
+Here an example on how to use `Bulk` to check that given array contains only strings:
+
+```php
+$array_of_strings = Bulk::with_validator( new Type( [ 'type' => 'string' ] ) );
+
+$array_of_strings->is_valid( [ 'foo', 'bar' ] ); // true
+$array_of_strings->is_valid( [ 'foo', true  ); // false
+```
+
+#### `Pool` example
+
+Here an example on how to use `Pool` to check that given array contains at least a `WP_Post` object:
+
+```php
+$has_post = Pool::with_validator( new Type( [ 'type' => 'WP_Post' ] ) );
+
+$has_post->is_valid( [ 'foo', new \WP_Post([ 'id' => 1 ]) ] ); // true
+$has_post->is_valid( [ 'foo', true  ); // false
+```
+
+`Pool` traverse the given value and returns true when first item of the value validates the inner validator.
+
+
+
 ### Compound validators
 
-At the moment, there are two compound validators, they are:
+At the moment, following compound validators ar available:
 
 Name | Can be used for | Options | Description
 --------- | --------- | --------- | --------- |
-`Multi` | Any data | `stop_on_failure` | Combine more validators together to check the same value. Will be valid if all child validators are valid.
+`Multi` | Any data | `stop_on_failure` | Combine more validators together to check the same value. Will be valid if all child validators are valid. I.e. it combines validators with `AND` login operand.
+`MultiOr` | Any data | --- | Combine more validators together to check the same value. Will be valid if any of the child validators is valid. I.e. it combines validators with `OR` login operand.
 `DataValidator` | arrays or instances of `Traversable` | --- | Validate a collection of data, each child validator is assigned to a different part of the data, assigned by key
 
 **`DataValidator`** is the more powerful validator of the package, because it is the only validator implementing
 `ErrorLoggerAwareValidatorInterface` interface that make possible to obtain error messages for validated data ia a very simple way.
 For this reason usage of this validator is treated separately below.
 
-**`Multi`** is simpler: it just takes a list of validators and use all of them to validate a single value.
+#### `Multi` example
 
-For example:
+Here an example on how to use `Multi` validator, to check that given value is an array _and_ has two items _and_ bot of
+them are strings:
 
 ```php
 use Inpsyde\Validator;
 
-$custom_between = new Validator\Multi(
+$two_items_string_array = new Validator\Multi(
 	['stop_on_failure' => TRUE ],
 	[
-		new Validator\GreaterThan(['min' => 10, 'inclusive' => true]),
-		new Validator\LessThan(['max' => 20, 'inclusive' => false]),
+		new Validator\Type( [ 'type' => 'array' ] ),
+		new Validator\Size( [ 'type' => 2 ] ),
+		Validator\Bulk::with_validator( new Validator\Type( [ 'type' => 'string' ] ) ),
 	]
 );
+
+$two_items_string_array->is_valid( [' foo', 'bar' ] ); // true
+$two_items_string_array->is_valid( [ 'foo', 1 ] ); // false
+$two_items_string_array->is_valid( [ 'foo', 'bar', 'baz' ] ); // false
+
 ```
 
 The first constructor argument is an array of options, just like for all the "simple" validators.
 The second argument is an array of validators.
+
+Please note how we used a secondary validator (`Bulk`) as a _child_ validator for `Multi`: this is totally fine, because
+simple, secondary and compound validators all implements same interface.
 
 By default all validators are executed for the given value when `is_valid()` is called, but setting the option `stop_on_failure`
 to `TRUE`, the validator stops to perform validation when the first failing validator is reached.
@@ -122,9 +203,10 @@ that accepts a variadic number of validator objects:
 ```php
 use Inpsyde\Validator;
 
-$custom_between = Validator\Multi::with_validators(
-	new Validator\GreaterThan(['min' => 10, 'inclusive' => true]),
-	new Validator\LessThan(['max' => 20, 'inclusive' => false]),
+$two_items_string_array = Validator\Multi::with_validators(
+	new Validator\Type( [ 'type' => 'array' ] ),
+    new Validator\Size( [ 'type' => 2 ] ),
+    Validator\Bulk::with_validator( new Validator\Type( [ 'type' => 'string' ] ) ),
 );
 ```
 
@@ -134,7 +216,29 @@ When constructed like this, the `stop_on_failure` options is set to its default,
 ```php
 use Inpsyde\Validator;
 
-$custom_between = Validator\Multi::with_validators(...$validators)->stop_on_failure();
+$two_items_string_array = Validator\Multi::with_validators(...$validators)->stop_on_failure();
+```
+
+#### `MultiOr` example
+
+`MultiOr` is very similar to `Multi`, but the latter combines validator with an `AND` operand, the former with `OR` operand.
+
+In other words, using `Multi` _all_ the inner validators have to validate to make `Multi` validate, on the contrary `MultiOr`
+validates if _at least one of_ inner validators validates.
+
+Here an example on how to use `MultiOr` to validate a value to be in the range from 5 to 10 _or_ in the range 50 to 100:
+
+```php
+use Inpsyde\Validator;
+
+$custom_range = Validator\MultiOr::with_validators(
+	new Validator\Between( [ 'min' => 5, 'max' => 10 ] ),
+    new Validator\Between( [ 'min' => 50, 'max' => 100 ] ),
+);
+
+$custom_range->is_valid( 7 ) // true
+$custom_range->is_valid( 30 ) // false
+$custom_range->is_valid( 60 ) // true
 ```
 
 ### Error codes and input data
