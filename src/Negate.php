@@ -25,11 +25,6 @@ class Negate implements SecondaryValidatorInterface {
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @inheritdoc
 	 * @return Negate
 	 */
@@ -63,8 +58,8 @@ class Negate implements SecondaryValidatorInterface {
 			);
 		}
 
-		$this->options[ 'validator' ]         = $validator;
-		$this->input_data                     = $this->options;
+		$this->input_data                     = $options;
+		$this->input_data[ 'validator' ]      = $validator;
 		$class_parts                          = explode( '\\', get_class( $validator ) );
 		$this->input_data[ 'validator_name' ] = end( $class_parts );
 		$this->input_data[ 'value' ]          = NULL;
@@ -78,7 +73,7 @@ class Negate implements SecondaryValidatorInterface {
 		$this->input_data[ 'value' ] = $value;
 
 		/** @var ExtendedValidatorInterface $validator */
-		$validator = $this->options[ 'validator' ];
+		$validator = $this->input_data[ 'validator' ];
 		$valid     = $validator->is_valid( $value );
 
 		if ( $valid ) {

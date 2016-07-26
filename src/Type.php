@@ -28,7 +28,6 @@ class Type implements ExtendedValidatorInterface {
 		'double'      => 'double',
 		'float'       => 'double',
 		'string'      => 'string',
-		'int'         => 'integer',
 		'boolean'     => 'boolean',
 		'bool'        => 'boolean',
 		'resource'    => 'resource',
@@ -40,11 +39,6 @@ class Type implements ExtendedValidatorInterface {
 	];
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
@@ -53,11 +47,11 @@ class Type implements ExtendedValidatorInterface {
 			throw new \InvalidArgumentException( sprintf( '%s "type" option must be in a string.', __CLASS__ ) );
 		}
 
-		$type  = $options[ 'type' ];
-		$lower = strtolower( $type );
+		$type              = $options[ 'type' ];
+		$lower             = strtolower( $type );
+		$options[ 'type' ] = array_key_exists( $lower, self::$types ) ? self::$types[ $lower ] : $type;
 
-		$this->options[ 'type' ]     = array_key_exists( $lower, self::$types ) ? self::$types[ $lower ] : $type;
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -66,21 +60,21 @@ class Type implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
+		$this->input_data[ 'value' ] = $value;
 
-		if ( strtolower( gettype( $value ) ) === $this->options[ 'type' ] ) {
+		if ( strtolower( gettype( $value ) ) === $this->input_data[ 'type' ] ) {
 			return TRUE;
 		}
 
-		if ( is_object( $value ) && is_a( $value, $this->options[ 'type' ] ) ) {
+		if ( is_object( $value ) && is_a( $value, $this->input_data[ 'type' ] ) ) {
 			return TRUE;
 		}
 
-		if ( $this->options[ 'type' ] === 'numeric' && is_numeric( $value ) ) {
+		if ( $this->input_data[ 'type' ] === 'numeric' && is_numeric( $value ) ) {
 			return TRUE;
 		}
 
-		if ( $this->options[ 'type' ] === 'traversable' && ( is_array( $value ) || $value instanceof \Traversable ) ) {
+		if ( $this->input_data[ 'type' ] === 'traversable' && ( is_array( $value ) || $value instanceof \Traversable ) ) {
 			return TRUE;
 		}
 

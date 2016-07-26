@@ -37,11 +37,6 @@ class Between implements ExtendedValidatorInterface {
 
 	/**
 	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
-	 * @var array
 	 * @deprecated
 	 */
 	protected $message_templates = [
@@ -52,14 +47,14 @@ class Between implements ExtendedValidatorInterface {
 	public function __construct( array $options = [ ] ) {
 
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
-		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
+		$options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
 			: TRUE;
 
-		$this->options[ 'min' ] = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
-		$this->options[ 'max' ] = isset( $options[ 'max' ] ) ? $options[ 'max' ] : PHP_INT_MAX;
+		$options[ 'min' ] = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
+		$options[ 'max' ] = isset( $options[ 'max' ] ) ? $options[ 'max' ] : PHP_INT_MAX;
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -69,9 +64,9 @@ class Between implements ExtendedValidatorInterface {
 	public function is_valid( $value ) {
 
 		$this->input_data[ 'value' ] = $value;
-		$inc                         = $this->options[ 'inclusive' ];
-		$ok                          = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
-		$ok and $ok = $inc ? $value <= $this->options[ 'max' ] : $value < $this->options[ 'max' ];
+		$inc                         = $this->input_data[ 'inclusive' ];
+		$ok                          = $inc ? $value >= $this->input_data[ 'min' ] : $value > $this->input_data[ 'min' ];
+		$ok and $ok = $inc ? $value <= $this->input_data[ 'max' ] : $value < $this->input_data[ 'max' ];
 		$ok or $this->error_code = $inc ? ErrorLoggerInterface::NOT_BETWEEN : ErrorLoggerInterface::NOT_BETWEEN_STRICT;
 		$ok or $this->update_error_messages();
 

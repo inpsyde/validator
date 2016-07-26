@@ -30,11 +30,6 @@ class InArray implements ExtendedValidatorInterface {
 
 	/**
 	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
-	 * @var array
 	 * @deprecated
 	 */
 	protected $message_templates = [
@@ -47,15 +42,15 @@ class InArray implements ExtendedValidatorInterface {
 	public function __construct( array $options = [ ] ) {
 
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
-		$this->options[ 'strict' ] = isset( $options[ 'strict' ] )
+		$options[ 'strict' ] = isset( $options[ 'strict' ] )
 			? filter_var( $options[ 'strict' ], FILTER_VALIDATE_BOOLEAN )
 			: TRUE;
 
-		$this->options[ 'haystack' ] = isset( $options[ 'haystack' ] )
+		$options[ 'haystack' ] = isset( $options[ 'haystack' ] )
 			? (array) $options[ 'haystack' ]
 			: [ ];
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -66,7 +61,7 @@ class InArray implements ExtendedValidatorInterface {
 
 		$this->input_data[ 'value' ] = $value;
 
-		$valid = in_array( $value, $this->options[ 'haystack' ], $this->options[ 'strict' ] );
+		$valid = in_array( $value, $this->input_data[ 'haystack' ], $this->input_data[ 'strict' ] );
 		$valid or $this->error_code = Error\ErrorLoggerInterface::NOT_IN_ARRAY;
 		$valid or $this->update_error_messages();
 

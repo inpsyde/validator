@@ -43,22 +43,17 @@ class LessThan implements ExtendedValidatorInterface {
 	];
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
 
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
-		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
+		$options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
-		$this->options[ 'max' ]      = isset( $options[ 'max' ] ) ? $options[ 'max' ] : 0;
-		$this->input_data            = $this->options;
+		$options[ 'max' ]      = isset( $options[ 'max' ] ) ? $options[ 'max' ] : 0;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -69,8 +64,8 @@ class LessThan implements ExtendedValidatorInterface {
 
 		$this->input_data[ 'value' ] = $value;
 
-		$inc   = $this->options[ 'inclusive' ];
-		$valid = $inc ? $value <= $this->options[ 'max' ] : $value < $this->options[ 'max' ];
+		$inc   = $this->input_data[ 'inclusive' ];
+		$valid = $inc ? $value <= $this->input_data[ 'max' ] : $value < $this->input_data[ 'max' ];
 		$valid or $this->error_code = $inc
 			? Error\ErrorLoggerInterface::NOT_LESS_INCLUSIVE
 			: Error\ErrorLoggerInterface::NOT_LESS;

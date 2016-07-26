@@ -23,11 +23,6 @@ class Size implements ExtendedValidatorInterface {
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
@@ -41,8 +36,9 @@ class Size implements ExtendedValidatorInterface {
 			);
 		}
 
-		$this->options[ 'size' ]     = $size;
-		$this->input_data            = $this->options;
+		$options[ 'size' ] = $size;
+
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 
 	}
@@ -52,7 +48,7 @@ class Size implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
+		$this->input_data[ 'value' ] = $value;
 
 		if (
 			is_resource( $value )
@@ -69,7 +65,7 @@ class Size implements ExtendedValidatorInterface {
 			$value      = get_object_vars( $value_copy );
 		}
 
-		if ( $this->calc_size( $value ) === $this->options[ 'size' ] ) {
+		if ( $this->calc_size( $value ) === $this->input_data[ 'size' ] ) {
 			return TRUE;
 		}
 

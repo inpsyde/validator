@@ -66,14 +66,6 @@ class Url implements ExtendedValidatorInterface {
 	/**
 	 * @var array
 	 */
-	protected $options = [
-		'allowed_protocols' => [ 'http', 'https' ],
-		'check_dns'         => FALSE
-	];
-
-	/**
-	 * @var array
-	 */
 	protected $message_templates = [
 		Error\ErrorLoggerInterface::NOT_URL                 => "The input <code>%value%</code> is not a valid URL.",
 		Error\ErrorLoggerInterface::INVALID_TYPE_NON_STRING => "The input <code>%value%</code> should be a string.",
@@ -86,17 +78,15 @@ class Url implements ExtendedValidatorInterface {
 	 */
 	public function __construct( array $options = [ ] ) {
 
-		$protocols = isset( $options[ 'allowed_protocols' ] ) && is_array( $options[ 'allowed_protocols' ] )
+		$options[ 'allowed_protocols' ] = isset( $options[ 'allowed_protocols' ] ) && is_array( $options[ 'allowed_protocols' ] )
 			? array_filter( $options[ 'allowed_protocols' ], 'is_string ' )
-			: [ ];
+			: [ 'http', 'https' ];
 
-		$this->options[ 'allowed_protocols' ] = $protocols ? : [ 'http', 'https' ];
-
-		$this->options[ 'check_dns' ] = isset( $options[ 'check_dns' ] )
+		$options[ 'check_dns' ] = isset( $options[ 'check_dns' ] )
 			? filter_var( $options[ 'check_dns' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -124,7 +114,7 @@ class Url implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		$pattern = sprintf( self::PATTERN, implode( '|', $this->options[ 'allowed_protocols' ] ) );
+		$pattern = sprintf( self::PATTERN, implode( '|', $this->input_data[ 'allowed_protocols' ] ) );
 		if ( ! preg_match( $pattern, $value ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::NOT_URL;
 			$this->update_error_messages();
@@ -132,7 +122,7 @@ class Url implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		if ( ! $this->options[ 'check_dns' ] ) {
+		if ( ! $this->input_data[ 'check_dns' ] ) {
 			return TRUE;
 		}
 

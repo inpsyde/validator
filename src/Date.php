@@ -40,11 +40,6 @@ class Date implements ExtendedValidatorInterface {
 
 	/**
 	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
-	 * @var array
 	 * @deprecated
 	 */
 	protected $message_templates = [
@@ -58,11 +53,11 @@ class Date implements ExtendedValidatorInterface {
 	 */
 	public function __construct( array $options = [ ] ) {
 
-		$this->options[ 'format' ] = isset( $options[ 'format' ] ) && is_string( $options[ 'format' ] )
+		$options[ 'format' ] = isset( $options[ 'format' ] ) && is_string( $options[ 'format' ] )
 			? $options[ 'format' ]
 			: 'd.m.Y';
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 
 	}
@@ -146,7 +141,7 @@ class Date implements ExtendedValidatorInterface {
 	 */
 	protected function convert_string( $value ) {
 
-		$format = $this->options[ 'format' ];
+		$format = $this->input_data[ 'format' ];
 		$date   = \DateTime::createFromFormat( $format, $value );
 
 		// Invalid dates can show up as warnings (ie. "2007-02-99") and still return a DateTime object.
