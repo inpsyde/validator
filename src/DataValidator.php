@@ -390,7 +390,7 @@ final class DataValidator implements MapValidatorInterface, ErrorLoggerAwareVali
 				$more_keys and $keys = array_merge( $keys, $more_keys );
 			}
 
-			if ( ! $more_keys ) {
+			if ( ! $more_keys && ! $label ) {
 				throw new Exception\InvalidArgumentException(
 					'Validator key must be in a string or an array of string.'
 				);
