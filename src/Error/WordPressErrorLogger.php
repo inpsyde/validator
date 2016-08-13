@@ -209,8 +209,9 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 			self::NOT_NEGATE_VALIDATOR         => sprintf(
 				__(
 					'%s returned true, but was expected to return false.',
-					'<code>%validator_name%::is_valid()</code>'
-				)
+					'inpsyde-validator'
+				),
+				'<code>%validator_name%::is_valid()</code>'
 			),
 			self::NOT_MATCH                    => sprintf(
 				__(
