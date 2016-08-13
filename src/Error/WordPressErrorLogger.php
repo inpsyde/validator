@@ -278,7 +278,7 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	 */
 	public function get_error_messages( $error_code = NULL ) {
 
-		return $this->logger->log_error( $error_code );
+		return $this->logger->get_error_messages( $error_code );
 	}
 
 	/**

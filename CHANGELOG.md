@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.2
+
+### Fixed
+
+* Fix copy-pasta error in `WordPressErrorLogger`.
+
+### Changed
+
+* _Nothing_
+
+### Added
+
+* _Nothing_
+
 ## 1.2.1
 
 ### Fixed
