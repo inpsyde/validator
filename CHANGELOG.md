@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.1
+
+### Fixed
+
+* Fix wrong arguments passed to `__()` in `WordPressErrorLogger`. 
+
+### Changed
+
+* _Nothing_
+
+### Added
+
+* _Nothing_
+
 ## 1.2.0
 
 ### Fixed
