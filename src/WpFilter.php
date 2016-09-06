@@ -25,11 +25,6 @@ class WpFilter implements ExtendedValidatorInterface {
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
@@ -42,8 +37,7 @@ class WpFilter implements ExtendedValidatorInterface {
 			throw new \InvalidArgumentException( sprintf( '%s can only be used in WordPress context.', __CLASS__ ) );
 		}
 
-		$this->options[ 'filter' ]   = $options[ 'filter' ];
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -52,9 +46,9 @@ class WpFilter implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
+		$this->input_data[ 'value' ] = $value;
 
-		$valid = apply_filters( $this->options[ 'filter' ], $value );
+		$valid = apply_filters( $this->input_data[ 'filter' ], $value );
 		$valid = filter_var( $valid, FILTER_VALIDATE_BOOLEAN );
 
 		if ( ! $valid ) {

@@ -35,11 +35,6 @@ class GreaterThan implements ExtendedValidatorInterface {
 
 	/**
 	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
-	 * @var array
 	 * @deprecated
 	 */
 	protected $message_templates = [
@@ -53,12 +48,12 @@ class GreaterThan implements ExtendedValidatorInterface {
 	public function __construct( array $options = [ ] ) {
 
 		// Whether to do inclusive comparisons, allowing equivalence to min and/or max
-		$this->options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
+		$options[ 'inclusive' ] = isset( $options[ 'inclusive' ] )
 			? filter_var( $options[ 'inclusive' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
-		$this->options[ 'min' ]      = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
-		$this->input_data            = $this->options;
+		$options[ 'min' ]            = isset( $options[ 'min' ] ) ? $options[ 'min' ] : 0;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -69,8 +64,8 @@ class GreaterThan implements ExtendedValidatorInterface {
 
 		$this->input_data[ 'value' ] = $value;
 
-		$inc   = $this->options[ 'inclusive' ];
-		$valid = $inc ? $value >= $this->options[ 'min' ] : $value > $this->options[ 'min' ];
+		$inc   = $this->input_data[ 'inclusive' ];
+		$valid = $inc ? $value >= $this->input_data[ 'min' ] : $value > $this->input_data[ 'min' ];
 		$valid or $this->error_code = $inc
 			? Error\ErrorLoggerInterface::NOT_GREATER_INCLUSIVE
 			: Error\ErrorLoggerInterface::NOT_GREATER;

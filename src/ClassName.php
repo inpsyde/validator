@@ -23,20 +23,15 @@ class ClassName implements ExtendedValidatorInterface {
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param array $options
 	 */
 	public function __construct( array $options = [ ] ) {
 
-		$this->options[ 'autoload' ] = array_key_exists( 'autoload', $options )
+		$options[ 'autoload' ] = array_key_exists( 'autoload', $options )
 			? filter_var( $options[ 'autoload' ], FILTER_VALIDATE_BOOLEAN )
 			: TRUE;
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -54,7 +49,7 @@ class ClassName implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		if ( class_exists( $value, $this->options[ 'autoload' ] ) ) {
+		if ( class_exists( $value, $this->input_data[ 'autoload' ] ) ) {
 			return TRUE;
 		}
 

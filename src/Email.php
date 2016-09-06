@@ -27,11 +27,11 @@ class Email implements ExtendedValidatorInterface {
 	 */
 	public function __construct( array $options = [ ] ) {
 
-		$this->options[ 'check_dns' ] = isset( $options[ 'check_dns' ] )
+		$options[ 'check_dns' ] = isset( $options[ 'check_dns' ] )
 			? filter_var( $options[ 'check_dns' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -66,7 +66,7 @@ class Email implements ExtendedValidatorInterface {
 			return FALSE;
 		}
 
-		if ( ! $this->options[ 'check_dns' ] ) {
+		if ( ! $this->input_data[ 'check_dns' ] ) {
 			return TRUE;
 		}
 

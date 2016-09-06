@@ -40,11 +40,6 @@ class RegEx implements ExtendedValidatorInterface {
 
 	/**
 	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
-	 * @var array
 	 * @deprecated
 	 */
 	protected $message_templates = [
@@ -63,8 +58,8 @@ class RegEx implements ExtendedValidatorInterface {
 		$last    = $pattern ? substr( $pattern, - 1, 1 ) : '';
 		( $first && ( $first !== $last || strlen( $pattern ) === 1 ) ) and $pattern = "~{$pattern}~";
 
-		$this->options[ 'pattern' ]  = $pattern;
-		$this->input_data            = $this->options;
+		$options[ 'pattern' ]        = $pattern;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -75,7 +70,7 @@ class RegEx implements ExtendedValidatorInterface {
 
 		$this->input_data[ 'value' ] = $value;
 
-		$pattern = $this->options[ 'pattern' ];
+		$pattern = $this->input_data[ 'pattern' ];
 
 		if ( ! is_string( $value ) && ! is_int( $value ) && ! is_float( $value ) ) {
 			$this->error_code = Error\ErrorLoggerInterface::INVALID_TYPE_NON_SCALAR;

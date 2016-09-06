@@ -25,11 +25,6 @@ class Callback implements ExtendedValidatorInterface {
 	use GetErrorMessagesTrait;
 
 	/**
-	 * @var array
-	 */
-	protected $options = [ ];
-
-	/**
 	 * @param callable $callback
 	 *
 	 * @return Callback
@@ -48,12 +43,11 @@ class Callback implements ExtendedValidatorInterface {
 			throw new \InvalidArgumentException( sprintf( '%s "callback" option must be callable.', __CLASS__ ) );
 		}
 
-		$this->options[ 'callback' ]   = $options[ 'callback' ];
-		$this->options[ 'error_code' ] = empty( $options[ 'error_code' ] ) || ! is_string( $options[ 'error_code' ] )
+		$options[ 'error_code' ] = empty( $options[ 'error_code' ] ) || ! is_string( $options[ 'error_code' ] )
 			? ErrorLoggerInterface::CUSTOM_ERROR
 			: $options[ 'error_code' ];
 
-		$this->input_data            = $this->options;
+		$this->input_data            = $options;
 		$this->input_data[ 'value' ] = NULL;
 	}
 
@@ -62,15 +56,15 @@ class Callback implements ExtendedValidatorInterface {
 	 */
 	public function is_valid( $value ) {
 
-		$this->input_data = [ 'value' => $value ];
+		$this->input_data[ 'value' ] = $value;
 
 		/** @var callable $callback */
-		$callback = $this->options[ 'callback' ];
+		$callback = $this->input_data[ 'callback' ];
 
 		$valid = filter_var( $callback( $value ), FILTER_VALIDATE_BOOLEAN );
 
 		if ( ! $valid ) {
-			$this->error_code = $this->options[ 'error_code' ];
+			$this->error_code = $this->input_data[ 'error_code' ];
 			$this->update_error_messages();
 		}
 
