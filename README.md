@@ -161,12 +161,12 @@ Name | Can be used for | Options | Description
 `DataValidator` | arrays or instances of `Traversable` | --- | Validate a collection of data, each child validator is assigned to a different part of the data, assigned by key
 
 **`DataValidator`** is the more powerful validator of the package, because it is the only validator implementing
-`ErrorLoggerAwareValidatorInterface` interface that make possible to obtain error messages for validated data ia a very simple way.
+`ErrorLoggerAwareValidatorInterface` interface that makes it possible to obtain error messages for validated data in a very simple way.
 For this reason usage of this validator is treated separately below.
 
 #### `Multi` example
 
-Here an example on how to use `Multi` validator, to check that given value is an array _and_ has two items _and_ bot of
+Here an example on how to use `Multi` validator, to check that given value is an array _and_ has two items _and_ both of
 them are strings:
 
 ```php
@@ -191,7 +191,7 @@ The first constructor argument is an array of options, just like for all the "si
 The second argument is an array of validators.
 
 Please note how we used a secondary validator (`Bulk`) as a _child_ validator for `Multi`: this is totally fine, because
-simple, secondary and compound validators all implements same interface.
+simple, secondary and compound validators all implement the same interface.
 
 By default all validators are executed for the given value when `is_valid()` is called, but setting the option `stop_on_failure`
 to `TRUE`, the validator stops to perform validation when the first failing validator is reached.
@@ -211,7 +211,7 @@ $two_items_string_array = Validator\Multi::with_validators(
 ```
 
 When constructed like this, the `stop_on_failure` options is set to its default, that is `false`, but can be set to
-`true` by calling `stop_on_failure()` method on obtained instance.
+`true` by calling `stop_on_failure()` method on the obtained instance.
 
 ```php
 use Inpsyde\Validator;
