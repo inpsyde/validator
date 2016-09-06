@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.3
+
+### Fixed
+
+* Fix typos in `README.md`.
+
+### Changed
+
+* Removed unused property `$options` from classes.
+
+### Added
+
+* _Nothing_
+
 ## 1.2.2
 
 ### Fixed
