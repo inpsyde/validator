@@ -27,7 +27,7 @@ function load_translations( $path = '' ) {
 
 		cleanup_globals();
 
-		return;
+		return FALSE;
 	}
 
 	// Prevent function is called more than once with same path as argument (which would mean load same file again)
@@ -68,8 +68,10 @@ function load_translations( $path = '' ) {
  */
 function cleanup_globals() {
 
-	// If in WP context, don't mess up with global `$wp_filter`.
-	// If global `$wp_filter` already empty, there's nothing to cleanup.
+	/*
+	 * If in WP context, don't mess up with global `$wp_filter`.
+	 * If global `$wp_filter` already empty, there's nothing to cleanup.
+	 */
 	if (
 		function_exists( 'add_action' )
 		|| ! is_array( $GLOBALS[ 'wp_filter' ] )
@@ -78,49 +80,61 @@ function cleanup_globals() {
 		return;
 	}
 
-	$callable = __NAMESPACE__ . '\\load_translations';
-
-	if ( isset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ][ $callable ] ) ) {
-		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ][ $callable ] );
+	// If someone else messed with global `$wp_filter`, not our responsibility to clean up.
+	if (
+		! isset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] )
+		|| ! is_array( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] )
+		|| count( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] ) > 1
+	) {
+		return;
 	}
 
+	// There's 0 or 1 callback added to global `$wp_filter` let's get it if there, `reset` will return false otherwise.
+	$function = reset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] );
+
+	// If someone else messed with global `$wp_filter`, not our responsibility to clean up.
 	if (
-		array_key_exists( 'after_setup_theme', $GLOBALS[ 'wp_filter' ] )
-		&& array_key_exists( 99, $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] )
-		&& empty( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] )
+		! isset( $function[ 'function' ] )
+		|| $function[ 'function' ] !== __NAMESPACE__ . '\\load_translations'
 	) {
-		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] );
+		return;
 	}
 
-	if (
-		array_key_exists( 'after_setup_theme', $GLOBALS[ 'wp_filter' ] )
-		&& empty( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] )
-	) {
+	/*
+	 * If here, it seems we are the culprit of messing up with global `$wp_filter`.
+	 * Let's start cleaning up hooks for `after_setup_theme` then try to clean whole `$wp_filter` it our callback
+	 * was the only one there.
+	 */
+
+	unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ][ 99 ] );
+
+	if ( ! $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] ) {
 		unset( $GLOBALS[ 'wp_filter' ][ 'after_setup_theme' ] );
 	}
 
-	if ( empty( $GLOBALS[ 'wp_filter' ] ) ) {
+	if ( ! $GLOBALS[ 'wp_filter' ] ) {
 		unset( $GLOBALS[ 'wp_filter' ] );
 	}
 }
 
-// This file is loaded by Composer autoload, and that may happen before `add_action` is available.
-// In that case, we "manually" add in global `$wp_filter` the function that loads translations.
-// We use `after_setup_theme` with late priority so that from a plugin or theme would be possible to remove the hook
-// (and load no translation) or change the translation path via 'inpsyde-validator.translation_path' filter.
-// If an user want to load translation before 'after_setup_theme' is fired, it is possible to call
-// `load_translations()` directly.
-
+/*
+ * This file is loaded by Composer autoload, and that may happen before `add_action` is available.
+ * In that case, we "manually" add in global `$wp_filter` the function that loads translations.
+ * We use `after_setup_theme` with late priority so that from a plugin or theme would be possible to remove the hook
+ * (and load no translation) or change the translation path via 'inpsyde-validator.translation_path' filter.
+ * If an user want to load translation before 'after_setup_theme' is fired, it is possible to call
+ * `load_translations()` directly.
+ */
 if ( ! function_exists( 'add_action' ) ) {
 
 	global $wp_filter;
-	is_array( $wp_filter ) or $wp_filter = [ ];
-	isset( $wp_filter[ 'after_setup_theme' ] ) or $wp_filter[ 'after_setup_theme' ] = [ ];
-	isset( $wp_filter[ 'after_setup_theme' ][ 99 ] ) or $wp_filter[ 'after_setup_theme' ][ 99 ] = [ ];
+	is_array( $wp_filter ) or $wp_filter = [];
+	isset( $wp_filter[ 'after_setup_theme' ] ) or $wp_filter[ 'after_setup_theme' ] = [];
+	isset( $wp_filter[ 'after_setup_theme' ][ 99 ] ) or $wp_filter[ 'after_setup_theme' ][ 99 ] = [];
 
 	$wp_filter[ 'after_setup_theme' ][ 99 ][ __NAMESPACE__ . '\\load_translations' ] = [
-		__NAMESPACE__ . '\\' . 'load_translations',
-		1
+		'function'      => __NAMESPACE__ . '\\' . 'load_translations',
+		'accepted_args' => 1
 	];
 
 } else {
