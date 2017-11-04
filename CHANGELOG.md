@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.4
+
+### Fixed
+
+* Fix "manual" loading of translation callback into global `$wp_filter` on autoload. Props @kraftner
+
+### Changed
+
+* _Nothing_
+
+### Added
+
+* _Nothing_
+
+
 ## 1.2.3
 
 ### Fixed
