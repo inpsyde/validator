@@ -192,7 +192,7 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 			),
 			self::NOT_LESS                     => sprintf(
 				__(
-					'The input %1$s is not less than %1$s.',
+					'The input %1$s is not less than %2$s.',
 					'inpsyde-validator'
 				),
 				'<code>%value%</code>',
