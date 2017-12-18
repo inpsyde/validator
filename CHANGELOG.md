@@ -5,6 +5,7 @@
 ### Fixed
 
 * Fixed typo in `NOT_LESS` where message pointed two times to `%1$s`.
+* Fixed type in `MULTIPLE_ERRORS`.
 
 ## 1.2.4
 
