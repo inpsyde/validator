@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.5
+
+### Fixed
+
+* Fixed typo in `NOT_LESS` where message pointed two times to `%1$s`.
+
 ## 1.2.4
 
 ### Fixed
