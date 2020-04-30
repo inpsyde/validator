@@ -26,4 +26,4 @@ before_script:
 
 script:
   - find src \( -name '*.php' \) -exec php -l {} \;
-  - phpunit
+  - vendor/bin/phpunit
