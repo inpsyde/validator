@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.6
+
+### Fixed
+
+* Fixed URL regex in php7.3+
+
 ## 1.2.5
 
 ### Fixed
