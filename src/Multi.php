@@ -51,6 +51,10 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 			? filter_var( $options[ 'stop_on_failure' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
+		if ( array_key_exists( 'logger', $options ) ) {
+		    $this->logger = $options['logger'];
+        }
+
 		$factory = new ValidatorFactory();
 
 		array_key_exists( 'validators', $options ) and $validators = array_merge(
