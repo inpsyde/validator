@@ -25,9 +25,9 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	use MultiValidatorValidatorsTrait;
 
 	/**
-	 * @var array
+	 * @var bool
 	 */
-	private $options = [ ];
+	private $stop_on_failure = FALSE;
 
 	/**
 	 * Named constructor
@@ -47,7 +47,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	 */
 	public function __construct( array $options = [ ], array $validators = [ ] ) {
 
-		$this->options = array_key_exists( 'stop_on_failure', $options )
+		$this->stop_on_failure = array_key_exists( 'stop_on_failure', $options )
 			? filter_var( $options[ 'stop_on_failure' ], FILTER_VALIDATE_BOOLEAN )
 			: FALSE;
 
@@ -92,7 +92,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 				$valid                       = FALSE;
 			}
 
-			if ( ! $valid && $this->options[ 'stop_on_failure' ] ) {
+			if ( ! $valid && $this->stop_on_failure ) {
 				$this->update_error_messages();
 
 				return FALSE;
@@ -115,7 +115,7 @@ class Multi implements ExtendedValidatorInterface, MultiValidatorInterface {
 	public function stop_on_failure() {
 
 		$validator                               = clone $this;
-		$validator->options[ 'stop_on_failure' ] = TRUE;
+		$validator->stop_on_failure = TRUE;
 
 		return $validator;
 	}
