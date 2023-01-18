@@ -91,7 +91,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			? $error_template = $this->messages[ $code ]
 			: $this->check_error_template( $error_template );
 
-		$error_message = $this->build_message( $data, $error_template );
+		$error_message = $this->build_message( $error_template, $data );
 
 		isset( $this->errors[ $code ] ) or $this->errors[ $code ] = [ ];
 		$this->errors[ $code ][] = $error_message;
