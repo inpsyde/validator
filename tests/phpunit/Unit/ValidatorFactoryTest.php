@@ -16,7 +16,7 @@ use Inpsyde\Validator\ValidatorInterface;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
+class ValidatorFactoryTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior
@@ -34,7 +34,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
 
 		$validator = $factory->create( $identifier );
 
-		$this->assertInternalType( 'object', $validator );
+		$this->assertIsObject( $validator );
 		$this->assertInstanceOf( $expected, $validator );
 
 	}
@@ -45,16 +45,17 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
 	public function test_external_validator() {
 
 		$factory = new ValidatorFactory();
-		$factory->create( AlwaysFalseWithInvalidMessageValidator::class );
+		static::assertInstanceOf(
+            ValidatorInterface::class,
+            $factory->create( AlwaysFalseWithInvalidMessageValidator::class )
+        );
 	}
 
 	/**
 	 * Test if Factory throws an exception if validator is undefined.
-	 *
-	 * @expectedException \InvalidArgumentException
 	 */
 	public function test_unknown_validator() {
-
+        static::expectException(\InvalidArgumentException::class);
 		$factory = new ValidatorFactory();
 		$factory->create( 'some invalid class name' );
 	}
@@ -69,7 +70,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase {
 		$validator = $factory->create( new GreaterThan(), [ 'min' => 100 ] );
 		$data      = $validator->get_input_data();
 
-		$this->assertInternalType( 'object', $validator );
+		$this->assertIsObject($validator );
 		$this->assertInstanceOf( GreaterThan::class, $validator );
 		$this->assertArrayHasKey( 'min', $data );
 		$this->assertSame( 100, $data[ 'min' ] );

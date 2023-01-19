@@ -11,13 +11,14 @@
 namespace Inpsyde\Validator\Tests\Unit\Error;
 
 use Inpsyde\Validator\Error\ErrorLogger;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author  Giuseppe Mazzapica <giuseppe.mazzapica@gmail.com>
  * @license http://opensource.org/licenses/MIT MIT
  * @package inpsyde-validator
  */
-class ErrorLogTest extends \PHPUnit_Framework_TestCase {
+class ErrorLoggerTest extends TestCase {
 
 	/**
 	 * Test that is possible to override specific messages via constructor
@@ -30,8 +31,8 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 		$default   = $this->get_messages( $logger );
 		$overriden = $this->get_messages( $logger_override );
 
-		$this->assertInternalType( 'array', $default );
-		$this->assertInternalType( 'array', $overriden );
+		$this->assertIsArray( $default );
+		$this->assertIsArray( $overriden );
 		$this->assertArrayHasKey( ErrorLogger::IS_EMPTY, $default );
 		$this->assertArrayHasKey( ErrorLogger::IS_EMPTY, $overriden );
 		$this->assertNotEquals( $default[ ErrorLogger::IS_EMPTY ], $overriden[ ErrorLogger::IS_EMPTY ] );
@@ -52,12 +53,12 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame( $logged1, $logger );
 		$this->assertSame( $logged2, $logged1 );
-		$this->assertInternalType( 'array', $messages );
+		$this->assertIsArray( $messages );
 		$this->assertCount( 2, $messages );
-		$this->assertInternalType( 'array', $messages_empty );
+		$this->assertIsArray( $messages_empty );
 		$this->assertCount( 1, $messages_empty );
 		$this->assertSame( [ ErrorLogger::IS_EMPTY, ErrorLogger::INVALID_TYPE_NON_STRING ], $codes );
-		$this->assertContains( 'Invalid type given for', $last_message );
+		$this->assertStringContainsString( 'Invalid type given for', $last_message );
 	}
 
 	public function test_get_errors_is_empty_array_if_no_errors() {
@@ -67,21 +68,15 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( [ ], $logger->get_error_messages() );
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_get_errors_throws_if_bad_code() {
-
+        static::expectException(\InvalidArgumentException::class);
 		$logger = new ErrorLogger();
 		$logger->log_error( ErrorLogger::IS_EMPTY );
 		$logger->get_error_messages( [ ] );
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_get_errors_throws_if_bad_template() {
-
+        static::expectException(\InvalidArgumentException::class);
 		$logger = new ErrorLogger();
 		$logger->log_error( ErrorLogger::IS_EMPTY, [ ], [ ] );
 	}
@@ -107,9 +102,9 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount( 4, $merged );
 		$this->assertCount( 3, $codes );
 		$this->assertCount( 4, $messages );
-		$this->assertContains( ErrorLogger::IS_EMPTY, $codes );
-		$this->assertContains( ErrorLogger::INVALID_DNS, $codes );
-		$this->assertContains( ErrorLogger::NOT_IN_ARRAY, $codes );
+		$this->assertTrue( in_array( ErrorLogger::IS_EMPTY, $codes, true) );
+		$this->assertTrue( in_array(ErrorLogger::INVALID_DNS, $codes, true) );
+		$this->assertTrue( in_array(ErrorLogger::NOT_IN_ARRAY, $codes, true) );
 
 	}
 
@@ -152,7 +147,7 @@ class ErrorLogTest extends \PHPUnit_Framework_TestCase {
 		$messages = $logger->get_error_messages();
 		$first    = array_shift( $messages );
 
-		$this->assertContains( 'should not be empty', $first );
+		$this->assertStringContainsString( 'should not be empty', $first );
 		$this->assertSame( 'Inpsyde rocks!', array_shift( $messages ) );
 		$this->assertSame( $first, array_shift( $messages ) ); // 1st and 3rd are the same
 	}

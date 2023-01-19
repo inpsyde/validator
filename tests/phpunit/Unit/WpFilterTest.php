@@ -10,9 +10,9 @@
 
 namespace Inpsyde\Validator\Tests\Unit;
 
-use Brain\Monkey;
-use Brain\Monkey\WP\Filters;
+use Brain\Monkey\Filters;
 use Inpsyde\Validator\WpFilter;
+use function Brain\Monkey\Filters\expectApplied;
 
 /**
  * Class WpFilterTest
@@ -21,36 +21,16 @@ use Inpsyde\Validator\WpFilter;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class WpFilterTest extends \PHPUnit_Framework_TestCase {
+class WpFilterTest extends AbstractTestCase {
 
-	public function setUp() {
-
-		parent::setUp();
-		Monkey::setUpWP();
-	}
-
-	public function tearDown() {
-
-		Monkey::tearDownWP();
-		parent::tearDown();
-	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_filter_is_required() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new WpFilter();
-
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_filter_need_to_be_string() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new WpFilter( [ 'type' => TRUE ] );
-
 	}
 
 	public function test_is_valid_no_filters() {
@@ -63,17 +43,17 @@ class WpFilterTest extends \PHPUnit_Framework_TestCase {
 
 	public function test_is_valid_cast_to_bool_return_value() {
 
-		Filters::expectApplied( 'test-filter-return-bar' )
+		expectApplied( 'test-filter-return-bar' )
 			->once()
 			->with( 'foo' )
 			->andReturn( 'bar', 'true' );
 
-		Filters::expectApplied( 'test-filter-return-true' )
+		expectApplied( 'test-filter-return-true' )
 			->once()
 			->with( 'foo' )
 			->andReturn( 'true' );
 
-		Filters::expectApplied( 'test-filter-return-null' )
+		expectApplied( 'test-filter-return-null' )
 			->once()
 			->with( 'foo' )
 			->andReturnNull();

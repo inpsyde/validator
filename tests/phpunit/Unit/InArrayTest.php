@@ -21,7 +21,7 @@ use Inpsyde\Validator\InArray;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class InArrayTest extends \PHPUnit_Framework_TestCase {
+class InArrayTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior
@@ -88,7 +88,7 @@ class InArrayTest extends \PHPUnit_Framework_TestCase {
 		$validator->is_valid( 'foo' );
 		$input = $validator->get_input_data();
 
-		$this->assertInternalType( 'array', $input );
+		$this->assertIsArray( $input );
 		$this->assertArrayHasKey( 'value', $input );
 		$this->assertSame( 'foo', $input[ 'value' ] );
 

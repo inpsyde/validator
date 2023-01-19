@@ -19,22 +19,16 @@ use Inpsyde\Validator\Type;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class TypeTest extends \PHPUnit_Framework_TestCase {
+class TypeTest extends AbstractTestCase {
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_type_is_required() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Type();
 
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_type_need_to_be_string() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Type( [ 'type' => TRUE ] );
 
 	}

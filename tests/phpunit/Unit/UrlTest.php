@@ -21,7 +21,7 @@ use Inpsyde\Validator\Url;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class UrlTest extends \PHPUnit_Framework_TestCase {
+class UrlTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior
@@ -78,7 +78,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
 		$validator->is_valid( 'http://www.example.com' );
 		$input = $validator->get_input_data();
 
-		$this->assertInternalType( 'array', $input );
+		$this->assertIsArray( $input );
 		$this->assertArrayHasKey( 'value', $input );
 		$this->assertSame( 'http://www.example.com', $input[ 'value' ] );
 

@@ -20,7 +20,7 @@ use Inpsyde\Validator\Error\ErrorLoggerInterface;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class ClassNameTest extends \PHPUnit_Framework_TestCase {
+class ClassNameTest extends AbstractTestCase {
 
 	/**
 	 * @param mixed $value

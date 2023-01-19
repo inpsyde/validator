@@ -91,7 +91,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 			? $error_template = $this->messages[ $code ]
 			: $this->check_error_template( $error_template );
 
-		$error_message = $this->build_message( $error_template, $data );
+		$error_message = $this->build_message(  $data, $error_template );
 
 		isset( $this->errors[ $code ] ) or $this->errors[ $code ] = [ ];
 		$this->errors[ $code ][] = $error_message;
@@ -266,7 +266,8 @@ class ErrorLogger implements ErrorLoggerInterface {
 	 *
 	 * @return string
 	 */
-	private function build_message( $error_template, array $input_data = [ ] ) {
+
+	private function build_message( array $input_data = [ ], $error_template = '' ) {
 
 		if ( ! substr_count( $error_template, '%' ) ) {
 			return $error_template;

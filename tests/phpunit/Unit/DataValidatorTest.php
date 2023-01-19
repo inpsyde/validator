@@ -22,7 +22,7 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class DataValidatorTest extends \PHPUnit_Framework_TestCase {
+class DataValidatorTest extends AbstractTestCase {
 
 	public function test_constructor_build_logger() {
 

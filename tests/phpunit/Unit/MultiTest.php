@@ -18,13 +18,13 @@ use Inpsyde\Validator\ExtendedValidatorInterface;
 use Inpsyde\Validator\NotEmpty;
 use Mockery;
 
-class MultiTest extends \PHPUnit_Framework_TestCase {
+class MultiTest extends AbstractTestCase {
 
 	public function test_constructor_can_use_factory() {
 
 		$validator = Mockery::mock( ExtendedValidatorInterface::class );
 
-		new Multi( [ ], [ get_class( $validator ) ] );
+		static::assertInstanceOf(Multi::class, new Multi( [ ], [ get_class( $validator ) ] ));
 
 	}
 

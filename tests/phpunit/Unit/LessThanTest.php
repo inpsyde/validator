@@ -21,7 +21,7 @@ use Inpsyde\Validator\LessThan;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class LessThanTest extends \PHPUnit_Framework_TestCase {
+class LessThanTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior
@@ -117,7 +117,7 @@ class LessThanTest extends \PHPUnit_Framework_TestCase {
 		$validator->is_valid( 1 );
 		$input = $validator->get_input_data();
 
-		$this->assertInternalType( 'array', $input );
+		$this->assertIsArray( $input );
 		$this->assertArrayHasKey( 'value', $input );
 		$this->assertSame( 1, $input[ 'value' ] );
 
