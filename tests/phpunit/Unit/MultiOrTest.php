@@ -16,6 +16,7 @@ use Inpsyde\Validator\MultiOr;
 use Inpsyde\Validator\Error\ErrorLoggerInterface;
 use Inpsyde\Validator\ExtendedValidatorInterface;
 use Inpsyde\Validator\NotEmpty;
+use Inpsyde\Validator\ValidatorInterface;
 use Mockery;
 
 /**
@@ -25,13 +26,13 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class MultiOrTest extends \PHPUnit_Framework_TestCase {
+class MultiOrTest extends AbstractTestCase {
 
 	public function test_constructor_can_use_factory() {
 
 		$validator = Mockery::mock( ExtendedValidatorInterface::class );
 
-		new MultiOr( [ ], [ get_class( $validator ) ] );
+		static::assertInstanceOf(ValidatorInterface::class, new MultiOr( [ ], [ get_class( $validator ) ] ));
 
 	}
 

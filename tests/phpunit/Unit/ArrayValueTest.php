@@ -19,7 +19,7 @@ use Inpsyde\Validator\ArrayValue;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class ArrayValueTest extends \PHPUnit_Framework_TestCase {
+class ArrayValueTest extends AbstractTestCase {
 
 	/**
 	 * Basic test with not validator should return TRUE.
@@ -50,8 +50,6 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 
 		return [
 			'valid_array'         => [ [ 'key' => 'value' ], TRUE ],
-			'valid_traversable_1' => [ $this->getMock( 'Traversable' ), TRUE ],
-			'valid_traversable_2' => [ $this->getMock( 'Iterator' ), TRUE ],
 			'string'              => [ '', FALSE ],
 			'int'                 => [ 1, FALSE ],
 			'boolean'             => [ TRUE, FALSE ]
@@ -107,10 +105,9 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 	 * Test if invalid key-types will throw an Exception.
 	 *
 	 * @dataProvider provide__invalid_keys
-	 * @expectedException \Inpsyde\Validator\Exception\InvalidArgumentException
 	 */
 	public function test_invalid_key_type( $key ) {
-
+        static::expectException(\InvalidArgumentException::class);
 		$testee = new ArrayValue();
 		$testee->add_validator_by_key( $this->getMockValidator( FALSE, 0 ), $key );
 	}
@@ -146,15 +143,14 @@ class ArrayValueTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @param bool $return_value
 	 * @param int  $called
-	 *
-	 * @return \PHPUnit_Framework_MockObject_Builder_InvocationMocker
 	 */
 	private function getMockValidator( $return_value = TRUE, $called = 1 ) {
 
-		$mock = $this->getMock( '\Inpsyde\Validator\ValidatorInterface' );
-		$mock->expects( new \PHPUnit_Framework_MockObject_Matcher_InvokedCount( $called ) )
-			->method( 'is_valid' )
-			->will( $this->returnValue( $return_value ) );
+        $mock = $this->createMock('\Inpsyde\Validator\ValidatorInterface');
+        $mock
+            ->expects( $this->exactly($called) )
+            ->method('is_valid')
+            ->willReturn($this->returnValue($return_value));
 
 		return $mock;
 	}

@@ -22,13 +22,10 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class NegateTest extends \PHPUnit_Framework_TestCase {
+class NegateTest extends AbstractTestCase {
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_constructor_needs_validator() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Negate();
 	}
 
@@ -60,7 +57,7 @@ class NegateTest extends \PHPUnit_Framework_TestCase {
 		$input            = $negate->get_input_data();
 		$validator_stored = $input[ 'validator' ];
 
-		$this->assertInternalType( 'object', $validator_stored );
+		$this->assertIsObject( $validator_stored );
 		$this->assertInstanceOf( $validator_class, $validator_stored );
 	}
 

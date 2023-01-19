@@ -25,13 +25,10 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class BulkTest extends \PHPUnit_Framework_TestCase {
+class BulkTest extends AbstractTestCase {
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_constructor_needs_validator() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Bulk();
 	}
 
@@ -63,7 +60,7 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		$input            = $bulk->get_input_data();
 		$validator_stored = $input[ 'validator' ];
 
-		$this->assertInternalType( 'object', $validator_stored );
+		$this->assertIsObject( $validator_stored );
 		$this->assertInstanceOf( $validator_class, $validator_stored );
 	}
 
@@ -114,7 +111,7 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		$data  = $bulk->get_input_data();
 
 		$this->assertFalse( $valid );
-		$this->assertInternalType( 'array', $data );
+		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'value', $data );
 		$this->assertSame( $data[ 'value' ], 3 );
 	}
@@ -128,7 +125,7 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		$data = $bulk->get_input_data();
 
 		$this->assertSame( '', $code );
-		$this->assertInternalType( 'array', $data );
+		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'value', $data );
 		$this->assertSame( 10, $data[ 'value' ] );
 
@@ -137,7 +134,7 @@ class BulkTest extends \PHPUnit_Framework_TestCase {
 		$data = $bulk->get_input_data();
 
 		$this->assertSame( ErrorLoggerInterface::NOT_GREATER, $code );
-		$this->assertInternalType( 'array', $data );
+		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'value', $data );
 		$this->assertSame( 2, $data[ 'value' ] );
 	}

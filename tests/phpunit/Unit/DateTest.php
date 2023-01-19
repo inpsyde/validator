@@ -24,11 +24,12 @@ use stdClass;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class DateTest extends \PHPUnit_Framework_TestCase {
+class DateTest extends AbstractTestCase {
 
-	public function setUp() {
+	public function setUp(): void {
 
 		date_default_timezone_set( 'Europe/Berlin' );
+        parent::setUp();
 	}
 
 	public function test_DateTimeImmutable() {
@@ -173,10 +174,10 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 		// muted because triggers deprecation notices
 		$messages = @$validator->get_error_messages();
 
-		$this->assertInternalType( 'array', $messages );
+		$this->assertIsArray( $messages );
 		$this->assertCount( 2, $messages );
-		$this->assertContains( 'does not appear to be a valid date', reset( $messages ) );
-		$this->assertContains( 'does not fit the date format', end( $messages ) );
+		$this->assertStringContainsString( 'does not appear to be a valid date', reset( $messages ) );
+		$this->assertStringContainsString( 'does not fit the date format', end( $messages ) );
 	}
 
 	/**
@@ -189,7 +190,7 @@ class DateTest extends \PHPUnit_Framework_TestCase {
 		$validator->is_valid( '01.01.2007' );
 		$input = $validator->get_input_data();
 
-		$this->assertInternalType( 'array', $input );
+		$this->assertIsArray( $input );
 		$this->assertArrayHasKey( 'value', $input );
 		$this->assertSame( '01.01.2007', $input[ 'value' ] );
 

@@ -25,13 +25,10 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class PoolTest extends \PHPUnit_Framework_TestCase {
+class PoolTest extends AbstractTestCase {
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_constructor_needs_validator() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Pool();
 	}
 
@@ -63,7 +60,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase {
 		$input            = $pool->get_input_data();
 		$validator_stored = $input[ 'validator' ];
 
-		$this->assertInternalType( 'object', $validator_stored );
+		$this->assertIsObject( $validator_stored );
 		$this->assertInstanceOf( $validator_class, $validator_stored );
 	}
 
@@ -149,7 +146,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase {
 		$data = $pool->get_input_data();
 
 		$this->assertSame( '', $code );
-		$this->assertInternalType( 'array', $data );
+		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'value', $data );
 		$this->assertSame( 6, $data[ 'value' ] );
 
@@ -158,7 +155,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase {
 		$data = $pool->get_input_data();
 
 		$this->assertSame( ErrorLoggerInterface::NOT_GREATER, $code );
-		$this->assertInternalType( 'array', $data );
+		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'value', $data );
 		$this->assertSame( 4, $data[ 'value' ] );
 	}

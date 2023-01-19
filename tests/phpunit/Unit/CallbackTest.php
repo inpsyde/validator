@@ -19,13 +19,10 @@ use Inpsyde\Validator\Callback;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class CallbackTest extends \PHPUnit_Framework_TestCase {
+class CallbackTest extends AbstractTestCase {
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_constructor_needs_callback() {
-
+        static::expectException(\InvalidArgumentException::class);
 		new Callback( [ ] );
 	}
 

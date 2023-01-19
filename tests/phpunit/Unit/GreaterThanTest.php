@@ -21,7 +21,7 @@ use Inpsyde\Validator\GreaterThan;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class GreaterThanTest extends \PHPUnit_Framework_TestCase {
+class GreaterThanTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior
@@ -119,10 +119,10 @@ class GreaterThanTest extends \PHPUnit_Framework_TestCase {
 		// muted because triggers deprecation notices
 		$messages = @$validator->get_error_messages();
 
-		$this->assertInternalType( 'array', $messages );
+		$this->assertIsArray( $messages );
 		$this->assertCount( 2, $messages );
-		$this->assertContains( '5</code> is not greater than', reset( $messages ) );
-		$this->assertContains( '8</code> is not greater than', end( $messages ) );
+		$this->assertStringContainsString( '5</code> is not greater than', reset( $messages ) );
+		$this->assertStringContainsString( '8</code> is not greater than', end( $messages ) );
 	}
 
 	/**
@@ -135,7 +135,7 @@ class GreaterThanTest extends \PHPUnit_Framework_TestCase {
 		$validator->is_valid( 1 );
 		$input = $validator->get_input_data();
 
-		$this->assertInternalType( 'array', $input );
+		$this->assertIsArray( $input );
 		$this->assertArrayHasKey( 'value', $input );
 		$this->assertSame( 1, $input[ 'value' ] );
 

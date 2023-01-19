@@ -21,7 +21,7 @@ use Mockery;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class SizeTest extends \PHPUnit_Framework_TestCase {
+class SizeTest extends AbstractTestCase {
 
 	/**
 	 * Ensures that the validator follows expected behavior

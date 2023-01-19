@@ -17,7 +17,7 @@ use Inpsyde\Validator\Tests\Stub\AlwaysFalseWithInvalidMessageValidator;
  *
  * @package Inpsyde\Validator\Tests\Unit
  */
-class AbstractValidatorTest extends \PHPUnit_Framework_TestCase {
+class AbstractValidatorTest extends AbstractTestCase {
 
 	public function test_basic() {
 

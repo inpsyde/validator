@@ -18,6 +18,7 @@ use Inpsyde\Validator\LessThan;
 use Inpsyde\Validator\Multi;
 use Inpsyde\Validator\NotEmpty;
 use Inpsyde\Validator\RegEx;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class DataValidatorTest
@@ -26,7 +27,7 @@ use Inpsyde\Validator\RegEx;
  * @package inpsyde-validator
  * @license http://opensource.org/licenses/MIT MIT
  */
-class DataValidatorTest extends \PHPUnit_Framework_TestCase {
+class DataValidatorTest extends TestCase {
 
 	public function test_is_valid() {
 
