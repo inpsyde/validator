@@ -19,7 +19,6 @@
         "source": "https://www.github.com/inpsyde/inpsyde-validator",
         "issues": "https://www.github.com/inpsyde/inpsyde-validator/issues"
     },
-
     "require": {
         "php": ">=7.2"
     },
