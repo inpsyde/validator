@@ -252,7 +252,7 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 
 		return $this->logger->getIterator();
 	}
@@ -318,7 +318,7 @@ class WordPressErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function count() {
+	public function count(): int {
 
 		return $this->logger->count();
 	}

@@ -217,7 +217,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function count() {
+	public function count(): int {
 
 		return array_sum( array_map( 'count', $this->errors ) );
 	}
@@ -225,7 +225,7 @@ class ErrorLogger implements ErrorLoggerInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getIterator() {
+	public function getIterator() : \Traversable {
 
 		return new \RecursiveIteratorIterator( new \RecursiveArrayIterator( $this->errors ) );
 	}
