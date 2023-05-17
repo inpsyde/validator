@@ -266,7 +266,6 @@ class ErrorLogger implements ErrorLoggerInterface {
 	 *
 	 * @return string
 	 */
-
 	private function build_message( array $input_data = [ ], $error_template = '' ) {
 
 		if ( ! substr_count( $error_template, '%' ) ) {
