@@ -30,7 +30,6 @@ This package provides a collection of validators for WordPress.
 	* [Custom validator example](#custom-validator-example)
 	* [Upgrading from version 1.0](#upgrading-from-version-10)
 * [Other notes](#other-notes)
-	* [Crafted by Inpsyde](#crafted-by-inpsyde)
 	* [Bugs, technical hints or contribute](#bugs-technical-hints-or-contribute) 
     * [License](#license)
     * [Changelog](#changelog)
@@ -698,10 +697,6 @@ For reasons above starting from version **2.0**:
 
 
 ## Other notes
-
-### Crafted by Inpsyde
-    
-The team at [Inpsyde](http://www.inpsyde.com) is engineering the Web since 2006.
 
 ### Bugs, technical hints or contribute
 
