@@ -168,10 +168,10 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 */
 	protected function get_value_as_string( $value ) {
 
-		if ( is_object( $value ) && ! in_array( '__toString', get_class_methods( $value ) ) ) {
+		if ( is_object( $value ) && ! method_exists( $value, '__toString')) {
 			$value = get_class( $value ) . ' object';
 		} else if ( is_array( $value ) ) {
-			$value = var_export( $value, TRUE );
+			$value = var_export( $value, true );
 		}
 
 		return (string) $value;
