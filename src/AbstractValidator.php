@@ -92,11 +92,7 @@ abstract class AbstractValidator implements ValidatorInterface {
 	 */
 	public function get_message_template( $name ) {
 
-		if ( ! isset( $this->message_templates[ $name ] ) ) {
-			return '';
-		}
-
-		return $this->message_templates[ $name ];
+		return $this->message_templates[ $name ] ?? '';
 	}
 
 	/**
